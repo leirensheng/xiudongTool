@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { readDir} from '#preload';
+import {readDir} from '#preload';
 
 import {ref} from 'vue';
 export default {
@@ -50,10 +50,9 @@ export default {
     let checkDataLength = ref(0);
     let userDataLength = ref(0);
 
-
-    let getLength = async()=>{
+    let getLength = async () => {
       let userData = await readDir('userData');
-      let  checkData = await readDir('checkData');
+      let checkData = await readDir('checkData');
       checkDataLength.value = checkData.length;
       userDataLength.value = userData.length;
     };
@@ -74,7 +73,7 @@ export default {
       loading.value = true;
     };
 
-    let stop  = ()=>{
+    let stop = () => {
       terminal.value.close();
     };
 
