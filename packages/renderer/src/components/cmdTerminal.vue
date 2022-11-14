@@ -48,7 +48,7 @@ export default {
 
       this.child = cmd(this.cmdStr, data => {
         this.term.write('\r\n' + data.replace('\n', '\r\n').trim());
-        if (data.includes(this.successStr)) {
+        if (data==='done') {
           this.$emit('done');
         }
       });

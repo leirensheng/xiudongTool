@@ -5,6 +5,9 @@
     "node": true,
     "browser": false
   },
+  "parserOptions": {
+    "sourceType": "module"
+},
   "extends": ["eslint:recommended"],
   "ignorePatterns": ["node_modules/**", "**/dist/**"],
   "rules": {

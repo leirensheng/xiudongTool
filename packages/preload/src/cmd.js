@@ -5,6 +5,9 @@ export function cmd(str, cb) {
   if (cb) {
     child.stdout.on('data', cb);
     child.stderr.on('data', cb);
+    child.stdout.on('end', ()=>{
+      cb('done');
+    });
   }
   child.close = () => {
     cmd('taskkill /T /F /PID ' + child.pid);
