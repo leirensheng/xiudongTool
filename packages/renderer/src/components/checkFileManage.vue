@@ -7,7 +7,7 @@
         type="primary"
         @click="clean"
       >
-        清理checkData文件
+        清理checkData文件({{ checkDataLength }})
       </el-button>
       <el-button
         v-if="['', 'config'].includes(mode)"
@@ -15,7 +15,15 @@
         type="success"
         @click="cleanUser"
       >
-        清理userData文件
+        清理userData文件(({{ userDataLength }}))
+      </el-button>
+
+      <el-button
+        v-if="loading"
+        type="danger"
+        @click="stop"
+      >
+        停止
       </el-button>
     </div>
     <div>
@@ -30,6 +38,8 @@
 </template>
 
 <script>
+import { readDir} from '#preload';
+
 import {ref} from 'vue';
 export default {
   setup() {
@@ -37,10 +47,21 @@ export default {
     let terminal = ref(null);
     let loading = ref(false);
     let mode = ref('');
+    let checkDataLength = ref(0);
+    let userDataLength = ref(0);
+
+
+    let getLength = async()=>{
+      let userData = await readDir('userData');
+      let  checkData = await readDir('checkData');
+      checkDataLength.value = checkData.length;
+      userDataLength.value = userData.length;
+    };
 
     let reset = () => {
       mode.value = '';
       loading.value = false;
+      getLength();
     };
     let clean = () => {
       mode.value = 'check';
@@ -53,14 +74,22 @@ export default {
       loading.value = true;
     };
 
+    let stop  = ()=>{
+      terminal.value.close();
+    };
+
+    getLength();
     return {
       mode,
+      checkDataLength,
+      userDataLength,
       reset,
       terminal,
       cleanUser,
       loading,
       cmdStr,
       clean,
+      stop,
     };
   },
 };
