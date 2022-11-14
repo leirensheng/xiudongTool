@@ -74,7 +74,6 @@ export default {
           },
         },
 
-
         {
           id: 'activityId',
           name: 'activityId',
@@ -143,12 +142,15 @@ export default {
   methods: {
     runOne(port, checkIndex) {
       return new Promise((resolve, reject) => {
-        let child = cmd(`cd ../xiudongPupp && npm run check ${port} ${checkIndex}-${checkIndex}`, data => {
-          if (data.includes('演出时间')) {
-            child.close();
-            resolve();
-          }
-        });
+        let child = cmd(
+          `cd ../xiudongPupp && npm run check ${port} ${checkIndex}-${checkIndex}`,
+          data => {
+            if (data.includes('演出时间')) {
+              child.close();
+              resolve();
+            }
+          },
+        );
         setTimeout(() => {
           reject('timeout');
         }, 10000);
@@ -220,5 +222,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

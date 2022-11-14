@@ -39,7 +39,7 @@
           :header-align="one.headerAlign"
           :fixed="one.isFixedRight && 'right'"
         >
-          <template #default="{ row }">
+          <template #default="{row}">
             <el-link
               v-if="one.valueType === 'link' && one.linkHandler"
               type="primary"
@@ -104,7 +104,7 @@
           :align="'center'"
           :fixed="isFixedRight && 'right'"
         >
-          <template #default="{ row, $index }">
+          <template #default="{row, $index}">
             <div
               class="table-btns"
               :style="tableBtnsStyle"
@@ -150,7 +150,7 @@
         v-model:page-size="params.pageSize"
         :total="total"
         layout="total, sizes, prev, pager, next, jumper"
-        :page-sizes="[5, 10, 20,30, 50]"
+        :page-sizes="[5, 10, 20, 30, 50]"
         @change="getList(true)"
       >
       </pagination>
@@ -244,9 +244,9 @@ export default {
   computed: {
     isHidePagination() {
       return (
-        this.onePageHidePagination
-        && this.params.currPage === 1
-        && this.total <= this.tableData.length
+        this.onePageHidePagination &&
+        this.params.currPage === 1 &&
+        this.total <= this.tableData.length
       );
     },
     tableBtnsStyle() {
@@ -260,11 +260,11 @@ export default {
     btnsWidth() {
       const btnLength = this.hasPermissionBtns.length;
       if (btnLength === 0) return 0;
-      const str = this.hasPermissionBtns.map((one) => one.name).join('');
+      const str = this.hasPermissionBtns.map(one => one.name).join('');
       return 32 * btnLength + 12 * str.length + 40 + (btnLength - 1) * 10;
     },
     itemsHandled() {
-      return this.items.map((one) => {
+      return this.items.map(one => {
         const defaultObj = {
           formatter: this.noop,
           hederAlign: 'center',
@@ -286,7 +286,7 @@ export default {
         obj = Object.assign(defaultObj, obj);
 
         if (this.isNoDataShow) {
-          const newObj = { ...obj };
+          const newObj = {...obj};
           const oldFormater = obj.formatter;
           newObj.formatter = (...arg) => {
             const res = oldFormater(...arg);
@@ -303,12 +303,10 @@ export default {
       immediate: true,
       handler(val) {
         if (Object.keys(val).length) {
-          this.orderList = [{ ...val }];
+          this.orderList = [{...val}];
           const column = this.columnQueryFieldMap[val.prop] || val.prop;
           // eslint-disable-next-line vue/no-mutating-props
-          this.params.orderItems = [
-            { column, asc: val.order !== 'descending' },
-          ];
+          this.params.orderItems = [{column, asc: val.order !== 'descending'}];
         }
       },
     },
@@ -323,8 +321,8 @@ export default {
   },
   methods: {
     getFormatterFromOptions(one) {
-      return (val) => {
-        const target = one.options.find((_) => {
+      return val => {
+        const target = one.options.find(_ => {
           // eslint-disable-next-line no-restricted-globals
           if (!isNaN(Number(_.id))) {
             return Number(_.id) === Number(val);
@@ -351,25 +349,21 @@ export default {
       }
       return '';
     },
-    handleTheadStyle({ column }) {
-      const orderItem = this.orderList.find(
-        (item) => item.prop === column.property,
-      );
+    handleTheadStyle({column}) {
+      const orderItem = this.orderList.find(item => item.prop === column.property);
       // eslint-disable-next-line no-param-reassign
       if (orderItem) column.order = orderItem.order;
     },
-    handleSortChange({ prop, order }) {
-      const orderItem = this.orderList.find((item) => item.prop === prop);
+    handleSortChange({prop, order}) {
+      const orderItem = this.orderList.find(item => item.prop === prop);
       if (orderItem) {
         orderItem.order = order;
       } else {
-        this.orderList.push({ prop, order });
+        this.orderList.push({prop, order});
       }
-      const { orderItems } = this.params;
+      const {orderItems} = this.params;
       const queryProp = this.columnQueryFieldMap[prop] || prop;
-      const orderItemIndex = orderItems.findIndex(
-        (one) => one.column === queryProp,
-      );
+      const orderItemIndex = orderItems.findIndex(one => one.column === queryProp);
       if (order != null) {
         if (orderItemIndex > -1) {
           orderItems[orderItemIndex] = {
@@ -377,18 +371,18 @@ export default {
             asc: order === 'ascending',
           };
         } else {
-          orderItems.push({ column: queryProp, asc: order === 'ascending' });
+          orderItems.push({column: queryProp, asc: order === 'ascending'});
         }
       } else if (orderItemIndex > -1) {
         orderItems.splice(orderItemIndex, 1);
       }
       this.getList();
     },
-    handleTableBtnClick({ handler, editConfig }, rowData, index) {
+    handleTableBtnClick({handler, editConfig}, rowData, index) {
       if (handler) {
         handler(rowData, index);
       } else if (editConfig) {
-        this.$emit('openEditDialog', { rowData, editConfig, index });
+        this.$emit('openEditDialog', {rowData, editConfig, index});
       }
     },
     getList(isPageChange) {
@@ -396,7 +390,7 @@ export default {
       const params = JSON.parse(JSON.stringify(this.params));
       this.$emit('beforeQuery', params);
       this.api(params)
-        .then((data) => {
+        .then(data => {
           this.$emit('beforeAssignToTable', data);
           this.isLoading = false;
           this.tableData = data.records;
@@ -405,7 +399,7 @@ export default {
             const dom = this.$el.nextElementSibling.querySelector('thead');
             console.log(dom);
             setTimeout(() => {
-              dom.scrollIntoView({ behavior: 'smooth' });
+              dom.scrollIntoView({behavior: 'smooth'});
             }, 100);
           }
           this.$emit('afterQuery', data.records);

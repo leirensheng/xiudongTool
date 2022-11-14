@@ -414,7 +414,7 @@ export default {
             trigger: 'blur',
           });
         } else if (one.rules) {
-          this.formRules[one.id]= one.rules;
+          this.formRules[one.id] = one.rules;
         } else if (one.required) {
           const type = this.getItemType(one);
           const handleName = ['region', 'multipleRegion', 'select'].includes(type)

@@ -24,9 +24,9 @@ function move(amount) {
 
 function position() {
   return (
-    document.documentElement.scrollTop
-    || document.body.parentNode.scrollTop
-    || document.body.scrollTop
+    document.documentElement.scrollTop ||
+    document.body.parentNode.scrollTop ||
+    document.body.scrollTop
   );
 }
 

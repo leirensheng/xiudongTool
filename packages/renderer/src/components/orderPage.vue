@@ -12,9 +12,9 @@
     </S-Table>
   </div>
 </template>
-  
-  <script>
-import {readFile, readDir,cmd, writeFile} from '#preload';
+
+<script>
+import {readFile, readDir, cmd, writeFile} from '#preload';
 import {ElMessageBox} from 'element-plus';
 
 export default {
@@ -55,8 +55,8 @@ export default {
 
   methods: {
     start() {},
-    openOrder({username}){
-        cmd('cd ../xiudongPupp && npm run pay '+ username);
+    openOrder({username}) {
+      cmd('cd ../xiudongPupp && npm run pay ' + username);
     },
     async updateFile({key, val, isAdd}) {
       let fileData = await this.getCheckFile();
@@ -93,7 +93,7 @@ export default {
           phone: val.phone,
           username: key,
         };
-        let targetIndex = allData.findIndex(one=> one.username===key);
+        let targetIndex = allData.findIndex(one => one.username === key);
         allData[targetIndex] = curData;
       });
 
@@ -109,6 +109,5 @@ export default {
   },
 };
 </script>
-  
-  <style>
-</style>
+
+<style></style>

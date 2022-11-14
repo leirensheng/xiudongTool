@@ -1,31 +1,31 @@
 /* eslint-disable no-param-reassign */
-import { ElMessage, ElNotification } from 'element-plus';
+import {ElMessage, ElNotification} from 'element-plus';
 import store from '@/store';
 import router from '@/router';
-import { getToken, setToken } from '@/utils/auth';
+import {getToken, setToken} from '@/utils/auth';
 
 const notAddToken = [/report/i, /analyses/i];
-const generateCommonRequest = (service) => {
+const generateCommonRequest = service => {
   service.interceptors.request.use(
-    (config) => {
-      if (store.state.token && !notAddToken.some((regexp) => regexp.test(window.location.href))) {
+    config => {
+      if (store.state.token && !notAddToken.some(regexp => regexp.test(window.location.href))) {
         config.headers.Authorization = getToken();
       }
-      const { url, waitPre, baseURL } = config;
+      const {url, waitPre, baseURL} = config;
       if (waitPre) {
         const realUrl = url.replace(baseURL, '');
         config.realUrl = realUrl;
       }
       return config;
     },
-    (error) => Promise.reject(error),
+    error => Promise.reject(error),
   );
 
   service.interceptors.response.use(
-    (response) => {
+    response => {
       const res = response.data;
-      const { headers } = response;
-      const { config } = response;
+      const {headers} = response;
+      const {config} = response;
       if (headers.refreshtoken) {
         const newToken = headers.refreshtoken;
         store.commit('SET_TOKEN', newToken);
@@ -34,7 +34,7 @@ const generateCommonRequest = (service) => {
       if (config.noHandleCode) {
         return res;
       }
-      const { code, data, msg } = res;
+      const {code, data, msg} = res;
 
       if (code === 0) {
         return data;
@@ -55,12 +55,12 @@ const generateCommonRequest = (service) => {
       });
       return Promise.reject();
     },
-    (error) => {
+    error => {
       const body = JSON.parse(JSON.stringify(error));
-      const { response } = body;
+      const {response} = body;
       if (
-        response.headers['x-token-expired']
-        && response.headers['x-token-expired'] === 'expired'
+        response.headers['x-token-expired'] &&
+        response.headers['x-token-expired'] === 'expired'
       ) {
         ElMessage({
           message: '登录信息已失效，请重新登录',
@@ -74,7 +74,7 @@ const generateCommonRequest = (service) => {
       }
       const httpStatusCode = response && response.status ? response.status : '';
 
-      const { code } = body;
+      const {code} = body;
       let msg = '';
       if (httpStatusCode) {
         const map = {

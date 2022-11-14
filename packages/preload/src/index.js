@@ -19,7 +19,7 @@ export function readFile(name) {
 
 export function writeFile(name, data) {
   return new Promise((resolve, reject) => {
-    fs.writeFile(path.resolve('../xiudongPupp', name), data, (e) => {
+    fs.writeFile(path.resolve('../xiudongPupp', name), data, e => {
       if (e) {
         reject(e);
         return;

@@ -1,7 +1,6 @@
 import {app, shell} from 'electron';
 import {URL} from 'url';
 
-
 /**
  * A list of origins that you allow open INSIDE the application and permissions for them.
  *

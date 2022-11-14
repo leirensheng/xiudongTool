@@ -5,7 +5,12 @@
     class="svg-external-icon svg-icon"
     v-bind="$attrs"
   />
-  <svg v-else :class="svgClass" aria-hidden="true" v-bind="$attrs">
+  <svg
+    v-else
+    :class="svgClass"
+    aria-hidden="true"
+    v-bind="$attrs"
+  >
     <use :href="iconName" />
   </svg>
 </template>
@@ -13,7 +18,7 @@
 <script>
 // doc: https://panjiachen.github.io/vue-element-admin-site/feature/component/svg-icon.html#usage
 // eslint-disable-next-line import/no-unresolved
-import { isExternal } from '/@/utils/validate';
+import {isExternal} from '/@/utils/validate';
 
 export default {
   name: 'SvgIcon',

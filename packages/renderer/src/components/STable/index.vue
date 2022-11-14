@@ -1,6 +1,9 @@
 <template>
   <div class="table-page-container">
-    <div v-if="queryItems.length" class="filter-container">
+    <div
+      v-if="queryItems.length"
+      class="filter-container"
+    >
       <template v-for="one in queryItems">
         <el-input
           v-if="one.queryType === 'input'"
@@ -72,9 +75,17 @@
             }
           "
         />
-        <slot v-else-if="one.queryType === 'slot'" :name="one.slotName" />
+        <slot
+          v-else-if="one.queryType === 'slot'"
+          :name="one.slotName"
+        />
       </template>
-      <el-button class="filter-item" type="primary" size="default" @click="handleFilter">
+      <el-button
+        class="filter-item"
+        type="primary"
+        size="default"
+        @click="handleFilter"
+      >
         查询
       </el-button>
       <el-button
@@ -111,12 +122,21 @@
         :table-btns-config="tableBtnsConfig"
         @openEditDialog="openEditDialog"
       >
-        <template v-for="one in btnSlotForTable" #[one.slot]>
+        <template
+          v-for="one in btnSlotForTable"
+          #[one.slot]
+        >
           <slot :name="one.slot" />
         </template>
 
-        <template v-for="one in itemSlotForTable" #[one.id]="{row}">
-          <slot :row="row" :name="one.id" />
+        <template
+          v-for="one in itemSlotForTable"
+          #[one.id]="{row}"
+        >
+          <slot
+            :row="row"
+            :name="one.id"
+          />
         </template>
       </v-table>
     </div>

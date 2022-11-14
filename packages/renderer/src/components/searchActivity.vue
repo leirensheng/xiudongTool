@@ -33,7 +33,10 @@ export default {
     let isShow = ref(false);
 
     let cmdStr = computed(() => {
-      return   str.value &&   'cd ../xiudongPupp && node search.js ' + str.value + (isShow.value ? ' show' : '');
+      return (
+        str.value &&
+        'cd ../xiudongPupp && node search.js ' + str.value + (isShow.value ? ' show' : '')
+      );
     });
 
     let search = () => {

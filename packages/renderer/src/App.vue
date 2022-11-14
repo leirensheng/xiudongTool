@@ -25,7 +25,6 @@ import CheckMapManage from '/@/components/checkMapManage.vue';
 import OrderPage from '/@/components/orderPage.vue';
 import CheckFileManage from '/@/components/checkFileManage.vue';
 
-
 export default {
   components: {
     SearchActivity,
@@ -62,13 +61,10 @@ export default {
           name: 'CheckFileManage',
           title: 'check本地文件维护',
         },
-
-        
       ],
     };
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {},
 };
 </script>
@@ -81,9 +77,9 @@ export default {
 .app {
   height: 100vh;
   padding: 10px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   .content {
     flex: 1;
     overflow: auto;

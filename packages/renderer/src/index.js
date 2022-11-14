@@ -6,7 +6,7 @@ import STable from '/@/components/STable/index.vue';
 import 'element-plus/dist/index.css';
 import './global.scss';
 
-app.component('CmdTerminal',Terminal);
-app.component('STable',STable);
+app.component('CmdTerminal', Terminal);
+app.component('STable', STable);
 
 app.mount('#app');

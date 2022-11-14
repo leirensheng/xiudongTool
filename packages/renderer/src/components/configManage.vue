@@ -74,7 +74,7 @@ export default {
           support: {
             query: {},
             add: {},
-            edit:{},
+            edit: {},
           },
         },
 
@@ -94,18 +94,17 @@ export default {
           },
         },
 
-
         {
           id: 'nameIndex',
           name: '用户序号',
-            width: 50,
+          width: 50,
           support: {
             edit: {
-              type:'number',
+              type: 'number',
             },
             add: {
-              defaultValue:0,
-              type:'number',
+              defaultValue: 0,
+              type: 'number',
             },
           },
         },
@@ -118,9 +117,7 @@ export default {
           id: 'showTime',
           name: '演出时间',
         },
-     
 
-       
         {
           id: 'targetTypes',
           name: '目标',
@@ -158,11 +155,9 @@ export default {
           id: 'recordTime',
           name: '创建时间',
           width: 100,
-          formatter: val=>val &&val.replace(/\..*$/,''),
-
+          formatter: val => val && val.replace(/\..*$/, ''),
         },
 
-        
         {
           id: 'uid',
           name: 'uid',
@@ -176,7 +171,7 @@ export default {
   },
 
   methods: {
-    start(){},
+    start() {},
     runOne(port, checkIndex) {
       return new Promise((resolve, reject) => {
         let child = cmd(
@@ -207,12 +202,12 @@ export default {
       await this.$refs.table.getList();
     },
     async handleEdit(val) {
-      let obj={...val};
+      let obj = {...val};
       delete obj.ticketTypes;
       delete obj.username;
       await this.updateFile({
         key: val.username,
-        val:obj,
+        val: obj,
       });
       await this.$refs.table.getList();
     },
@@ -246,13 +241,17 @@ export default {
     },
     async getData({queryItems}) {
       let obj = await this.getCheckFile();
-      let data = Object.entries(obj).map(([key, val]) => ({...val,ticketTypes: Object.keys(val.typeMap||[]),  username: key}));
+      let data = Object.entries(obj).map(([key, val]) => ({
+        ...val,
+        ticketTypes: Object.keys(val.typeMap || []),
+        username: key,
+      }));
 
       let items = queryItems.filter(item => item.value);
       data = data.filter(one => {
         return items.every(({value, column}) => String(one[column]).indexOf(value) !== -1);
       });
-      data.sort((a,b)=>new Date(b.recordTime)-new Date(a.recordTime));
+      data.sort((a, b) => new Date(b.recordTime) - new Date(a.recordTime));
       return {
         total: data.length,
         records: data,
@@ -262,5 +261,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

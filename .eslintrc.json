@@ -5,9 +5,7 @@
     "node": true,
     "browser": false
   },
-  "extends": [
-    "eslint:recommended"
-  ],
+  "extends": ["eslint:recommended"],
   "ignorePatterns": ["node_modules/**", "**/dist/**"],
   "rules": {
     /**

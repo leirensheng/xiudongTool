@@ -1,8 +1,8 @@
 <template>
   <div id="terminal"></div>
 </template>
-  
-  <script>
+
+<script>
 import {Terminal} from 'xterm';
 import 'xterm/css/xterm.css';
 import {FitAddon} from 'xterm-addon-fit';
@@ -19,7 +19,7 @@ export default {
       default: '完成',
     },
   },
-  emits:['done'],
+  emits: ['done'],
   data() {
     return {};
   },
@@ -48,7 +48,7 @@ export default {
 
       this.child = cmd(this.cmdStr, data => {
         this.term.write('\r\n' + data.replace('\n', '\r\n').trim());
-        if(data.includes(this.successStr)){
+        if (data.includes(this.successStr)) {
           this.$emit('done');
         }
       });
@@ -59,11 +59,10 @@ export default {
   },
 };
 </script>
-  
-  <style scoped lang="scss">
+
+<style scoped lang="scss">
 #terminal {
   height: 100%;
   width: 100%;
 }
 </style>
-  
