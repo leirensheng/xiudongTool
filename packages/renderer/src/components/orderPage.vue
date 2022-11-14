@@ -1,0 +1,114 @@
+<template>
+  <div>
+    <S-Table
+      ref="table"
+      :highlight-current-row="false"
+      :is-auto-height="true"
+      :items="items"
+      :api="getData"
+      one-page-hide-pagination
+      :table-btns-config="tableBtnsConfig"
+    >
+    </S-Table>
+  </div>
+</template>
+  
+  <script>
+import {readFile, readDir,cmd, writeFile} from '#preload';
+import {ElMessageBox} from 'element-plus';
+
+export default {
+  data() {
+    return {
+      tableBtnsConfig: [
+        {
+          handler: this.remove,
+          name: '删除',
+          type: 'danger',
+        },
+        {
+          handler: this.openOrder,
+          name: '订单页',
+          type: 'success',
+        },
+      ],
+      items: [
+        {
+          id: 'username',
+          name: '用户名',
+          width: 100,
+          support: {
+            query: {},
+          },
+        },
+        {
+          id: 'phone',
+          name: '手机',
+        },
+        {
+          id: 'activityName',
+          name: '演出',
+        },
+      ],
+    };
+  },
+
+  methods: {
+    start() {},
+    openOrder({username}){
+        cmd('cd ../xiudongPupp && npm run pay '+ username);
+    },
+    async updateFile({key, val, isAdd}) {
+      let fileData = await this.getCheckFile();
+      if (isAdd && fileData[key] !== undefined) {
+        throw new Error('已经有了' + key);
+      }
+      fileData[key] = val;
+      await writeFile('config.json', JSON.stringify(fileData, null, 4));
+    },
+
+    async remove(obj) {
+      await ElMessageBox.confirm(`确定删除【${obj.curShowName}】?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      });
+      let fileData = await this.getCheckFile();
+      delete fileData[obj.port];
+      await writeFile('config.json', JSON.stringify(fileData, null, 4));
+      await this.$refs.table.getList();
+    },
+    async getCheckFile() {
+      let str = await readFile('config.json');
+      return JSON.parse(str);
+    },
+    async getData({queryItems}) {
+      let allUser = await readDir('userData');
+      let allData = allUser.map(username => ({username}));
+
+      let obj = await this.getCheckFile();
+      Object.entries(obj).forEach(([key, val]) => {
+        let curData = {
+          activityName: val.activityName,
+          phone: val.phone,
+          username: key,
+        };
+        let targetIndex = allData.findIndex(one=> one.username===key);
+        allData[targetIndex] = curData;
+      });
+
+      let items = queryItems.filter(item => item.value);
+      allData = allData.filter(one => {
+        return items.every(({value, column}) => String(one[column]).indexOf(value) !== -1);
+      });
+      return {
+        total: allData.length,
+        records: allData,
+      };
+    },
+  },
+};
+</script>
+  
+  <style>
+</style>
