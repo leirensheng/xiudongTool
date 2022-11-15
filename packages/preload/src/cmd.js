@@ -5,7 +5,7 @@ export function cmd(str, cb) {
   if (cb) {
     child.stdout.on('data', cb);
     child.stderr.on('data', cb);
-    child.stdout.on('end', ()=>{
+    child.stdout.on('end', () => {
       cb('done');
     });
   }
