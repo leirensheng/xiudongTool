@@ -61,7 +61,6 @@ export default {
       await writeFile('config.json', JSON.stringify(fileData, null, 4));
     },
 
-
     async getCheckFile() {
       let str = await readFile('config.json');
       return JSON.parse(str);
