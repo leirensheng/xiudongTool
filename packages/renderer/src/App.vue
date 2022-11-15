@@ -1,7 +1,15 @@
 <template>
   <div class="app">
-    <el-tabs v-model="activeName" class="demo-tabs">
-      <el-tab-pane v-for="({title, name}, index) in tabs" :key="index" :label="title" :name="name">
+    <el-tabs
+      v-model="activeName"
+      class="demo-tabs"
+    >
+      <el-tab-pane
+        v-for="({title, name}, index) in tabs"
+        :key="index"
+        :label="title"
+        :name="name"
+      >
       </el-tab-pane>
     </el-tabs>
     <div class="content">
