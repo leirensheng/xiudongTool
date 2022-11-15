@@ -1,15 +1,7 @@
 <template>
   <div class="app">
-    <el-tabs
-      v-model="activeName"
-      class="demo-tabs"
-    >
-      <el-tab-pane
-        v-for="({title, name}, index) in tabs"
-        :key="index"
-        :label="title"
-        :name="name"
-      >
+    <el-tabs v-model="activeName" class="demo-tabs">
+      <el-tab-pane v-for="({title, name}, index) in tabs" :key="index" :label="title" :name="name">
       </el-tab-pane>
     </el-tabs>
     <div class="content">
@@ -24,6 +16,7 @@ import ConfigManage from '/@/components/configManage.vue';
 import CheckMapManage from '/@/components/checkMapManage.vue';
 import OrderPage from '/@/components/orderPage.vue';
 import CheckFileManage from '/@/components/checkFileManage.vue';
+import CheckFileFileRename from '/@/components/checkFileFileRename.vue';
 
 export default {
   components: {
@@ -32,10 +25,11 @@ export default {
     ConfigManage,
     OrderPage,
     CheckFileManage,
+    CheckFileFileRename,
   },
   data() {
     return {
-      activeName: 'CheckFileManage',
+      activeName: 'CheckFileFileRename',
       tabs: [
         {
           name: 'SearchActivity',
@@ -57,6 +51,10 @@ export default {
         {
           name: 'CheckFileManage',
           title: '文件清理',
+        },
+        {
+          name: 'CheckFileFileRename',
+          title: 'check重命名',
         },
       ],
     };
