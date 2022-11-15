@@ -52,7 +52,7 @@ export default {
 
         {
           name: 'OrderPage',
-          title: '打开订单页',
+          title: '订单页',
         },
         {
           name: 'CheckFileManage',

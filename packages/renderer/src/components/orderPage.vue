@@ -15,17 +15,11 @@
 
 <script>
 import {readFile, readDir, cmd, writeFile} from '#preload';
-import {ElMessageBox} from 'element-plus';
 
 export default {
   data() {
     return {
       tableBtnsConfig: [
-        {
-          handler: this.remove,
-          name: '删除',
-          type: 'danger',
-        },
         {
           handler: this.openOrder,
           name: '订单页',
@@ -67,17 +61,7 @@ export default {
       await writeFile('config.json', JSON.stringify(fileData, null, 4));
     },
 
-    async remove(obj) {
-      await ElMessageBox.confirm(`确定删除【${obj.curShowName}】?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      });
-      let fileData = await this.getCheckFile();
-      delete fileData[obj.port];
-      await writeFile('config.json', JSON.stringify(fileData, null, 4));
-      await this.$refs.table.getList();
-    },
+
     async getCheckFile() {
       let str = await readFile('config.json');
       return JSON.parse(str);

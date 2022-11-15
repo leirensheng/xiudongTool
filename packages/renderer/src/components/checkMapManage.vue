@@ -153,6 +153,7 @@ export default {
         );
         setTimeout(() => {
           reject('timeout');
+          child && child.close();
         }, 10000);
       });
     },
