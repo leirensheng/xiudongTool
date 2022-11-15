@@ -49,17 +49,14 @@ export default {
           name: 'ConfigManage',
           title: '用户配置',
         },
-        {
-          name: 'Test',
-          title: 'test',
-        },
+
         {
           name: 'OrderPage',
           title: '打开订单页',
         },
         {
           name: 'CheckFileManage',
-          title: 'check本地文件维护',
+          title: '文件清理',
         },
       ],
     };

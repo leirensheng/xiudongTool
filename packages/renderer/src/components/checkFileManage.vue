@@ -15,7 +15,7 @@
         type="success"
         @click="cleanUser"
       >
-        清理userData文件(({{ userDataLength }}))
+        清理userData文件({{ userDataLength }})
       </el-button>
 
       <el-button
