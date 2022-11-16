@@ -29,7 +29,7 @@
 
 <script>
 import {readFile, cmd, writeFile} from '#preload';
-import {ElMessageBox, ElNotification} from 'element-plus';
+import {ElMessageBox} from 'element-plus';
 
 export default {
   data() {
@@ -55,6 +55,11 @@ export default {
           handler: this.remove,
           name: '删除',
           type: 'danger',
+        },
+        {
+          handler: this.copy,
+          name: '复制',
+          type: 'success',
         },
       ],
       items: [
@@ -171,6 +176,23 @@ export default {
   },
 
   methods: {
+    getList(){
+      this.$refs.table.getList();
+    },
+    async copy({username}) {
+      let {value} = await ElMessageBox.prompt('', '输入新用户');
+      await this.cmdCopy(value,username);
+      this.getList(); 
+    },
+    cmdCopy(value, username) {
+      return new Promise(r => {
+        cmd(`cd ../xiudongPupp && npm run add ${value} ${username}`, data => {
+          if (data === 'done') {
+            r();
+          }
+        });
+      });
+    },
     start() {},
     runOne(port, checkIndex) {
       return new Promise((resolve, reject) => {
@@ -199,7 +221,7 @@ export default {
       //     type: 'error',
       //   });
       // }
-      await this.$refs.table.getList();
+      await this.getList();
     },
     async handleEdit(val) {
       let obj = {...val};
@@ -212,7 +234,7 @@ export default {
       await this.$refs.table.getList();
     },
     async updateFile({key, val, isAdd}) {
-      let fileData = await this.getCheckFile();
+      let fileData = await this.getConfigFile();
       if (isAdd && fileData[key] !== undefined) {
         throw new Error('已经有了' + key);
       }
@@ -225,22 +247,22 @@ export default {
       return form;
     },
     async remove(obj) {
-      await ElMessageBox.confirm(`确定删除【${obj.curShowName}】?`, '提示', {
+      await ElMessageBox.confirm(`确定删除【${obj.username}】?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       });
-      let fileData = await this.getCheckFile();
-      delete fileData[obj.port];
+      let fileData = await this.getConfigFile();
+      delete fileData[obj.username];
       await writeFile('config.json', JSON.stringify(fileData, null, 4));
-      await this.$refs.table.getList();
+      await this.getList();
     },
-    async getCheckFile() {
+    async getConfigFile() {
       let str = await readFile('config.json');
       return JSON.parse(str);
     },
     async getData({queryItems}) {
-      let obj = await this.getCheckFile();
+      let obj = await this.getConfigFile();
       let data = Object.entries(obj).map(([key, val]) => ({
         ...val,
         ticketTypes: Object.keys(val.typeMap || []),

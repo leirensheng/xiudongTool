@@ -26,7 +26,7 @@ export default {
           editConfig: {
             handler: this.handleEdit,
           },
-          name: '编辑',
+          name: '重命名',
           type: 'success',
         },
 
