@@ -176,13 +176,13 @@ export default {
   },
 
   methods: {
-    getList(){
+    getList() {
       this.$refs.table.getList();
     },
     async copy({username}) {
       let {value} = await ElMessageBox.prompt('', '输入新用户');
-      await this.cmdCopy(value,username);
-      this.getList(); 
+      await this.cmdCopy(value, username);
+      this.getList();
     },
     cmdCopy(value, username) {
       return new Promise(r => {
