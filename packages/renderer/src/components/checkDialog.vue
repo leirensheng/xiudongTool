@@ -40,12 +40,12 @@ export default {
       type: String,
       default: '',
     },
-    config:{
-      type:Object,
-      default:()=>({}),
+    config: {
+      type: Object,
+      default: () => ({}),
     },
   },
-  emits: ['exit','updateLoopType'],
+  emits: ['exit', 'updateLoopType'],
   setup() {
     let store = useStore();
     let {pidInfo} = store;
@@ -70,8 +70,8 @@ export default {
     },
   },
   methods: {
-    updateLoopType(val){
-      this.$emit('updateLoopType',val);
+    updateLoopType(val) {
+      this.$emit('updateLoopType', val);
     },
     cmdChange(val) {
       this.cmd = val;

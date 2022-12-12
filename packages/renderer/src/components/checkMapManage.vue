@@ -202,9 +202,9 @@ export default {
         }, 10000);
       });
     },
-    async updateLoopType(loopTicketType){
-      let obj = {...this.curRow,loopTicketType};
-      await this.updateFile( {key: this.curRow.port, val: obj});
+    async updateLoopType(loopTicketType) {
+      let obj = {...this.curRow, loopTicketType};
+      await this.updateFile({key: this.curRow.port, val: obj});
     },
     async handlerAdd(val) {
       let obj = {...val};
