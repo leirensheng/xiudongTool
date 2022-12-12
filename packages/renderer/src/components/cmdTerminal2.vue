@@ -18,7 +18,7 @@ import {Terminal} from 'xterm';
 import 'xterm/css/xterm.css';
 import {AttachAddon} from 'xterm-addon-attach';
 import {FitAddon} from 'xterm-addon-fit';
-import { useStore } from '/@/store/global';
+import {useStore} from '/@/store/global';
 
 export default {
   props: {
@@ -27,8 +27,8 @@ export default {
       default: '',
     },
   },
-  emits:['exit'],
-  setup(){
+  emits: ['exit'],
+  setup() {
     let store = useStore();
     let {pidInfo} = store;
     return {
@@ -38,9 +38,9 @@ export default {
   data() {
     return {};
   },
-  computed:{
-    status(){
-      return this.pidInfo[this.cmd]?'success':'danger';
+  computed: {
+    status() {
+      return this.pidInfo[this.cmd] ? 'success' : 'danger';
     },
   },
   created() {},
@@ -48,10 +48,10 @@ export default {
     this.init();
   },
   methods: {
-    close(){
-       this.socket.close();
-       delete this.pidInfo[this.cmd];
-       this.$emit('exit');
+    close() {
+      this.socket.close();
+      delete this.pidInfo[this.cmd];
+      this.$emit('exit');
     },
     async init() {
       const socketURL = 'ws://127.0.0.1:4000/socket/';
@@ -108,10 +108,10 @@ export default {
 #terminal {
   height: 100%;
 }
-.close-wrap{
+.close-wrap {
   padding: 10px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

@@ -1,12 +1,10 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 export const useStore = defineStore('global', {
   state: () => {
     return {
-       pidInfo:{},
+      pidInfo: {},
     };
   },
-  actions: {
-  },
-  getters: {
-  },
+  actions: {},
+  getters: {},
 });
