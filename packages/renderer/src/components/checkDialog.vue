@@ -2,7 +2,7 @@
   <el-dialog
     v-bind="$attrs"
     width="80%"
-    :title="runningCmd||cmd"
+    :title="runningCmd || cmd"
   >
     <div
       v-if="$attrs.modelValue"
@@ -15,7 +15,7 @@
         @cmd-change="cmdChange"
       ></start-check-config>
       <cmd-terminal2
-        v-if="isRunning||showTerminal"
+        v-if="isRunning || showTerminal"
         :cmd="cmd"
         @exit="exit"
       ></cmd-terminal2>
@@ -49,23 +49,23 @@ export default {
   },
   data() {
     return {
-      cmd:'',
+      cmd: '',
       showTerminal: false,
     };
   },
   computed: {
-      isRunning(){
-        let cmds = Object.keys(this.pidInfo);
-        return cmds.some(cmd => cmd.includes(this.port));
-      },
-      runningCmd(){
-        let cmds = Object.keys(this.pidInfo);
-        return cmds.find(cmd => cmd.includes(this.port));
-      },
+    isRunning() {
+      let cmds = Object.keys(this.pidInfo);
+      return cmds.some(cmd => cmd.includes(this.port));
+    },
+    runningCmd() {
+      let cmds = Object.keys(this.pidInfo);
+      return cmds.find(cmd => cmd.includes(this.port));
+    },
   },
   methods: {
-    cmdChange(val){
-      this.cmd= val;
+    cmdChange(val) {
+      this.cmd = val;
       this.showTerminal = true;
     },
     exit() {
@@ -77,5 +77,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

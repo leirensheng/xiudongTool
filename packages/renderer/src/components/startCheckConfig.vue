@@ -68,8 +68,8 @@
     启动
   </el-button>
 </template>
-  
-  <script>
+
+<script>
 import {useStore} from '/@/store/global';
 import {readDir} from '#preload';
 import {ElNotification} from 'element-plus';
@@ -158,6 +158,5 @@ export default {
   },
 };
 </script>
-  
-  <style>
-</style>
+
+<style></style>

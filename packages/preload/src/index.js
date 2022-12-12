@@ -30,7 +30,7 @@ export function writeFile(name, data) {
 }
 export function readDir(name) {
   return new Promise((resolve, reject) => {
-    fs.readdir(path.resolve('../xiudongPupp', name), (e,data) => {
+    fs.readdir(path.resolve('../xiudongPupp', name), (e, data) => {
       if (e) {
         reject(e);
         return;

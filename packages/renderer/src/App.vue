@@ -27,7 +27,6 @@ import CheckFileManage from '/@/components/checkFileManage.vue';
 import CheckFileFileRename from '/@/components/checkFileFileRename.vue';
 import onlyTest from '/@/components/onlyTest.vue';
 
-
 export default {
   components: {
     SearchActivity,
