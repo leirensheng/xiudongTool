@@ -79,3 +79,17 @@ export async function rmDir(dir) {
   }
   await removeDir(realDir);
 }
+
+
+export function  getComputerName  () {
+  let os = require('os');
+  let map = {
+    'DESKTOP-AAKRGOM': '宏基',
+    CCRPC028: '公司',
+    'DESKTOP-3ML3QTF': '虚拟机',
+    'DESKTOP-U1N2FOL': '联想',
+    'DESKTOP-STTL34E': '新电脑',
+  };
+  let hostname = os.hostname();
+  return map[hostname] || hostname;
+}

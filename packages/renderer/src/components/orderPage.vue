@@ -50,7 +50,7 @@ export default {
   methods: {
     start() {},
     openOrder({username}) {
-      cmd('cd ../xiudongPupp && npm run pay ' + username);
+      cmd('npm run pay ' + username);
     },
     async updateFile({key, val, isAdd}) {
       let fileData = await this.getCheckFile();

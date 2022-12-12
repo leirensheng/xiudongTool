@@ -64,12 +64,12 @@ export default {
     };
     let clean = () => {
       mode.value = 'check';
-      cmdStr.value = 'cd ../xiudongPupp && npm run cleanCheck';
+      cmdStr.value = 'npm run cleanCheck';
       loading.value = true;
     };
     let cleanUser = () => {
       mode.value = 'config';
-      cmdStr.value = 'cd ../xiudongPupp && npm run cleanCheck true';
+      cmdStr.value = 'npm run cleanCheck true';
       loading.value = true;
     };
 

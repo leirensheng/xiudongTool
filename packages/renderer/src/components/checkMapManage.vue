@@ -215,7 +215,7 @@ export default {
     },
     runOne(port, checkIndex) {
       return new Promise((resolve, reject) => {
-        let str =  `cd ../xiudongPupp && npm run check ${port} ${checkIndex}-${checkIndex}`;
+        let str =  `npm run check ${port} ${checkIndex}-${checkIndex}`;
         console.log(str);
         let child = cmd(
          str,

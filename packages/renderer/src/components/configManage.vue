@@ -267,7 +267,7 @@ export default {
     },
     cmdCopy(value, username) {
       return new Promise(r => {
-        cmd(`cd ../xiudongPupp && npm run add ${value} ${username}`, data => {
+        cmd(`npm run add ${value} ${username}`, data => {
           if (data === 'done') {
             r();
           }
@@ -340,7 +340,7 @@ export default {
       data.sort((a, b) => new Date(b.recordTime) - new Date(a.recordTime));
 
       data.forEach(one => {
-        let cmd = `cd d:/xiudongPupp && npm run start ${one.username}\n`;
+        let cmd = `npm run start ${one.username}\n`;
         one.cmd = cmd;
         one.hasSuccess = Boolean(one.hasSuccess);
         one.status = this.pidInfo[cmd] ? 1 : 0;

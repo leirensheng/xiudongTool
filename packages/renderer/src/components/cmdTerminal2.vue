@@ -19,6 +19,7 @@ import 'xterm/css/xterm.css';
 import {AttachAddon} from 'xterm-addon-attach';
 import {FitAddon} from 'xterm-addon-fit';
 import {useStore} from '/@/store/global';
+import {getComputerName} from '#preload';
 
 export default {
   props: {
@@ -88,7 +89,8 @@ export default {
       let ws = new WebSocket(socketURL + pid);
       ws.onopen = () => {
         if (!prePid) {
-          ws.send(this.cmd + '\r\n');
+          let map = {公司:'d:/xiudongPupp',新电脑:''};
+          ws.send(`cd ${map[getComputerName()]} && ${this.cmd} \r\n`);
         }
       };
       this.socket = ws;

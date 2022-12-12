@@ -1,7 +1,8 @@
 const shell = require('shelljs');
 
 export function cmd(str, cb) {
-  var child = shell.exec(str, {async: true, silent: true});
+  let val = 'cd ../xiudongPupp &&'+ str;
+  var child = shell.exec(val, {async: true, silent: true});
   if (cb) {
     child.stdout.on('data', cb);
     child.stderr.on('data', cb);

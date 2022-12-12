@@ -149,7 +149,7 @@ export default {
       if (!this.isOpen && this.isLoop) {
         str += ` ${this.loopTicketType}`;
       }
-      return 'cd d:/xiudongPupp && ' + str;
+      return str;
     },
   },
   created() {
