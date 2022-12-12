@@ -14,9 +14,7 @@
     >
       <template #username="{row}">
         <div>
-          <span v-if="!row.hasSuccess">{{ 
-            row.username
-          }}</span>
+          <span v-if="!row.hasSuccess">{{ row.username }}</span>
           <el-tag
             v-else
             type="success"
@@ -136,7 +134,7 @@ export default {
           id: 'username',
           name: '用户名',
           width: 100,
-          valueType:'slot',
+          valueType: 'slot',
           support: {
             query: {},
             add: {},
@@ -245,9 +243,9 @@ export default {
     };
   },
   methods: {
-    getStyle(row){
+    getStyle(row) {
       return {
-        color: row.hasSuccess?'green':'',
+        color: row.hasSuccess ? 'green' : '',
       };
     },
     exit() {
