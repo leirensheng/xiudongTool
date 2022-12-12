@@ -25,6 +25,8 @@ import CheckMapManage from '/@/components/checkMapManage.vue';
 import OrderPage from '/@/components/orderPage.vue';
 import CheckFileManage from '/@/components/checkFileManage.vue';
 import CheckFileFileRename from '/@/components/checkFileFileRename.vue';
+import onlyTest from '/@/components/onlyTest.vue';
+
 
 export default {
   components: {
@@ -34,10 +36,11 @@ export default {
     OrderPage,
     CheckFileManage,
     CheckFileFileRename,
+    onlyTest,
   },
   data() {
     return {
-      activeName: 'CheckFileFileRename',
+      activeName: 'CheckMapManage',
       tabs: [
         {
           name: 'SearchActivity',
@@ -63,6 +66,10 @@ export default {
         {
           name: 'CheckFileFileRename',
           title: 'check重命名',
+        },
+        {
+          name: 'onlyTest',
+          title: '测试',
         },
       ],
     };

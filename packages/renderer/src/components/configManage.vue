@@ -2,6 +2,7 @@
   <div>
     <S-Table
       ref="table"
+      v-loading="loading"
       :highlight-current-row="false"
       :is-auto-height="true"
       :items="items"
@@ -24,16 +25,49 @@
         </el-tag>
       </template>
     </S-Table>
+
+    <el-dialog
+      v-model="dialogVisible"
+      :title="curRow.username"
+      width="80%"
+      @close="handleClose"
+    >
+      <div
+        v-if="dialogVisible"
+        class="terminal-warp"
+      >
+        <cmd-terminal2
+          :cmd="cmd"
+          @exit="exit"
+        ></cmd-terminal2>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import {readFile, cmd, writeFile} from '#preload';
 import {ElMessageBox} from 'element-plus';
+import { useStore } from '/@/store/global';
+import CmdTerminal2 from './cmdTerminal2.vue';
 
 export default {
+  components:{
+    CmdTerminal2,
+  },
+  setup(){
+    let store = useStore();
+    let {pidInfo} = store;
+    return {
+      pidInfo,
+    };
+  },
   data() {
     return {
+      loading: false,
+      curRow:{},
+      dialogVisible:false,
+      cmd:'',
       addConfig: {
         handler: this.handlerAdd,
       },
@@ -42,7 +76,14 @@ export default {
         {
           type: 'success',
           handler: this.start,
+          show: row => row.status ===0,
           name: '启动',
+        },
+        {
+          type: 'danger',
+          handler: this.start,
+          show: row => row.status ===1,
+          name: '查看',
         },
         {
           type: 'primary',
@@ -174,14 +215,22 @@ export default {
       ],
     };
   },
-
   methods: {
+    exit(){
+      this.dialogVisible = false;
+      this.curRow.status = 0;
+    },
     getList() {
       this.$refs.table.getList();
     },
     async copy({username}) {
       let {value} = await ElMessageBox.prompt('', '输入新用户');
+      this.loading = true;
       await this.cmdCopy(value, username);
+      this.getList();
+      this.loading = false;
+    },
+    handleClose(){
       this.getList();
     },
     cmdCopy(value, username) {
@@ -193,34 +242,17 @@ export default {
         });
       });
     },
-    start() {},
-    runOne(port, checkIndex) {
-      return new Promise((resolve, reject) => {
-        let child = cmd(
-          `cd ../xiudongPupp && npm run check ${port} ${checkIndex}-${checkIndex}`,
-          data => {
-            if (data.includes('演出时间')) {
-              child.close();
-              resolve();
-            }
-          },
-        );
-        setTimeout(() => {
-          reject('timeout');
-        }, 10000);
-      });
+    start(row) {
+      // 1. 是否自动付款
+      // 2. 服务器地址
+      this.curRow =  row;
+      this.cmd = row.cmd;
+      console.log(this.cmd);
+      this.dialogVisible = true;
+      row.status = 1;
     },
     async handlerAdd(val) {
       await this.updateFile({key: val.username, val, isAdd: true});
-      // try {
-      //   await this.runOne(val.port, val.checkIndex);
-      // } catch (e) {
-      //   ElNotification({
-      //     title: 'Error',
-      //     message: '获取信息失败!',
-      //     type: 'error',
-      //   });
-      // }
       await this.getList();
     },
     async handleEdit(val) {
@@ -274,6 +306,12 @@ export default {
         return items.every(({value, column}) => String(one[column]).indexOf(value) !== -1);
       });
       data.sort((a, b) => new Date(b.recordTime) - new Date(a.recordTime));
+     
+      data.forEach(one=>{
+        let cmd = `cd d:/xiudongPupp && npm run start ${one.username}\n`;
+        one.cmd = cmd;
+        one.status = this.pidInfo[cmd]?1:0;
+      });
       return {
         total: data.length,
         records: data,
@@ -282,5 +320,3 @@ export default {
   },
 };
 </script>
-
-<style></style>

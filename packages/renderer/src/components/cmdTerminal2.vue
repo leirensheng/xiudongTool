@@ -1,0 +1,117 @@
+<template>
+  <div id="terminal"></div>
+  <div class="close-wrap">
+    <el-button
+      v-if="pidInfo[cmd]"
+      type="danger"
+      @click="close"
+    >
+      停止
+    </el-button>
+    <div v-else>已停止</div>
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+import {Terminal} from 'xterm';
+import 'xterm/css/xterm.css';
+import {AttachAddon} from 'xterm-addon-attach';
+import {FitAddon} from 'xterm-addon-fit';
+import { useStore } from '/@/store/global';
+
+export default {
+  props: {
+    cmd: {
+      type: String,
+      default: '',
+    },
+  },
+  emits:['exit'],
+  setup(){
+    let store = useStore();
+    let {pidInfo} = store;
+    return {
+      pidInfo,
+    };
+  },
+  data() {
+    return {};
+  },
+  computed:{
+    status(){
+      return this.pidInfo[this.cmd]?'success':'danger';
+    },
+  },
+  created() {},
+  mounted() {
+    this.init();
+  },
+  methods: {
+    close(){
+       this.socket.close();
+       delete this.pidInfo[this.cmd];
+       this.$emit('exit');
+    },
+    async init() {
+      const socketURL = 'ws://127.0.0.1:4000/socket/';
+      let prePid = this.pidInfo[this.cmd];
+      let pid;
+      if (!prePid) {
+        pid = await axios
+          .get('http://127.0.0.1:4000/terminal')
+          .then(res => res.data)
+          .catch(err => {
+            console.log(111111, err);
+            throw new Error(err);
+          });
+        this.pidInfo[this.cmd] = pid;
+      } else {
+        pid = prePid;
+      }
+
+      console.log('进程号:', pid, this.cmd);
+
+      var term = new Terminal({
+        fontFamily: 'Menlo, Monaco, "Courier New", monospace',
+        fontWeight: 400,
+        fontSize: 14,
+      });
+      this.term = term;
+
+      term.open(document.getElementById('terminal'));
+      term.focus();
+
+      let ws = new WebSocket(socketURL + pid);
+      ws.onopen = () => {
+        if (!prePid) {
+          ws.send(this.cmd + '\r\n');
+        }
+      };
+      this.socket = ws;
+      let attachAddon = new AttachAddon(ws);
+      term.loadAddon(attachAddon);
+      var fitAddon = new FitAddon();
+      term.loadAddon(fitAddon);
+      setTimeout(() => {
+        fitAddon.fit();
+      }, 5);
+      window.onresize = function () {
+        fitAddon.fit();
+      };
+    },
+  },
+};
+</script>
+
+<style scoped lang="scss">
+#terminal {
+  height: 100%;
+}
+.close-wrap{
+  padding: 10px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+</style>

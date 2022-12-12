@@ -24,21 +24,53 @@
         </el-tag>
       </template>
     </S-Table>
+
+    <check-dialog
+      v-model="dialogVisible"
+      :port="curRow.port"
+      @close="getList"
+    ></check-dialog>
   </div>
 </template>
 
 <script>
 import {readFile, cmd, writeFile} from '#preload';
 import {ElMessageBox, ElNotification} from 'element-plus';
-
+import {useStore} from '/@/store/global';
+import CheckDialog from '/@/components/checkDialog.vue';
 export default {
+  components: {
+    CheckDialog,
+  },
+  setup() {
+    let store = useStore();
+    let {pidInfo} = store;
+    return {
+      pidInfo,
+    };
+  },
   data() {
     return {
+      curRow: {},
+      dialogVisible: false,
+      cmd: '',
       addConfig: {
         handler: this.handlerAdd,
       },
       types: ['', 'success', 'danger', 'warning'],
       tableBtnsConfig: [
+        {
+          type: 'success',
+          handler: this.start,
+          show: row => row.status === 0,
+          name: '启动',
+        },
+        {
+          type: 'danger',
+          handler: this.start,
+          show: row => row.status === 1,
+          name: '查看',
+        },
         {
           type: 'primary',
           editConfig: {
@@ -73,7 +105,6 @@ export default {
             },
           },
         },
-
         {
           id: 'activityId',
           name: 'activityId',
@@ -138,8 +169,15 @@ export default {
       ],
     };
   },
-
   methods: {
+    start(row) {
+      this.curRow = row;
+      this.dialogVisible = true;
+
+      // this.cmd = row.cmd;
+      // console.log(this.cmd);
+      // row.status = 1;
+    },
     runOne(port, checkIndex) {
       return new Promise((resolve, reject) => {
         let child = cmd(
@@ -203,6 +241,9 @@ export default {
       await writeFile('checkMap.json', JSON.stringify(fileData, null, 4));
       await this.$refs.table.getList();
     },
+    getList() {
+      this.$refs.table.getList();
+    },
     async getCheckFile() {
       let str = await readFile('checkMap.json');
       return JSON.parse(str);
@@ -213,6 +254,11 @@ export default {
       let items = queryItems.filter(item => item.value);
       data = data.filter(one => {
         return items.every(({value, column}) => String(one[column]).indexOf(value) !== -1);
+      });
+
+      let cmds = Object.keys(this.pidInfo);
+      data.forEach(one => {
+        one.status = cmds.some(cmd => cmd.includes(one.port)) ? 1 : 0;
       });
       return {
         total: data.length,
