@@ -37,9 +37,11 @@
 
 <script>
 import {readFile, cmd, writeFile} from '#preload';
-import {ElMessageBox, ElNotification} from 'element-plus';
+import {ElMessageBox,ElNotification} from 'element-plus';
 import {useStore} from '/@/store/global';
 import CheckDialog from '/@/components/checkDialog.vue';
+import {readDir} from '#preload';
+
 export default {
   components: {
     CheckDialog,
@@ -56,6 +58,7 @@ export default {
       curRow: {},
       dialogVisible: false,
       cmd: '',
+      usefulCheckDir:0,
       addConfig: {
         handler: this.handlerAdd,
       },
@@ -86,7 +89,11 @@ export default {
           type: 'danger',
         },
       ],
-      items: [
+    };
+  },
+  computed:{
+    items(){
+      return [
         {
           id: 'port',
           name: '启动端口',
@@ -103,7 +110,7 @@ export default {
           support: {
             add: {
               type: 'number',
-              defaultValue: 0,
+              defaultValue: this.usefulCheckDir,
             },
           },
         },
@@ -173,10 +180,31 @@ export default {
             },
           },
         },
-      ],
-    };
+      ];
+    },
+  },
+  created(){
+    this.getUsefulDir();
   },
   methods: {
+    async getUsefulDir(){
+      let res = await readDir('checkData');
+      let startStr ='data';
+      res = res
+        .filter(one => one.indexOf(startStr) === 0)
+        .map(one => one.replace(startStr, ''))
+        .map(one => Number(one));
+       res =  res.sort((a, b) => a - b);
+      if(res.length){
+        this.usefulCheckDir = res[0];
+      }else{
+        ElNotification({
+          title: 'Error',
+          message: '没有有效的以data开头的目录！',
+          type: 'error',
+        });
+      }
+    },
     start(row) {
       this.curRow = row;
       this.dialogVisible = true;
@@ -187,8 +215,10 @@ export default {
     },
     runOne(port, checkIndex) {
       return new Promise((resolve, reject) => {
+        let str =  `cd ../xiudongPupp && npm run check ${port} ${checkIndex}-${checkIndex}`;
+        console.log(str);
         let child = cmd(
-          `cd ../xiudongPupp && npm run check ${port} ${checkIndex}-${checkIndex}`,
+         str,
           data => {
             if (data.includes('演出时间')) {
               child.close();
@@ -202,24 +232,20 @@ export default {
         }, 10000);
       });
     },
-    async updateLoopType(loopTicketType){
-      let obj = {...this.curRow,loopTicketType};
-      await this.updateFile( {key: this.curRow.port, val: obj});
+    async updateLoopType(loopTicketType) {
+      let obj = {...this.curRow, loopTicketType};
+      await this.updateFile({key: this.curRow.port, val: obj});
     },
     async handlerAdd(val) {
       let obj = {...val};
       delete obj.checkIndex;
-      try {
-        await this.runOne(val.port, val.checkIndex);
+      try{
         await this.updateFile({key: val.port, val: obj, isAdd: true});
-      } catch (e) {
-        ElNotification({
-          title: 'Error',
-          message: '获取信息失败!',
-          type: 'error',
-        });
+        await this.runOne(val.port, val.checkIndex);
+        await this.$refs.table.getList();
+      }catch(e){
+        console.log(e);
       }
-      await this.$refs.table.getList();
     },
     async handleEdit(val) {
       await this.updateFile({
