@@ -48,14 +48,14 @@
 <script>
 import {readFile, cmd, writeFile} from '#preload';
 import {ElMessageBox} from 'element-plus';
-import { useStore } from '/@/store/global';
+import {useStore} from '/@/store/global';
 import CmdTerminal2 from './cmdTerminal2.vue';
 
 export default {
-  components:{
+  components: {
     CmdTerminal2,
   },
-  setup(){
+  setup() {
     let store = useStore();
     let {pidInfo} = store;
     return {
@@ -65,9 +65,9 @@ export default {
   data() {
     return {
       loading: false,
-      curRow:{},
-      dialogVisible:false,
-      cmd:'',
+      curRow: {},
+      dialogVisible: false,
+      cmd: '',
       addConfig: {
         handler: this.handlerAdd,
       },
@@ -76,13 +76,13 @@ export default {
         {
           type: 'success',
           handler: this.start,
-          show: row => row.status ===0,
+          show: row => row.status === 0,
           name: '启动',
         },
         {
           type: 'danger',
           handler: this.start,
-          show: row => row.status ===1,
+          show: row => row.status === 1,
           name: '查看',
         },
         {
@@ -104,6 +104,21 @@ export default {
         },
       ],
       items: [
+        {
+          id: 'hasSuccess',
+          name: '是否已经成功',
+          // isShow: false,
+          //  valueType:'text',
+          options: [
+            {name: '是', value: true},
+            {name: '否', value: false},
+          ],
+          support: {
+            query: {
+              type: 'select',
+            },
+          },
+        },
         {
           id: 'username',
           name: '用户名',
@@ -216,7 +231,7 @@ export default {
     };
   },
   methods: {
-    exit(){
+    exit() {
       this.dialogVisible = false;
       this.curRow.status = 0;
     },
@@ -230,7 +245,7 @@ export default {
       this.getList();
       this.loading = false;
     },
-    handleClose(){
+    handleClose() {
       this.getList();
     },
     cmdCopy(value, username) {
@@ -245,7 +260,7 @@ export default {
     start(row) {
       // 1. 是否自动付款
       // 2. 服务器地址
-      this.curRow =  row;
+      this.curRow = row;
       this.cmd = row.cmd;
       console.log(this.cmd);
       this.dialogVisible = true;
@@ -306,11 +321,12 @@ export default {
         return items.every(({value, column}) => String(one[column]).indexOf(value) !== -1);
       });
       data.sort((a, b) => new Date(b.recordTime) - new Date(a.recordTime));
-     
-      data.forEach(one=>{
+
+      data.forEach(one => {
         let cmd = `cd d:/xiudongPupp && npm run start ${one.username}\n`;
         one.cmd = cmd;
-        one.status = this.pidInfo[cmd]?1:0;
+        one.hasSuccess = Boolean(one.hasSuccess);
+        one.status = this.pidInfo[cmd] ? 1 : 0;
       });
       return {
         total: data.length,
