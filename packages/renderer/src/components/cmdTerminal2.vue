@@ -67,13 +67,12 @@ export default {
             console.log(111111, err);
             throw new Error(err);
           });
-        console.log('新增进程:'+ pid);
+        console.log('新增进程:' + pid);
         this.pidInfo[this.cmd] = pid;
       } else {
         pid = prePid;
         console.log('连接进程:', pid);
       }
-
 
       var term = new Terminal({
         fontFamily: 'Menlo, Monaco, "Courier New", monospace',
