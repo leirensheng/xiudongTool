@@ -48,7 +48,7 @@
     <el-form-item
       v-if="!isOpen"
       class="item"
-      label="自动轮询"
+      label="自动点击"
     >
       <el-switch v-model="isLoop" />
     </el-form-item>
@@ -58,6 +58,20 @@
       label="监测"
     >
       <el-switch v-model="isCheck" />
+    </el-form-item>
+    <el-form-item
+      v-if="!isOpen && isLoop"
+      class="item"
+      label="循环点击"
+    >
+      <el-select v-model="loopTicketType">
+        <el-option
+          v-for="item in options"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+        />
+      </el-select>
     </el-form-item>
   </el-form>
   <el-button
@@ -81,6 +95,10 @@ export default {
       type: String,
       default: '',
     },
+    ticketTypes: {
+      type: Array,
+      default: () => [],
+    },
   },
   emits: ['cmdChange'],
   setup() {
@@ -101,9 +119,16 @@ export default {
       isOpen: false,
       isCheck: true,
       isUseNotDir: true,
+      loopTicketType: '',
     };
   },
   computed: {
+    options() {
+      return this.ticketTypes.map(name => ({
+        name,
+        id: name,
+      }));
+    },
     running() {
       return !!this.pidInfo[this.cmd];
     },
@@ -116,13 +141,20 @@ export default {
       if (!this.isCheck && this.isLoop) {
         name = 'loop';
       }
-      let dir = this.isUseNotDir ? 'useNotDir' : '';
-      str = this.isOpen ? `${str} show ${dir}` : `${str} ${name} ${dir}`;
+      if (this.isCheck && !this.isLoop) {
+        name = 'check';
+      }
+      let dir = this.isUseNotDir ? 'useNotDir' : 'useDataDir';
+      str = this.isOpen ? `${str} show ${dir}` : `${str} ${name} ${dir} `;
+      if (!this.isOpen && this.isLoop) {
+        str += ` ${this.loopTicketType}`;
+      }
       return 'cd d:/xiudongPupp && ' + str;
     },
   },
   created() {
     this.getDirNumber();
+    this.loopTicketType = this.options.length ? this.options[0].id : '';
   },
   methods: {
     confirm() {

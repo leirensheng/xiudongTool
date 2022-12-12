@@ -12,6 +12,7 @@
         v-if="!isRunning"
         ref="config"
         :port="port"
+        :ticket-types="ticketTypes"
         @cmd-change="cmdChange"
       ></start-check-config>
       <cmd-terminal2
@@ -37,6 +38,10 @@ export default {
     port: {
       type: String,
       default: '',
+    },
+    ticketTypes:{
+      type:Array,
+      default:()=>[],
     },
   },
   emits: ['exit'],

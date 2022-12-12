@@ -28,6 +28,7 @@
     <check-dialog
       v-model="dialogVisible"
       :port="curRow.port"
+      :ticket-types="curRow.ticketTypes"
       @close="getList"
     ></check-dialog>
   </div>
