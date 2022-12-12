@@ -43,7 +43,7 @@ export default {
       tabs: [
         {
           name: 'SearchActivity',
-          title: '演出查询',
+          title: '查询',
         },
         {
           name: 'CheckMapManage',
