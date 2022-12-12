@@ -57,6 +57,8 @@ export default {
       const socketURL = 'ws://127.0.0.1:4000/socket/';
       let prePid = this.pidInfo[this.cmd];
       let pid;
+      console.log('命令:', this.cmd);
+
       if (!prePid) {
         pid = await axios
           .get('http://127.0.0.1:4000/terminal')
@@ -65,12 +67,13 @@ export default {
             console.log(111111, err);
             throw new Error(err);
           });
+        console.log('新增进程:'+ pid);
         this.pidInfo[this.cmd] = pid;
       } else {
         pid = prePid;
+        console.log('连接进程:', pid);
       }
 
-      console.log('进程号:', pid, this.cmd);
 
       var term = new Terminal({
         fontFamily: 'Menlo, Monaco, "Courier New", monospace',

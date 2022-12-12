@@ -18,7 +18,7 @@
       ></start-check-config>
       <cmd-terminal2
         v-if="isRunning || showTerminal"
-        :cmd="cmd"
+        :cmd="runningCmd || cmd"
         @exit="exit"
       ></cmd-terminal2>
     </div>
