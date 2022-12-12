@@ -215,7 +215,7 @@ export default {
     },
     runOne(port, checkIndex) {
       return new Promise((resolve, reject) => {
-        let str =  `npm run check ${port} ${checkIndex}-${checkIndex}`;
+        let str = `npm run check ${port} ${checkIndex}-${checkIndex}`;
         let child = cmd(str, data => {
           if (data.includes('演出时间')) {
             child.close();
