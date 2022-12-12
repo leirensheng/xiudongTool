@@ -1,5 +1,9 @@
 <template>
-  <div>
+  <div class="config-manage">
+    <el-switch
+      v-model="isShow"
+      class="switch"
+    ></el-switch>
     <S-Table
       ref="table"
       v-loading="loading"
@@ -76,6 +80,7 @@ export default {
   },
   data() {
     return {
+      isShow:false,
       loading: false,
       curRow: {},
       dialogVisible: false,
@@ -157,6 +162,7 @@ export default {
           width: 100,
           support: {
             add: {},
+            edit: {},
           },
         },
         {
@@ -275,10 +281,10 @@ export default {
       });
     },
     start(row) {
-      // 1. 是否自动付款
-      // 2. 服务器地址
       this.curRow = row;
-      this.cmd = row.cmd;
+      let cmds = Object.keys(this.pidInfo);
+      let runningCmd = cmds.find(cmd => cmd.includes(row.username));
+      this.cmd =runningCmd||( row.cmd+ ' ' + (this.isShow?'show':''));
       console.log(this.cmd);
       this.dialogVisible = true;
       row.status = 1;
@@ -339,11 +345,12 @@ export default {
       });
       data.sort((a, b) => new Date(b.recordTime) - new Date(a.recordTime));
 
+      let cmds = Object.keys(this.pidInfo);
       data.forEach(one => {
-        let cmd = `npm run start ${one.username}\n`;
+        let cmd = `npm run start ${one.username}`;
         one.cmd = cmd;
         one.hasSuccess = Boolean(one.hasSuccess);
-        one.status = this.pidInfo[cmd] ? 1 : 0;
+        one.status = cmds.some(cmd => cmd.includes(one.username)) ? 1 : 0;
       });
       return {
         total: data.length,
@@ -353,3 +360,13 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.config-manage{
+  position: relative;
+  .switch{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+}
+</style>
