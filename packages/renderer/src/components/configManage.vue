@@ -12,6 +12,20 @@
       :table-btns-config="tableBtnsConfig"
       :on-dialog-open="onDialogOpen"
     >
+      <template #username="{row}">
+        <div>
+          <span v-if="!row.hasSuccess">{{ 
+            row.username
+          }}</span>
+          <el-tag
+            v-else
+            type="success"
+            effect="dark"
+          >
+            {{ row.username }}-成功
+          </el-tag>
+        </div>
+      </template>
       <template #targetTypes="{row}">
         <el-tag
           v-for="(item, i) in row.targetTypes"
@@ -107,11 +121,10 @@ export default {
         {
           id: 'hasSuccess',
           name: '是否已经成功',
-          // isShow: false,
-          //  valueType:'text',
+          isShow: false,
           options: [
-            {name: '是', value: true},
-            {name: '否', value: false},
+            {name: '是', id: true},
+            {name: '否', id: false},
           ],
           support: {
             query: {
@@ -123,6 +136,7 @@ export default {
           id: 'username',
           name: '用户名',
           width: 100,
+          valueType:'slot',
           support: {
             query: {},
             add: {},
@@ -231,6 +245,11 @@ export default {
     };
   },
   methods: {
+    getStyle(row){
+      return {
+        color: row.hasSuccess?'green':'',
+      };
+    },
     exit() {
       this.dialogVisible = false;
       this.curRow.status = 0;
