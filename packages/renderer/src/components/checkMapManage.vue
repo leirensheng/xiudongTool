@@ -28,7 +28,8 @@
     <check-dialog
       v-model="dialogVisible"
       :port="curRow.port"
-      :ticket-types="curRow.ticketTypes"
+      :config="curRow"
+      @update-loop-type="updateLoopType"
       @close="getList"
     ></check-dialog>
   </div>
@@ -129,6 +130,11 @@ export default {
           name: '演出时间',
         },
         {
+          id: 'loopTicketType',
+          name: '循环点击',
+          isShow: false,
+        },
+        {
           id: 'waitForTime',
           name: '开抢时间',
           options: [],
@@ -196,12 +202,16 @@ export default {
         }, 10000);
       });
     },
+    async updateLoopType(loopTicketType){
+      let obj = {...this.curRow,loopTicketType};
+      await this.updateFile( {key: this.curRow.port, val: obj});
+    },
     async handlerAdd(val) {
       let obj = {...val};
       delete obj.checkIndex;
-      await this.updateFile({key: val.port, val: obj, isAdd: true});
       try {
         await this.runOne(val.port, val.checkIndex);
+        await this.updateFile({key: val.port, val: obj, isAdd: true});
       } catch (e) {
         ElNotification({
           title: 'Error',

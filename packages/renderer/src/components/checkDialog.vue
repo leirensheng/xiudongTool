@@ -12,7 +12,8 @@
         v-if="!isRunning"
         ref="config"
         :port="port"
-        :ticket-types="ticketTypes"
+        :config="config"
+        @update-loop-type="updateLoopType"
         @cmd-change="cmdChange"
       ></start-check-config>
       <cmd-terminal2
@@ -39,12 +40,12 @@ export default {
       type: String,
       default: '',
     },
-    ticketTypes:{
-      type:Array,
-      default:()=>[],
+    config:{
+      type:Object,
+      default:()=>({}),
     },
   },
-  emits: ['exit'],
+  emits: ['exit','updateLoopType'],
   setup() {
     let store = useStore();
     let {pidInfo} = store;
@@ -69,6 +70,9 @@ export default {
     },
   },
   methods: {
+    updateLoopType(val){
+      this.$emit('updateLoopType',val);
+    },
     cmdChange(val) {
       this.cmd = val;
       this.showTerminal = true;

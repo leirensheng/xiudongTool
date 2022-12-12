@@ -95,12 +95,12 @@ export default {
       type: String,
       default: '',
     },
-    ticketTypes: {
-      type: Array,
-      default: () => [],
+    config: {
+      type: Object,
+      default: () => ({}),
     },
   },
-  emits: ['cmdChange'],
+  emits: ['cmdChange','updateLoopType'],
   setup() {
     let store = useStore();
     let {pidInfo} = store;
@@ -124,7 +124,7 @@ export default {
   },
   computed: {
     options() {
-      return this.ticketTypes.map(name => ({
+      return this.config.ticketTypes.map(name => ({
         name,
         id: name,
       }));
@@ -154,11 +154,14 @@ export default {
   },
   created() {
     this.getDirNumber();
-    this.loopTicketType = this.options.length ? this.options[0].id : '';
+    this.loopTicketType = this.config.loopTicketType|| this.options.length && this.options[0].id ;
   },
   methods: {
     confirm() {
       this.$emit('cmdChange', this.cmd);
+      if(this.config.loopTicketType!== this.loopTicketType){
+        this.$emit('updateLoopType',this.loopTicketType);
+      }
     },
     async getDirNumber() {
       this.loading = true;
