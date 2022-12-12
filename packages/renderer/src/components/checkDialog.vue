@@ -39,9 +39,9 @@ export default {
       type: String,
       default: '',
     },
-    ticketTypes:{
-      type:Array,
-      default:()=>[],
+    ticketTypes: {
+      type: Array,
+      default: () => [],
     },
   },
   emits: ['exit'],
