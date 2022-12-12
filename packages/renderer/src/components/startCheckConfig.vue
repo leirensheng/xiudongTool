@@ -100,7 +100,7 @@ export default {
       default: () => ({}),
     },
   },
-  emits: ['cmdChange','updateLoopType'],
+  emits: ['cmdChange', 'updateLoopType'],
   setup() {
     let store = useStore();
     let {pidInfo} = store;
@@ -154,13 +154,13 @@ export default {
   },
   created() {
     this.getDirNumber();
-    this.loopTicketType = this.config.loopTicketType|| this.options.length && this.options[0].id ;
+    this.loopTicketType = this.config.loopTicketType || (this.options.length && this.options[0].id);
   },
   methods: {
     confirm() {
       this.$emit('cmdChange', this.cmd);
-      if(this.config.loopTicketType!== this.loopTicketType){
-        this.$emit('updateLoopType',this.loopTicketType);
+      if (this.config.loopTicketType !== this.loopTicketType) {
+        this.$emit('updateLoopType', this.loopTicketType);
       }
     },
     async getDirNumber() {
