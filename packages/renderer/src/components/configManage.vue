@@ -345,7 +345,7 @@ export default {
         let cmd = `cd d:/xiudongPupp && npm run start ${one.username}\n`;
         one.cmd = cmd;
         one.hasSuccess = Boolean(one.hasSuccess);
-        one.status = this.pidInfo[cmd]?1:0;
+        one.status = this.pidInfo[cmd] ? 1 : 0;
       });
       return {
         total: data.length,
