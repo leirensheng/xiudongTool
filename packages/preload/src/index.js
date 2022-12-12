@@ -80,8 +80,7 @@ export async function rmDir(dir) {
   await removeDir(realDir);
 }
 
-
-export function  getComputerName  () {
+export function getComputerName() {
   let os = require('os');
   let map = {
     'DESKTOP-AAKRGOM': '宏基',

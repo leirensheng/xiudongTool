@@ -53,8 +53,8 @@ export default {
       this.close();
       this.term.reset();
       if (!this.cmdStr) return;
-     
-      let val = 'cd ../xiudongPupp &&'+this.cmdStr;
+
+      let val = 'cd ../xiudongPupp &&' + this.cmdStr;
       console.log(val);
       this.child = cmd(val, data => {
         this.term.write('\r\n' + data.replace('\n', '\r\n').trim());
