@@ -28,8 +28,16 @@ export default {
     var term = new Terminal({
       convertEol: true,
       cursorBlink: true,
+      onSelectionChange: val => {
+        console.log(val);
+      },
+    });
+    term.onSelectionChange(() => {
+      let content = term.getSelection();
+      navigator.clipboard.writeText(content);
     });
     this.term = term;
+
     term.open(document.getElementById('terminal'));
     var fitAddon = new FitAddon();
     term.loadAddon(fitAddon);
