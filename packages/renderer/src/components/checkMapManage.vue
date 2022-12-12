@@ -37,7 +37,7 @@
 
 <script>
 import {readFile, cmd, writeFile} from '#preload';
-import {ElMessageBox,ElNotification} from 'element-plus';
+import {ElMessageBox, ElNotification} from 'element-plus';
 import {useStore} from '/@/store/global';
 import CheckDialog from '/@/components/checkDialog.vue';
 import {readDir} from '#preload';
@@ -58,7 +58,7 @@ export default {
       curRow: {},
       dialogVisible: false,
       cmd: '',
-      usefulCheckDir:0,
+      usefulCheckDir: 0,
       addConfig: {
         handler: this.handlerAdd,
       },
@@ -91,8 +91,8 @@ export default {
       ],
     };
   },
-  computed:{
-    items(){
+  computed: {
+    items() {
       return [
         {
           id: 'port',
@@ -183,21 +183,21 @@ export default {
       ];
     },
   },
-  created(){
+  created() {
     this.getUsefulDir();
   },
   methods: {
-    async getUsefulDir(){
+    async getUsefulDir() {
       let res = await readDir('checkData');
-      let startStr ='data';
+      let startStr = 'data';
       res = res
         .filter(one => one.indexOf(startStr) === 0)
         .map(one => one.replace(startStr, ''))
         .map(one => Number(one));
-       res =  res.sort((a, b) => a - b);
-      if(res.length){
+      res = res.sort((a, b) => a - b);
+      if (res.length) {
         this.usefulCheckDir = res[0];
-      }else{
+      } else {
         ElNotification({
           title: 'Error',
           message: '没有有效的以data开头的目录！',
@@ -216,16 +216,12 @@ export default {
     runOne(port, checkIndex) {
       return new Promise((resolve, reject) => {
         let str =  `npm run check ${port} ${checkIndex}-${checkIndex}`;
-        console.log(str);
-        let child = cmd(
-         str,
-          data => {
-            if (data.includes('演出时间')) {
-              child.close();
-              resolve();
-            }
-          },
-        );
+        let child = cmd(str, data => {
+          if (data.includes('演出时间')) {
+            child.close();
+            resolve();
+          }
+        });
         setTimeout(() => {
           reject('timeout');
           child && child.close();
@@ -239,11 +235,11 @@ export default {
     async handlerAdd(val) {
       let obj = {...val};
       delete obj.checkIndex;
-      try{
+      try {
         await this.updateFile({key: val.port, val: obj, isAdd: true});
         await this.runOne(val.port, val.checkIndex);
         await this.$refs.table.getList();
-      }catch(e){
+      } catch (e) {
         console.log(e);
       }
     },
