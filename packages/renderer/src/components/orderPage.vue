@@ -15,15 +15,29 @@
 
 <script>
 import {readFile, readDir, cmd, writeFile} from '#preload';
+import {useStore} from '/@/store/global';
 
 export default {
+  setup() {
+    let store = useStore();
+    let {pidInfo} = store;
+    return {
+      pidInfo,
+    };
+  },
   data() {
     return {
       tableBtnsConfig: [
         {
           handler: this.openOrder,
           name: '订单页',
+          show: row=>!row.status,
           type: 'success',
+        },
+        {
+          name: '运行中',
+          show: row=>row.status,
+          type: 'danger',
         },
       ],
       items: [
@@ -46,7 +60,6 @@ export default {
       ],
     };
   },
-
   methods: {
     start() {},
     openOrder({username}) {
@@ -83,6 +96,11 @@ export default {
       let items = queryItems.filter(item => item.value);
       allData = allData.filter(one => {
         return items.every(({value, column}) => String(one[column]).indexOf(value) !== -1);
+      });
+
+      let cmds = Object.keys(this.pidInfo);
+      allData.forEach(one=>{
+        one.status = cmds.some(cmd => cmd.includes(one.username)) ? 1 : 0;
       });
       return {
         total: allData.length,
