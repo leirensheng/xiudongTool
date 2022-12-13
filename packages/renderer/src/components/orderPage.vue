@@ -31,12 +31,12 @@ export default {
         {
           handler: this.openOrder,
           name: '订单页',
-          show: row=>!row.status,
+          show: row => !row.status,
           type: 'success',
         },
         {
           name: '运行中',
-          show: row=>row.status,
+          show: row => row.status,
           type: 'danger',
         },
       ],
@@ -99,7 +99,7 @@ export default {
       });
 
       let cmds = Object.keys(this.pidInfo);
-      allData.forEach(one=>{
+      allData.forEach(one => {
         one.status = cmds.some(cmd => cmd.includes(one.username)) ? 1 : 0;
       });
       return {
