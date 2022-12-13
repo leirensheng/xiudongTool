@@ -80,7 +80,7 @@ export default {
   },
   data() {
     return {
-      isShow:false,
+      isShow: false,
       loading: false,
       curRow: {},
       dialogVisible: false,
@@ -284,7 +284,7 @@ export default {
       this.curRow = row;
       let cmds = Object.keys(this.pidInfo);
       let runningCmd = cmds.find(cmd => cmd.includes(row.username));
-      this.cmd =runningCmd||( row.cmd+ ' ' + (this.isShow?'show':''));
+      this.cmd = runningCmd || row.cmd + ' ' + (this.isShow ? 'show' : '');
       console.log(this.cmd);
       this.dialogVisible = true;
       row.status = 1;
@@ -361,9 +361,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.config-manage{
+.config-manage {
   position: relative;
-  .switch{
+  .switch {
     position: absolute;
     top: 20px;
     right: 20px;
