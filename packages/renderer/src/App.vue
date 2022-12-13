@@ -26,7 +26,7 @@ import OrderPage from '/@/components/orderPage.vue';
 import CheckFileManage from '/@/components/checkFileManage.vue';
 import CheckFileFileRename from '/@/components/checkFileFileRename.vue';
 import onlyTest from '/@/components/onlyTest.vue';
-
+import LocalConfig from '/@/components/localConfig.vue';
 export default {
   components: {
     SearchActivity,
@@ -36,10 +36,11 @@ export default {
     CheckFileManage,
     CheckFileFileRename,
     onlyTest,
+    LocalConfig,
   },
   data() {
     return {
-      activeName: 'CheckMapManage',
+      activeName: 'LocalConfig',
       tabs: [
         {
           name: 'SearchActivity',
@@ -53,7 +54,10 @@ export default {
           name: 'ConfigManage',
           title: '用户配置',
         },
-
+        {
+          name: 'LocalConfig',
+          title: '本地配置',
+        },
         {
           name: 'OrderPage',
           title: '订单页',
