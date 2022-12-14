@@ -66,24 +66,24 @@ export default {
     };
     let clean = () => {
       mode.value = 'check';
-      let cmd = Object.keys(pidInfo).find(one=> one.includes('npm run check'));
-      let [start,end] =  cmd.match(/check \d+ (\d+-\d+)/)[1].split('-');
+      let cmd = Object.keys(pidInfo).find(one => one.includes('npm run check'));
+      let [start, end] = cmd.match(/check \d+ (\d+-\d+)/)[1].split('-');
       let isNotData = cmd.includes('useNot');
-      
-      let startWith = isNotData?'not_data':'data';
-      let length = end-start+1;
-      let arr = Array.from({length},(_,index)=> startWith+(index+Number(start)));
+
+      let startWith = isNotData ? 'not_data' : 'data';
+      let length = end - start + 1;
+      let arr = Array.from({length}, (_, index) => startWith + (index + Number(start)));
       let ignoreStr = arr.join(',');
-      cmdStr.value = 'npm run cleanCheck '+ ignoreStr;
+      cmdStr.value = 'npm run cleanCheck ' + ignoreStr;
       loading.value = true;
     };
     let cleanUser = () => {
       mode.value = 'config';
-      let cmds = Object.keys(pidInfo).filter(one=> one.includes('npm run start'));
-      let names  = cmds.map(one=> one.match(/npm run start (.*?) /)[1]);
+      let cmds = Object.keys(pidInfo).filter(one => one.includes('npm run start'));
+      let names = cmds.map(one => one.match(/npm run start (.*?) /)[1]);
       let ignoreStr = names.join(',');
 
-      cmdStr.value = 'npm run cleanUser '+ignoreStr;
+      cmdStr.value = 'npm run cleanUser ' + ignoreStr;
       loading.value = true;
     };
 
