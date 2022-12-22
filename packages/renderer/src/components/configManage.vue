@@ -119,6 +119,12 @@ export default {
           name: '复制',
           type: 'success',
         },
+        {
+          handler: this.copyDir,
+          name: '复制目录',
+          show: row => !row.state,
+          type: 'warning',
+        },
       ],
       items: [
         {
@@ -236,6 +242,21 @@ export default {
           width: 100,
           formatter: val => val && val.replace(/\..*$/, ''),
         },
+        {
+          id: 'hasSuccess',
+          name: '是否成功',
+          width: 100,
+          isShow: false,
+          support: {
+            edit: {
+              type: 'select',
+            },
+          },
+          options: [
+            {id: true, name: '是'},
+            {id: false, name: '否'},
+          ],
+        },
 
         {
           id: 'uid',
@@ -278,6 +299,13 @@ export default {
             r();
           }
         });
+      });
+    },
+    copyDir({username}) {
+      cmd(`npm run remove ${username}`, data => {
+        if (data === 'done') {
+          this.getList();
+        }
       });
     },
     start(row) {

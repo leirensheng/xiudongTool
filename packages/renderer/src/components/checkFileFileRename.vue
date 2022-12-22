@@ -58,6 +58,7 @@ export default {
         type: 'warning',
       });
       await rmDir('./checkData/' + username);
+      await this.getList();
     },
     async onDialogOpen(form) {
       this.current = form.username;
@@ -73,7 +74,9 @@ export default {
         }
       }
     },
-
+    getList() {
+      this.$refs.table.getList();
+    },
     async getData({queryItems}) {
       let allUser = await readDir('checkData');
       let allData = allUser.map(username => ({username}));
