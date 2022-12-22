@@ -82,11 +82,11 @@ export default {
     };
     let cleanUser = () => {
       mode.value = 'config';
-      let cmds = Object.keys(pidInfo).filter(one=> one.includes('npm run start'));
-      let names  = cmds.map(one=> one.match(/npm run start (.*?) /)[1]);
+      let cmds = Object.keys(pidInfo).filter(one => one.includes('npm run start'));
+      let names = cmds.map(one => one.match(/npm run start (.*?) /)[1]);
       let ignoreStr = names.join(',');
 
-      cmdStr.value = 'npm run cleanUser '+ignoreStr;
+      cmdStr.value = 'npm run cleanUser ' + ignoreStr;
       loading.value = true;
     };
 
