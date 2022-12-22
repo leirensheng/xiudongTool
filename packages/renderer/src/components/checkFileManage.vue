@@ -67,13 +67,16 @@ export default {
     let clean = () => {
       mode.value = 'check';
       let cmd = Object.keys(pidInfo).find(one=> one.includes('npm run check'));
-      let [start,end] =  cmd.match(/check \d+ (\d+-\d+)/)[1].split('-');
-      let isNotData = cmd.includes('useNot');
-      
-      let startWith = isNotData?'not_data':'data';
-      let length = end-start+1;
-      let arr = Array.from({length},(_,index)=> startWith+(index+Number(start)));
-      let ignoreStr = arr.join(',');
+      let ignoreStr = '';
+      if(cmd &&cmd.match(/check \d+ (\d+-\d+)/)){
+        let [start,end] =  cmd.match(/check \d+ (\d+-\d+)/)[1].split('-');
+        let isNotData = cmd.includes('useNot');
+        
+        let startWith = isNotData?'not_data':'data';
+        let length = end-start+1;
+        let arr = Array.from({length},(_,index)=> startWith+(index+Number(start)));
+         ignoreStr = arr.join(',');
+      }
       cmdStr.value = 'npm run cleanCheck '+ ignoreStr;
       loading.value = true;
     };

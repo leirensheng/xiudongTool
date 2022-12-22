@@ -119,6 +119,12 @@ export default {
           name: '复制',
           type: 'success',
         },
+        {
+          handler: this.copyDir,
+          name: '复制目录',
+          show: row=> !row.state,
+          type: 'warning',
+        },
       ],
       items: [
         {
@@ -279,6 +285,14 @@ export default {
           }
         });
       });
+    },
+    copyDir({username}){
+      cmd(`npm run remove ${username}`, data => {
+          if (data === 'done') {
+            this.getList();
+          }
+        });
+
     },
     start(row) {
       this.curRow = row;
