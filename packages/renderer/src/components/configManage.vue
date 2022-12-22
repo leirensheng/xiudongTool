@@ -122,7 +122,7 @@ export default {
         {
           handler: this.copyDir,
           name: '复制目录',
-          show: row=> !row.state,
+          show: row => !row.state,
           type: 'warning',
         },
       ],
@@ -246,15 +246,15 @@ export default {
           id: 'hasSuccess',
           name: '是否成功',
           width: 100,
-          isShow:false,
-          support:{
-            edit:{
-              type:'select',
+          isShow: false,
+          support: {
+            edit: {
+              type: 'select',
             },
           },
-          options:[
-            {id:true,name:'是'},
-            {id:false,name:'否'},
+          options: [
+            {id: true, name: '是'},
+            {id: false, name: '否'},
           ],
         },
 
@@ -301,13 +301,12 @@ export default {
         });
       });
     },
-    copyDir({username}){
+    copyDir({username}) {
       cmd(`npm run remove ${username}`, data => {
-          if (data === 'done') {
-            this.getList();
-          }
-        });
-
+        if (data === 'done') {
+          this.getList();
+        }
+      });
     },
     start(row) {
       this.curRow = row;
