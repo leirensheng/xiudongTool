@@ -242,6 +242,21 @@ export default {
           width: 100,
           formatter: val => val && val.replace(/\..*$/, ''),
         },
+        {
+          id: 'hasSuccess',
+          name: '是否成功',
+          width: 100,
+          isShow:false,
+          support:{
+            edit:{
+              type:'select',
+            },
+          },
+          options:[
+            {id:true,name:'是'},
+            {id:false,name:'否'},
+          ],
+        },
 
         {
           id: 'uid',
