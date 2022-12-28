@@ -180,6 +180,20 @@ export default {
             },
           },
         },
+        {
+          id: 'dateOrder',
+          name: '日期序号',
+          width: 150,
+          support: {
+            edit: {
+              type: 'number',
+            },
+            add: {
+              defaultValue: 0,
+              type: 'number',
+            },
+          },
+        },
       ];
     },
   },

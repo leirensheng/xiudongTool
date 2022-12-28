@@ -116,12 +116,12 @@ export default {
         },
         {
           handler: this.copy,
-          name: '复制',
+          name: '复制配置',
           type: 'success',
         },
         {
           handler: this.copyDir,
-          name: '复制目录',
+          name: '复制到check目录',
           show: row=> !row.state,
           type: 'warning',
         },
@@ -182,6 +182,20 @@ export default {
         {
           id: 'nameIndex',
           name: '用户序号',
+          width: 50,
+          support: {
+            edit: {
+              type: 'number',
+            },
+            add: {
+              defaultValue: 0,
+              type: 'number',
+            },
+          },
+        },
+        {
+          id: 'dateOrder',
+          name: '日期序号',
           width: 50,
           support: {
             edit: {
