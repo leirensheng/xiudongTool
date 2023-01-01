@@ -305,7 +305,7 @@ export default {
 
       let cmds = Object.keys(this.pidInfo);
       data.forEach(one => {
-        one.status = cmds.some(cmd => cmd.includes(one.port)) ? 1 : 0;
+        one.status = cmds.some(cmd => cmd.includes(`check ${one.port} `)) ? 1 : 0;
       });
       return {
         total: data.length,

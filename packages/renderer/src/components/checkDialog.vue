@@ -61,12 +61,11 @@ export default {
   },
   computed: {
     isRunning() {
-      let cmds = Object.keys(this.pidInfo);
-      return cmds.some(cmd => cmd.includes(this.port));
+      return !!this.runningCmd;
     },
     runningCmd() {
       let cmds = Object.keys(this.pidInfo);
-      return cmds.find(cmd => cmd.includes(this.port));
+      return cmds.find(cmd => cmd.includes(`npm run check ${this.port} ` ));
     },
   },
   methods: {

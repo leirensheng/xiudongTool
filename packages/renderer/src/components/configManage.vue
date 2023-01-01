@@ -154,7 +154,7 @@ export default {
         {
           id: 'port',
           name: '启动端口',
-          width: 100,
+          width: 80,
           support: {
             query: {},
             add: {},
@@ -165,7 +165,7 @@ export default {
         {
           id: 'activityId',
           name: 'activityId',
-          width: 100,
+          width: 50,
           support: {
             add: {},
             edit: {},
@@ -173,6 +173,7 @@ export default {
         },
         {
           id: 'activityName',
+          minWidth: 250,
           name: '演出',
           support: {
             query: {},
@@ -325,7 +326,7 @@ export default {
     start(row) {
       this.curRow = row;
       let cmds = Object.keys(this.pidInfo);
-      let runningCmd = cmds.find(cmd => cmd.includes(row.username));
+      let runningCmd = cmds.find(cmd => cmd.includes('npm run start '+ row.username));
       this.cmd = runningCmd || row.cmd + ' ' + (this.isShow ? 'show' : '');
       console.log(this.cmd);
       this.dialogVisible = true;
@@ -392,7 +393,7 @@ export default {
         let cmd = `npm run start ${one.username}`;
         one.cmd = cmd;
         one.hasSuccess = Boolean(one.hasSuccess);
-        one.status = cmds.some(cmd => cmd.includes(one.username)) ? 1 : 0;
+        one.status = cmds.some(cmd => cmd.includes('npm run start '+one.username)) ? 1 : 0;
       });
       return {
         total: data.length,
