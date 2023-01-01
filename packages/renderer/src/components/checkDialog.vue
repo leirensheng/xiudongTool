@@ -3,6 +3,7 @@
     v-bind="$attrs"
     width="80%"
     :title="runningCmd || cmd"
+    @close="beforeClose"
   >
     <div
       v-if="$attrs.modelValue"
@@ -35,6 +36,7 @@ export default {
     CmdTerminal2,
     StartCheckConfig,
   },
+
   props: {
     port: {
       type: String,
@@ -45,7 +47,7 @@ export default {
       default: () => ({}),
     },
   },
-  emits: ['exit', 'updateLoopType'],
+  emits: ['exit','close', 'updateLoopType'],
   setup() {
     let store = useStore();
     let {pidInfo} = store;
@@ -65,10 +67,15 @@ export default {
     },
     runningCmd() {
       let cmds = Object.keys(this.pidInfo);
-      return cmds.find(cmd => cmd.includes(`npm run check ${this.port} ` ));
+      return cmds.find(cmd => cmd.includes(`npm run check ${this.port} `));
     },
   },
   methods: {
+    beforeClose() {
+      this.showTerminal = false;
+      this.$emit('close');
+      this.cmd = '';
+    },
     updateLoopType(val) {
       this.$emit('updateLoopType', val);
     },

@@ -24,7 +24,7 @@
             type="success"
             effect="dark"
           >
-            {{ row.username }}-成功
+            {{ row.username }}-ok
           </el-tag>
         </div>
       </template>
@@ -121,7 +121,7 @@ export default {
         },
         {
           handler: this.copyDir,
-          name: '复制到check目录',
+          name: '复制文件',
           show: row => !row.state,
           type: 'warning',
         },
@@ -212,6 +212,12 @@ export default {
         {
           id: 'phone',
           name: '手机',
+          required: true,
+          support:{
+            add:{},
+            query:{},
+            edit:{},
+          },
         },
         {
           id: 'showTime',
@@ -316,12 +322,19 @@ export default {
         });
       });
     },
-    copyDir({username}) {
-      cmd(`npm run remove ${username}`, data => {
+    async copyDir(obj) {
+      cmd(`npm run remove ${obj.username}`,async data => {
         if (data === 'done') {
           this.getList();
+          await ElMessageBox.confirm(`复制完成,删除配置【${obj.username}】?`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+          });
+          this.remove(obj);
         }
       });
+    
     },
     start(row) {
       this.curRow = row;

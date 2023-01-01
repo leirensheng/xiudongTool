@@ -86,6 +86,11 @@ export default {
       allData = allData.filter(one => {
         return items.every(({value, column}) => String(one[column]).indexOf(value) !== -1);
       });
+
+      let getNumber = str=>Number(str.match(/data(\d+)/)[1]); 
+      allData.sort((a,b)=>{
+        return getNumber(a.username) - getNumber(b.username);
+      });
       return {
         total: allData.length,
         records: allData,

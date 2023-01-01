@@ -115,10 +115,10 @@ export default {
       loading: false,
       startNum: 0,
       endNum: 0,
-      isLoop: true,
+      isLoop: false,
       isOpen: false,
       isCheck: true,
-      isUseNotDir: true,
+      isUseNotDir: false,
       loopTicketType: '',
     };
   },
