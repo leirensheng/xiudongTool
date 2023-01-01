@@ -65,7 +65,7 @@ export default {
     },
     runningCmd() {
       let cmds = Object.keys(this.pidInfo);
-      return cmds.find(cmd => cmd.includes(`npm run check ${this.port} ` ));
+      return cmds.find(cmd => cmd.includes(`npm run check ${this.port} `));
     },
   },
   methods: {
