@@ -125,6 +125,12 @@ export default {
           show: row => !row.state,
           type: 'warning',
         },
+        {
+          handler: this.copyToRemote,
+          name: '复制配置远程',
+          show: row => !row.state,
+          type: 'warning',
+        },
       ],
       items: [
         {
@@ -270,6 +276,9 @@ export default {
     };
   },
   methods: {
+    copyToRemote(){
+      
+    },
     getStyle(row) {
       return {
         color: row.hasSuccess ? 'green' : '',
