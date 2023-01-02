@@ -213,10 +213,10 @@ export default {
           id: 'phone',
           name: '手机',
           required: true,
-          support:{
-            add:{},
-            query:{},
-            edit:{},
+          support: {
+            add: {},
+            query: {},
+            edit: {},
           },
         },
         {
@@ -323,7 +323,7 @@ export default {
       });
     },
     async copyDir(obj) {
-      cmd(`npm run remove ${obj.username}`,async data => {
+      cmd(`npm run remove ${obj.username}`, async data => {
         if (data === 'done') {
           this.getList();
           await ElMessageBox.confirm(`复制完成,删除配置【${obj.username}】?`, '提示', {
@@ -331,10 +331,9 @@ export default {
             cancelButtonText: '取消',
             type: 'warning',
           });
-          this.remove(obj);
+          this.remove(obj, true);
         }
       });
-    
     },
     start(row) {
       this.curRow = row;
@@ -372,12 +371,14 @@ export default {
       target.options = (form.ticketTypes || []).map(one => ({id: one, name: one}));
       return form;
     },
-    async remove(obj) {
-      await ElMessageBox.confirm(`确定删除【${obj.username}】?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      });
+    async remove(obj, noShowConfirm) {
+      if (!noShowConfirm) {
+        await ElMessageBox.confirm(`确定删除【${obj.username}】?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        });
+      }
       let fileData = await this.getConfigFile();
       delete fileData[obj.username];
       await writeFile('config.json', JSON.stringify(fileData, null, 4));
