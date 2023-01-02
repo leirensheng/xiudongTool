@@ -29,8 +29,10 @@
       v-model="dialogVisible"
       :port="curRow.port"
       :config="curRow"
+      :useful-numbers="usefulNumbers"
       @update-loop-type="updateLoopType"
       @close="getList"
+      @exit="getList"
     ></check-dialog>
   </div>
 </template>
@@ -55,10 +57,11 @@ export default {
   },
   data() {
     return {
+      checkDataNumbers:[],
+      usedNumbers:[],
       curRow: {},
       dialogVisible: false,
       cmd: '',
-      usefulCheckDir: 0,
       addConfig: {
         handler: this.handlerAdd,
       },
@@ -92,6 +95,12 @@ export default {
     };
   },
   computed: {
+    usefulNumbers(){
+      return this.checkDataNumbers.filter(one=> !this.usedNumbers.includes(one));
+    },
+    defaultCheckIndex(){
+      return this.usefulNumbers.length? this.usefulNumbers[0]:'';
+    },
     items() {
       return [
         {
@@ -110,7 +119,7 @@ export default {
           support: {
             add: {
               type: 'number',
-              defaultValue: this.usefulCheckDir,
+              defaultValue: this.defaultCheckIndex,
             },
           },
         },
@@ -209,15 +218,14 @@ export default {
         .map(one => one.replace(startStr, ''))
         .map(one => Number(one));
       res = res.sort((a, b) => a - b);
-      if (res.length) {
-        this.usefulCheckDir = res[0];
-      } else {
+      this.checkDataNumbers = res;
+      if (!res.length) {
         ElNotification({
           title: 'Error',
           message: '没有有效的以data开头的目录！',
           type: 'error',
         });
-      }
+      } 
     },
     start(row) {
       this.curRow = row;
@@ -295,6 +303,21 @@ export default {
       let str = await readFile('checkMap.json');
       return JSON.parse(str);
     },
+
+    getUsedDir(data) {
+      let arr = data.filter(one => one.status);
+      arr = arr.map(one => one.cmd.match(/(\d+-\d+)/)[1]);
+      this.usedNumbers =   arr.reduce((prev, cur) => {
+        let [start, end] = cur.split('-');
+        let temp = [];
+        let item = start;
+        while (item <= end) {
+          temp.push(Number(item));
+          item++;
+        }
+        return [...prev, ...temp];
+      }, []);
+    },
     async getData({queryItems}) {
       let obj = await this.getCheckFile();
       let data = Object.values(obj);
@@ -305,8 +328,12 @@ export default {
 
       let cmds = Object.keys(this.pidInfo);
       data.forEach(one => {
-        one.status = cmds.some(cmd => cmd.includes(`check ${one.port} `)) ? 1 : 0;
+        one.cmd = cmds.find(cmd => cmd.includes(`check ${one.port} `));
+        one.status = one.cmd ? 1 : 0;
       });
+
+      this.getUsedDir(data);
+
       return {
         total: data.length,
         records: data,

@@ -14,6 +14,7 @@
         ref="config"
         :port="port"
         :config="config"
+        :useful-numbers="usefulNumbers"
         @update-loop-type="updateLoopType"
         @cmd-change="cmdChange"
       ></start-check-config>
@@ -41,6 +42,10 @@ export default {
     port: {
       type: String,
       default: '',
+    },
+    usefulNumbers:{
+      type:Array,
+      default:()=>[],
     },
     config: {
       type: Object,
