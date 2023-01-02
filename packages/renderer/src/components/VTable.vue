@@ -385,11 +385,11 @@ export default {
         this.$emit('openEditDialog', {rowData, editConfig, index});
       }
     },
-    getList(isPageChange) {
+   async getList(isPageChange) {
       this.isLoading = true;
       const params = JSON.parse(JSON.stringify(this.params));
       this.$emit('beforeQuery', params);
-      this.api(params)
+      return this.api(params)
         .then(data => {
           this.$emit('beforeAssignToTable', data);
           this.isLoading = false;

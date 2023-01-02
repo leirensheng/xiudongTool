@@ -15,6 +15,7 @@
       one-page-hide-pagination
       :table-btns-config="tableBtnsConfig"
       :on-dialog-open="onDialogOpen"
+      @beforeAssignToTable="beforeAssignToTable"
     >
       <template #username="{row}">
         <div>
@@ -110,7 +111,7 @@ export default {
           name: '编辑',
         },
         {
-          handler: this.remove,
+          handler: row => this.remove(row),
           name: '删除',
           type: 'danger',
         },
@@ -291,6 +292,9 @@ export default {
     };
   },
   methods: {
+    beforeAssignToTable({records}) {
+      this.tableData = records;
+    },
     getStyle(row) {
       return {
         color: row.hasSuccess ? 'green' : '',
@@ -301,21 +305,25 @@ export default {
       this.curRow.status = 0;
     },
     getList() {
-      this.$refs.table.getList();
+      return this.$refs.table.getList();
     },
     async copy({username}) {
       let {value} = await ElMessageBox.prompt('', '输入新用户');
+      let {value: phone} = await ElMessageBox.prompt('', '用户手机号');
       this.loading = true;
-      await this.cmdCopy(value, username);
-      this.getList();
+
+      await this.cmdCopy(value, username, phone);
+      await this.getList();
       this.loading = false;
+      let target = this.tableData.find(one => one.username === value);
+      this.start(target);
     },
     handleClose() {
       this.getList();
     },
-    cmdCopy(value, username) {
+    cmdCopy(value, username, phone) {
       return new Promise(r => {
-        cmd(`npm run add ${value} ${username}`, data => {
+        cmd(`npm run add ${value} ${username} ${phone}`, data => {
           if (data === 'done') {
             r();
           }
@@ -347,6 +355,8 @@ export default {
     async handlerAdd(val) {
       await this.updateFile({key: val.username, val, isAdd: true});
       await this.getList();
+      let target = this.tableData.find(one => one.username === val.username);
+      this.start(target);
     },
     async handleEdit(val) {
       let obj = {...val};
@@ -400,7 +410,7 @@ export default {
       data = data.filter(one => {
         return items.every(({value, column}) => String(one[column]).indexOf(value) !== -1);
       });
-      data.sort((a, b) => new Date(b.recordTime) - new Date(a.recordTime));
+      data.sort((a, b) => new Date(b.port) - new Date(a.port));
 
       let cmds = Object.keys(this.pidInfo);
       data.forEach(one => {
