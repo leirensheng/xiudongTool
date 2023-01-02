@@ -385,7 +385,7 @@ export default {
         this.$emit('openEditDialog', {rowData, editConfig, index});
       }
     },
-   async getList(isPageChange) {
+    async getList(isPageChange) {
       this.isLoading = true;
       const params = JSON.parse(JSON.stringify(this.params));
       this.$emit('beforeQuery', params);
