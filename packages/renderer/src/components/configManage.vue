@@ -213,10 +213,10 @@ export default {
           id: 'phone',
           name: '手机',
           required: true,
-          support:{
-            add:{},
-            query:{},
-            edit:{},
+          support: {
+            add: {},
+            query: {},
+            edit: {},
           },
         },
         {
@@ -323,7 +323,7 @@ export default {
       });
     },
     async copyDir(obj) {
-      cmd(`npm run remove ${obj.username}`,async data => {
+      cmd(`npm run remove ${obj.username}`, async data => {
         if (data === 'done') {
           this.getList();
           await ElMessageBox.confirm(`复制完成,删除配置【${obj.username}】?`, '提示', {
@@ -334,7 +334,6 @@ export default {
           this.remove(obj);
         }
       });
-    
     },
     start(row) {
       this.curRow = row;
