@@ -43,16 +43,16 @@ export default {
       type: String,
       default: '',
     },
-    usefulNumbers:{
-      type:Array,
-      default:()=>[],
+    usefulNumbers: {
+      type: Array,
+      default: () => [],
     },
     config: {
       type: Object,
       default: () => ({}),
     },
   },
-  emits: ['exit','close', 'updateLoopType'],
+  emits: ['exit', 'close', 'updateLoopType'],
   setup() {
     let store = useStore();
     let {pidInfo} = store;

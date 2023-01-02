@@ -5,7 +5,7 @@
       @click="reset"
     >
       重置
-    </el-button>  
+    </el-button>
     <div class="items">
       <div
         v-for="item in allNumbers"
@@ -123,8 +123,8 @@ export default {
     };
   },
   computed: {
-    isNumberOk(){
-      return this.startNum &&  (this.endNum>= this.startNum);
+    isNumberOk() {
+      return this.startNum && this.endNum >= this.startNum;
     },
     options() {
       return this.config.ticketTypes.map(name => ({
@@ -160,15 +160,16 @@ export default {
     this.loopTicketType = this.config.loopTicketType || (this.options.length && this.options[0].id);
   },
   methods: {
-    reset(){
+    reset() {
       this.startNum = 0;
-      this.endNum =0;
+      this.endNum = 0;
     },
     getItemClass(item) {
       return {
         disabled: !this.usefulNumbers.includes(item),
         selected:
-          [this.startNum, this.endNum].includes(item) || (this.startNum < item && this.endNum > item),
+          [this.startNum, this.endNum].includes(item) ||
+          (this.startNum < item && this.endNum > item),
       };
     },
     selectOne(one) {
@@ -185,14 +186,14 @@ export default {
       }
     },
     checkMax(val) {
-      if(val<this.startNum) return false;
+      if (val < this.startNum) return false;
 
       let cur = this.startNum + 1;
       while (cur <= val) {
         if (!this.usefulNumbers.includes(cur)) {
           return false;
         }
-        cur+=1;
+        cur += 1;
       }
       return true;
     },
@@ -240,16 +241,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.check-config{
- .reset{
-  margin: 0 auto;
-  display: block;
-  margin-bottom: 10px;
- }
+.check-config {
+  .reset {
+    margin: 0 auto;
+    display: block;
+    margin-bottom: 10px;
+  }
 }
 .items {
   margin-bottom: 10px;
-  
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -273,7 +274,7 @@ export default {
     }
     &.selected {
       background: #409eff;
-      color:white;
+      color: white;
     }
   }
 }

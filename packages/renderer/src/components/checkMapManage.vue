@@ -57,8 +57,8 @@ export default {
   },
   data() {
     return {
-      checkDataNumbers:[],
-      usedNumbers:[],
+      checkDataNumbers: [],
+      usedNumbers: [],
       curRow: {},
       dialogVisible: false,
       cmd: '',
@@ -95,11 +95,11 @@ export default {
     };
   },
   computed: {
-    usefulNumbers(){
-      return this.checkDataNumbers.filter(one=> !this.usedNumbers.includes(one));
+    usefulNumbers() {
+      return this.checkDataNumbers.filter(one => !this.usedNumbers.includes(one));
     },
-    defaultCheckIndex(){
-      return this.usefulNumbers.length? this.usefulNumbers[0]:'';
+    defaultCheckIndex() {
+      return this.usefulNumbers.length ? this.usefulNumbers[0] : '';
     },
     items() {
       return [
@@ -225,7 +225,7 @@ export default {
           message: '没有有效的以data开头的目录！',
           type: 'error',
         });
-      } 
+      }
     },
     start(row) {
       this.curRow = row;
@@ -307,7 +307,7 @@ export default {
     getUsedDir(data) {
       let arr = data.filter(one => one.status);
       arr = arr.map(one => one.cmd.match(/(\d+-\d+)/)[1]);
-      this.usedNumbers =   arr.reduce((prev, cur) => {
+      this.usedNumbers = arr.reduce((prev, cur) => {
         let [start, end] = cur.split('-');
         let temp = [];
         let item = start;
