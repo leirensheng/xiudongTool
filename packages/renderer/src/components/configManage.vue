@@ -15,6 +15,7 @@
       one-page-hide-pagination
       :table-btns-config="tableBtnsConfig"
       :on-dialog-open="onDialogOpen"
+      @beforeAssignToTable="beforeAssignToTable"
     >
       <template #username="{row}">
         <div>
@@ -24,7 +25,7 @@
             type="success"
             effect="dark"
           >
-            {{ row.username }}-成功
+            {{ row.username }}-ok
           </el-tag>
         </div>
       </template>
@@ -110,18 +111,18 @@ export default {
           name: '编辑',
         },
         {
-          handler: this.remove,
+          handler: row => this.remove(row),
           name: '删除',
           type: 'danger',
         },
         {
           handler: this.copy,
-          name: '复制',
+          name: '复制配置',
           type: 'success',
         },
         {
           handler: this.copyDir,
-          name: '复制目录',
+          name: '复制文件',
           show: row => !row.state,
           type: 'warning',
         },
@@ -160,7 +161,7 @@ export default {
         {
           id: 'port',
           name: '启动端口',
-          width: 100,
+          width: 80,
           support: {
             query: {},
             add: {},
@@ -171,7 +172,7 @@ export default {
         {
           id: 'activityId',
           name: 'activityId',
-          width: 100,
+          width: 50,
           support: {
             add: {},
             edit: {},
@@ -179,6 +180,7 @@ export default {
         },
         {
           id: 'activityName',
+          minWidth: 250,
           name: '演出',
           support: {
             query: {},
@@ -199,10 +201,30 @@ export default {
             },
           },
         },
+        {
+          id: 'dateOrder',
+          name: '日期序号',
+          width: 50,
+          support: {
+            edit: {
+              type: 'number',
+            },
+            add: {
+              defaultValue: 0,
+              type: 'number',
+            },
+          },
+        },
 
         {
           id: 'phone',
           name: '手机',
+          required: true,
+          support: {
+            add: {},
+            query: {},
+            edit: {},
+          },
         },
         {
           id: 'showTime',
@@ -279,6 +301,9 @@ export default {
     copyToRemote(){
       
     },
+    beforeAssignToTable({records}) {
+      this.tableData = records;
+    },
     getStyle(row) {
       return {
         color: row.hasSuccess ? 'green' : '',
@@ -289,38 +314,48 @@ export default {
       this.curRow.status = 0;
     },
     getList() {
-      this.$refs.table.getList();
+      return this.$refs.table.getList();
     },
     async copy({username}) {
       let {value} = await ElMessageBox.prompt('', '输入新用户');
+      let {value: phone} = await ElMessageBox.prompt('', '用户手机号');
       this.loading = true;
-      await this.cmdCopy(value, username);
-      this.getList();
+
+      await this.cmdCopy(value, username, phone);
+      await this.getList();
       this.loading = false;
+      let target = this.tableData.find(one => one.username === value);
+      this.start(target);
     },
     handleClose() {
       this.getList();
     },
-    cmdCopy(value, username) {
+    cmdCopy(value, username, phone) {
       return new Promise(r => {
-        cmd(`npm run add ${value} ${username}`, data => {
+        cmd(`npm run add ${value} ${username} ${phone}`, data => {
           if (data === 'done') {
             r();
           }
         });
       });
     },
-    copyDir({username}) {
-      cmd(`npm run remove ${username}`, data => {
+    async copyDir(obj) {
+      cmd(`npm run remove ${obj.username}`, async data => {
         if (data === 'done') {
           this.getList();
+          await ElMessageBox.confirm(`复制完成,删除配置【${obj.username}】?`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+          });
+          this.remove(obj, true);
         }
       });
     },
     start(row) {
       this.curRow = row;
       let cmds = Object.keys(this.pidInfo);
-      let runningCmd = cmds.find(cmd => cmd.includes(row.username));
+      let runningCmd = cmds.find(cmd => cmd.includes('npm run start ' + row.username));
       this.cmd = runningCmd || row.cmd + ' ' + (this.isShow ? 'show' : '');
       console.log(this.cmd);
       this.dialogVisible = true;
@@ -329,6 +364,8 @@ export default {
     async handlerAdd(val) {
       await this.updateFile({key: val.username, val, isAdd: true});
       await this.getList();
+      let target = this.tableData.find(one => one.username === val.username);
+      this.start(target);
     },
     async handleEdit(val) {
       let obj = {...val};
@@ -353,12 +390,14 @@ export default {
       target.options = (form.ticketTypes || []).map(one => ({id: one, name: one}));
       return form;
     },
-    async remove(obj) {
-      await ElMessageBox.confirm(`确定删除【${obj.username}】?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      });
+    async remove(obj, noShowConfirm) {
+      if (!noShowConfirm) {
+        await ElMessageBox.confirm(`确定删除【${obj.username}】?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        });
+      }
       let fileData = await this.getConfigFile();
       delete fileData[obj.username];
       await writeFile('config.json', JSON.stringify(fileData, null, 4));
@@ -380,14 +419,14 @@ export default {
       data = data.filter(one => {
         return items.every(({value, column}) => String(one[column]).indexOf(value) !== -1);
       });
-      data.sort((a, b) => new Date(b.recordTime) - new Date(a.recordTime));
+      data.sort((a, b) => new Date(b.port) - new Date(a.port));
 
       let cmds = Object.keys(this.pidInfo);
       data.forEach(one => {
         let cmd = `npm run start ${one.username}`;
         one.cmd = cmd;
         one.hasSuccess = Boolean(one.hasSuccess);
-        one.status = cmds.some(cmd => cmd.includes(one.username)) ? 1 : 0;
+        one.status = cmds.some(cmd => cmd.includes('npm run start ' + one.username)) ? 1 : 0;
       });
       return {
         total: data.length,

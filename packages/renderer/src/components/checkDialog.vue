@@ -3,6 +3,7 @@
     v-bind="$attrs"
     width="80%"
     :title="runningCmd || cmd"
+    @close="beforeClose"
   >
     <div
       v-if="$attrs.modelValue"
@@ -13,6 +14,7 @@
         ref="config"
         :port="port"
         :config="config"
+        :useful-numbers="usefulNumbers"
         @update-loop-type="updateLoopType"
         @cmd-change="cmdChange"
       ></start-check-config>
@@ -35,17 +37,22 @@ export default {
     CmdTerminal2,
     StartCheckConfig,
   },
+
   props: {
     port: {
       type: String,
       default: '',
+    },
+    usefulNumbers: {
+      type: Array,
+      default: () => [],
     },
     config: {
       type: Object,
       default: () => ({}),
     },
   },
-  emits: ['exit', 'updateLoopType'],
+  emits: ['exit', 'close', 'updateLoopType'],
   setup() {
     let store = useStore();
     let {pidInfo} = store;
@@ -61,15 +68,19 @@ export default {
   },
   computed: {
     isRunning() {
-      let cmds = Object.keys(this.pidInfo);
-      return cmds.some(cmd => cmd.includes(this.port));
+      return !!this.runningCmd;
     },
     runningCmd() {
       let cmds = Object.keys(this.pidInfo);
-      return cmds.find(cmd => cmd.includes(this.port));
+      return cmds.find(cmd => cmd.includes(`npm run check ${this.port} `));
     },
   },
   methods: {
+    beforeClose() {
+      this.showTerminal = false;
+      this.$emit('close');
+      this.cmd = '';
+    },
     updateLoopType(val) {
       this.$emit('updateLoopType', val);
     },
