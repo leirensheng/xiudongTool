@@ -34,7 +34,7 @@ let getNumber = str => Number(str.match(/data(\d+)/)[1]);
 export default {
   data() {
     return {
-      allData:[],
+      allData: [],
       isContinue: false,
       tableBtnsConfig: [
         {
@@ -56,8 +56,8 @@ export default {
           id: 'username',
           name: '文件名',
           width: 100,
-          valueType:'slot',
-          slotName:'username',
+          valueType: 'slot',
+          slotName: 'username',
           support: {
             edit: {},
             query: {},
@@ -94,10 +94,14 @@ export default {
     getList() {
       this.$refs.table.getList();
     },
-    checkIsContinue(data){
-      let startBreak= data.find((one,i)=> i!== data.length-1?  getNumber(data[i+1].username)!== getNumber(one.username)+1: false );
-      console.log(11111,startBreak);
-      if(startBreak){
+    checkIsContinue(data) {
+      let startBreak = data.find((one, i) =>
+        i !== data.length - 1
+          ? getNumber(data[i + 1].username) !== getNumber(one.username) + 1
+          : false,
+      );
+      console.log(11111, startBreak);
+      if (startBreak) {
         startBreak.status = 1;
       }
       this.startBreak = startBreak.username;
