@@ -298,9 +298,7 @@ export default {
     };
   },
   methods: {
-    copyToRemote(){
-      
-    },
+    copyToRemote() {},
     beforeAssignToTable({records}) {
       this.tableData = records;
     },
