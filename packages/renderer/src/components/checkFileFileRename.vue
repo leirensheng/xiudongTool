@@ -1,5 +1,6 @@
 <template>
   <div>
+    <el-button>一键处理</el-button>
     <S-Table
       ref="table"
       :highlight-current-row="false"
@@ -10,6 +11,17 @@
       :on-dialog-open="onDialogOpen"
       :table-btns-config="tableBtnsConfig"
     >
+      <template #username="{row}">
+        <span v-if="!row.status">{{ row.username }}</span>
+        <el-tag
+          v-else
+          effect="dark"
+          class="ml-2"
+          type="danger"
+        >
+          {{ row.username }}
+        </el-tag>
+      </template>
     </S-Table>
   </div>
 </template>
@@ -17,10 +29,13 @@
 <script>
 import {readDir, rmDir, rename} from '#preload';
 import {ElMessageBox} from 'element-plus';
+let getNumber = str => Number(str.match(/data(\d+)/)[1]);
 
 export default {
   data() {
     return {
+      allData:[],
+      isContinue: false,
       tableBtnsConfig: [
         {
           editConfig: {
@@ -41,6 +56,8 @@ export default {
           id: 'username',
           name: '文件名',
           width: 100,
+          valueType:'slot',
+          slotName:'username',
           support: {
             edit: {},
             query: {},
@@ -77,6 +94,14 @@ export default {
     getList() {
       this.$refs.table.getList();
     },
+    checkIsContinue(data){
+      let startBreak= data.find((one,i)=> i!== data.length-1?  getNumber(data[i+1].username)!== getNumber(one.username)+1: false );
+      console.log(11111,startBreak);
+      if(startBreak){
+        startBreak.status = 1;
+      }
+      this.startBreak = startBreak.username;
+    },
     async getData({queryItems}) {
       let allUser = await readDir('checkData');
       let allData = allUser.map(username => ({username}));
@@ -87,10 +112,10 @@ export default {
         return items.every(({value, column}) => String(one[column]).indexOf(value) !== -1);
       });
 
-      let getNumber = str => Number(str.match(/data(\d+)/)[1]);
       allData.sort((a, b) => {
         return getNumber(a.username) - getNumber(b.username);
       });
+      this.checkIsContinue(allData);
       return {
         total: allData.length,
         records: allData,
