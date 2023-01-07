@@ -353,8 +353,11 @@ export default {
     start(row) {
       this.curRow = row;
       let cmds = Object.keys(this.pidInfo);
-      let runningCmd = cmds.find(cmd => cmd.includes('npm run start ' + row.username));
-      this.cmd = runningCmd || row.cmd + ' ' + (this.isShow ? 'show' : '');
+      let runningCmd = cmds.find(
+        cmd => cmd.replace(/\s+show/, '') === row.cmd,
+      );
+      let cmd = runningCmd || row.cmd + ' ' + (this.isShow ? 'show' : '');
+      this.cmd = cmd.trim();
       console.log(this.cmd);
       this.dialogVisible = true;
       row.status = 1;
@@ -424,7 +427,12 @@ export default {
         let cmd = `npm run start ${one.username}`;
         one.cmd = cmd;
         one.hasSuccess = Boolean(one.hasSuccess);
-        one.status = cmds.some(cmd => cmd.includes('npm run start ' + one.username)) ? 1 : 0;
+        console.log(cmd, cmds);
+        one.status = cmds.some(
+          cmd => cmd.replace(/\s+show/, '') === one.cmd,
+        )
+          ? 1
+          : 0;
       });
       return {
         total: data.length,
@@ -435,7 +443,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.config-manage {
+.config-manage {  
   position: relative;
   .switch {
     position: absolute;
