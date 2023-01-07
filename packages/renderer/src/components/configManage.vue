@@ -353,9 +353,7 @@ export default {
     start(row) {
       this.curRow = row;
       let cmds = Object.keys(this.pidInfo);
-      let runningCmd = cmds.find(
-        cmd => cmd.replace(/\s+show/, '') === row.cmd,
-      );
+      let runningCmd = cmds.find(cmd => cmd.replace(/\s+show/, '') === row.cmd);
       let cmd = runningCmd || row.cmd + ' ' + (this.isShow ? 'show' : '');
       this.cmd = cmd.trim();
       console.log(this.cmd);
@@ -428,11 +426,7 @@ export default {
         one.cmd = cmd;
         one.hasSuccess = Boolean(one.hasSuccess);
         console.log(cmd, cmds);
-        one.status = cmds.some(
-          cmd => cmd.replace(/\s+show/, '') === one.cmd,
-        )
-          ? 1
-          : 0;
+        one.status = cmds.some(cmd => cmd.replace(/\s+show/, '') === one.cmd) ? 1 : 0;
       });
       return {
         total: data.length,
@@ -443,7 +437,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.config-manage {  
+.config-manage {
   position: relative;
   .switch {
     position: absolute;
