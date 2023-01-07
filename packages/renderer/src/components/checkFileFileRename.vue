@@ -94,10 +94,14 @@ export default {
     getList() {
       this.$refs.table.getList();
     },
-    checkIsContinue(data){
-      let startBreak= data.find((one,i)=> i!== data.length-1?  getNumber(data[i+1].username)!== getNumber(one.username)+1: false );
-      console.log(11111,startBreak);
-      if(startBreak){
+    checkIsContinue(data) {
+      let startBreak = data.find((one, i) =>
+        i !== data.length - 1
+          ? getNumber(data[i + 1].username) !== getNumber(one.username) + 1
+          : false,
+      );
+      console.log(11111, startBreak);
+      if (startBreak) {
         startBreak.status = 1;
         this.startBreak = startBreak.username;
       }
