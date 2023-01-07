@@ -95,12 +95,11 @@ export default {
       this.$refs.table.getList();
     },
     checkIsContinue(data){
-      let startBreak= data.find((one,i)=> i!== data.length-1?  getNumber(data[i+1].username)!== getNumber(one.username)+1: false );
-      console.log(11111,startBreak);
+      let startBreak= data.find((one,i)=> i!== (data.length-1)?  getNumber(data[i+1].username)!== getNumber(one.username)+1: false );
       if(startBreak){
         startBreak.status = 1;
+        this.startBreak = startBreak.username;
       }
-      this.startBreak = startBreak.username;
     },
     async getData({queryItems}) {
       let allUser = await readDir('checkData');
