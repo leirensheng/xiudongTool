@@ -160,7 +160,7 @@ export default {
         },
         {
           id: 'port',
-          name: '启动端口',
+          name: '端口',
           width: 80,
           support: {
             query: {},
@@ -171,8 +171,8 @@ export default {
 
         {
           id: 'activityId',
-          name: 'activityId',
-          width: 50,
+          name: '演出id',
+          width: 55,
           support: {
             add: {},
             edit: {},
@@ -180,7 +180,7 @@ export default {
         },
         {
           id: 'activityName',
-          minWidth: 250,
+          minWidth: 200,
           name: '演出',
           support: {
             query: {},
@@ -189,7 +189,7 @@ export default {
 
         {
           id: 'nameIndex',
-          name: '用户序号',
+          name: '观演人',
           width: 50,
           support: {
             edit: {
@@ -201,20 +201,20 @@ export default {
             },
           },
         },
-        {
-          id: 'dateOrder',
-          name: '日期序号',
-          width: 50,
-          support: {
-            edit: {
-              type: 'number',
-            },
-            add: {
-              defaultValue: 0,
-              type: 'number',
-            },
-          },
-        },
+        // {
+        //   id: 'dateOrder',
+        //   name: '日期序号',
+        //   width: 50,
+        //   support: {
+        //     edit: {
+        //       type: 'number',
+        //     },
+        //     add: {
+        //       defaultValue: 0,
+        //       type: 'number',
+        //     },
+        //   },
+        // },
 
         {
           id: 'phone',
@@ -229,6 +229,8 @@ export default {
         {
           id: 'showTime',
           name: '演出时间',
+          width: 110,
+
         },
 
         {
@@ -264,12 +266,12 @@ export default {
             edit: {},
           },
         },
-        {
-          id: 'recordTime',
-          name: '创建时间',
-          width: 100,
-          formatter: val => val && val.replace(/\..*$/, ''),
-        },
+        // {
+        //   id: 'recordTime',
+        //   name: '创建时间',
+        //   width: 100,
+        //   formatter: val => val && val.replace(/\..*$/, ''),
+        // },
         {
           id: 'hasSuccess',
           name: '是否成功',
@@ -289,6 +291,7 @@ export default {
         {
           id: 'uid',
           name: 'uid',
+          width:170,
           support: {
             edit: {},
             add: {},
