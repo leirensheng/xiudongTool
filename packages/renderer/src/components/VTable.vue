@@ -170,9 +170,9 @@ export default {
   },
   mixins: [keepScrollPosition],
   props: {
-    tableRowClassName:{
-      type:Function,
-      default:()=>{
+    tableRowClassName: {
+      type: Function,
+      default: () => {
         return '';
       },
     },

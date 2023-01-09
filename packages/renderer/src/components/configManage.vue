@@ -302,7 +302,6 @@ export default {
   },
   methods: {
     tableRowClassName({row, rowIndex}) {
- 
       let colors = ['blue', 'green'];
       if (rowIndex === 0) {
         row.color = colors[0];
@@ -469,6 +468,6 @@ export default {
   --el-table-tr-bg-color: rgba(64, 201, 255, 0.1);
 }
 .el-table .green {
-  --el-table-tr-bg-color: rgb(103, 194, 58,0.1);
+  --el-table-tr-bg-color: rgb(103, 194, 58, 0.1);
 }
 </style>
