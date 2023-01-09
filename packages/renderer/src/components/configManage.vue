@@ -7,6 +7,7 @@
     <S-Table
       ref="table"
       v-loading="loading"
+      :table-row-class-name="tableRowClassName"
       :highlight-current-row="false"
       :is-auto-height="true"
       :items="items"
@@ -230,7 +231,6 @@ export default {
           id: 'showTime',
           name: '演出时间',
           width: 110,
-
         },
 
         {
@@ -291,7 +291,7 @@ export default {
         {
           id: 'uid',
           name: 'uid',
-          width:170,
+          width: 170,
           support: {
             edit: {},
             add: {},
@@ -301,6 +301,19 @@ export default {
     };
   },
   methods: {
+    tableRowClassName({row, rowIndex}) {
+ 
+      let colors = ['blue', 'green'];
+      if (rowIndex === 0) {
+        row.color = colors[0];
+      } else if (row.port === this.tableData[rowIndex - 1].port) {
+        row.color = this.tableData[rowIndex - 1].color;
+      } else {
+        let preColor = this.tableData[rowIndex - 1].color;
+        row.color = colors.find(one => one !== preColor);
+      }
+      return row.color;
+    },
     copyToRemote() {},
     beforeAssignToTable({records}) {
       this.tableData = records;
@@ -356,9 +369,7 @@ export default {
     start(row) {
       this.curRow = row;
       let cmds = Object.keys(this.pidInfo);
-      let runningCmd = cmds.find(
-        cmd => cmd.replace(/\s+show/, '') === row.cmd,
-      );
+      let runningCmd = cmds.find(cmd => cmd.replace(/\s+show/, '') === row.cmd);
       let cmd = runningCmd || row.cmd + ' ' + (this.isShow ? 'show' : '');
       this.cmd = cmd.trim();
       console.log(this.cmd);
@@ -431,12 +442,9 @@ export default {
         one.cmd = cmd;
         one.hasSuccess = Boolean(one.hasSuccess);
         console.log(cmd, cmds);
-        one.status = cmds.some(
-          cmd => cmd.replace(/\s+show/, '') === one.cmd,
-        )
-          ? 1
-          : 0;
+        one.status = cmds.some(cmd => cmd.replace(/\s+show/, '') === one.cmd) ? 1 : 0;
       });
+      this.tableData = data;
       return {
         total: data.length,
         records: data,
@@ -446,12 +454,21 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.config-manage {  
+.config-manage {
   position: relative;
   .switch {
     position: absolute;
     top: 20px;
     right: 20px;
   }
+}
+</style>
+
+<style lang="scss">
+.el-table .blue {
+  --el-table-tr-bg-color: rgba(64, 201, 255, 0.1);
+}
+.el-table .green {
+  --el-table-tr-bg-color: rgb(103, 194, 58,0.1);
 }
 </style>

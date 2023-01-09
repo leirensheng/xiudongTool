@@ -13,6 +13,7 @@
         border
         fit
         size="medium"
+        :row-class-name="tableRowClassName"
         :highlight-current-row="highlightCurrentRow"
         :height="isAutoHeight ? null : '100%'"
         :header-cell-style="handleTheadStyle"
@@ -169,6 +170,12 @@ export default {
   },
   mixins: [keepScrollPosition],
   props: {
+    tableRowClassName:{
+      type:Function,
+      default:()=>{
+        return '';
+      },
+    },
     // isNoDataShow: {
     //   default: true,
     //   type: Boolean
