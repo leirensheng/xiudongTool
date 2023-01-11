@@ -43,6 +43,7 @@ import {ElMessageBox, ElNotification} from 'element-plus';
 import {useStore} from '/@/store/global';
 import CheckDialog from '/@/components/checkDialog.vue';
 import {readDir} from '#preload';
+import {getRunningCheck} from '/@/utils/index.js';
 
 export default {
   components: {
@@ -304,19 +305,8 @@ export default {
       return JSON.parse(str);
     },
 
-    getUsedDir(data) {
-      let arr = data.filter(one => one.status);
-      arr = arr.map(one => one.cmd.match(/(\d+-\d+)/)[1]);
-      this.usedNumbers = arr.reduce((prev, cur) => {
-        let [start, end] = cur.split('-');
-        let temp = [];
-        let item = start;
-        while (item <= end) {
-          temp.push(Number(item));
-          item++;
-        }
-        return [...prev, ...temp];
-      }, []);
+    getUsedDir() {
+      this.usedNumbers = getRunningCheck(this.pidInfo).map(one=>Number( one.replace('data','')));
     },
     async getData({queryItems}) {
       let obj = await this.getCheckFile();

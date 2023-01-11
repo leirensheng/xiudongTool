@@ -302,7 +302,9 @@ export default {
   },
   methods: {
     tableRowClassName({row, rowIndex}) {
- 
+      if(row.remark&&row.remark.includes('频繁')){
+        return 'grey';
+      }
       let colors = ['blue', 'green'];
       if (rowIndex === 0) {
         row.color = colors[0];
@@ -466,9 +468,12 @@ export default {
 
 <style lang="scss">
 .el-table .blue {
-  --el-table-tr-bg-color: rgba(64, 201, 255, 0.1);
+  --el-table-tr-bg-color: rgba(57, 172, 217, 0.1);
 }
 .el-table .green {
-  --el-table-tr-bg-color: rgb(103, 194, 58,0.1);
+  --el-table-tr-bg-color: rgba(75, 151, 37, 0.1);
+}
+.el-table .grey {
+  --el-table-tr-bg-color: rgba(67, 69, 66, 0.1);
 }
 </style>
