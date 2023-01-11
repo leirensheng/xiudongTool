@@ -481,13 +481,16 @@ export default {
 </style>
 
 <style lang="scss">
+.el-table{
+  color: white;
+}
 .el-table .blue {
-  --el-table-tr-bg-color: rgba(57, 172, 217, 0.1);
+  --el-table-tr-bg-color: rgba(6, 216, 231, 0.5);
 }
 .el-table .green {
-  --el-table-tr-bg-color: rgba(75, 151, 37, 0.1);
+  --el-table-tr-bg-color: rgba(98, 232, 31, 0.5);
 }
 .el-table .grey {
-  --el-table-tr-bg-color: rgba(67, 69, 66, 0.1);
+  --el-table-tr-bg-color: rgba(35, 35, 35, 0.5);
 }
 </style>
