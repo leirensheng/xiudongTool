@@ -306,7 +306,7 @@ export default {
     },
 
     getUsedDir() {
-      this.usedNumbers = getRunningCheck(this.pidInfo).map(one=>Number( one.replace('data','')));
+      this.usedNumbers = getRunningCheck(this.pidInfo).map(one => Number(one.replace('data', '')));
     },
     async getData({queryItems}) {
       let obj = await this.getCheckFile();

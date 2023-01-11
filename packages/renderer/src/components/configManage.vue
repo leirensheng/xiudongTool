@@ -302,7 +302,7 @@ export default {
   },
   methods: {
     tableRowClassName({row, rowIndex}) {
-      if(row.remark&&row.remark.includes('频繁')){
+      if (row.remark && row.remark.includes('频繁')) {
         return 'grey';
       }
       let colors = ['blue', 'green'];

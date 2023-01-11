@@ -26,11 +26,10 @@ let getRunningCheck = pidInfo => {
   return res;
 };
 
-
 let getRunningUser = pidInfo => {
   let cmds = Object.keys(pidInfo).filter(one => one.includes('npm run start'));
-  let res = cmds.map(cmd=> cmd.match(/npm run start (.*?)(\s|$)/)[1] );
+  let res = cmds.map(cmd => cmd.match(/npm run start (.*?)(\s|$)/)[1]);
   return res;
 };
 
-export {getRunningCheck,getRunningUser};
+export {getRunningCheck, getRunningUser};
