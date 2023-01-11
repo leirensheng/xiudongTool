@@ -30,6 +30,17 @@
           </el-tag>
         </div>
       </template>
+      <template #activityName="{row}">
+        <div>
+          <el-icon
+            class="copy-icon"
+            @click="copy(row)"
+          >
+            <DocumentCopy />
+          </el-icon>
+          <span>{{ row.activityName }}</span>
+        </div>
+      </template>
       <template #targetTypes="{row}">
         <el-tag
           v-for="(item, i) in row.targetTypes"
@@ -117,11 +128,6 @@ export default {
           type: 'danger',
         },
         {
-          handler: this.copy,
-          name: '复制配置',
-          type: 'success',
-        },
-        {
           handler: this.copyDir,
           name: '复制文件',
           show: row => !row.state,
@@ -183,6 +189,7 @@ export default {
           id: 'activityName',
           minWidth: 200,
           name: '演出',
+          valueType:'slot',
           support: {
             query: {},
           },
@@ -462,6 +469,13 @@ export default {
     position: absolute;
     top: 20px;
     right: 20px;
+  }
+  .copy-icon{
+    position: relative;
+    top: 3px;
+    // margin-top: 2px;
+    cursor: pointer;
+    margin-right: 5px;
   }
 }
 </style>
