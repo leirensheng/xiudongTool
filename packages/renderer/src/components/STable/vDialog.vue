@@ -243,7 +243,7 @@ export default {
       default: null,
     },
   },
-  emits:['dialogClose'],
+  emits: ['dialogClose'],
   data() {
     return {
       formRules: {},
