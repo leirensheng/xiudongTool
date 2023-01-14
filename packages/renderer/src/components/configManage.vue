@@ -37,6 +37,13 @@
           >
             {{ row.username }}-ok
           </el-tag>
+          <el-tag
+            v-if="!row.uid"
+            type="danger"
+            effect="dark"
+          >
+            无uid
+          </el-tag>
         </div>
       </template>
       <template #activityName="{row}">
@@ -328,6 +335,7 @@ export default {
           id: 'uid',
           name: 'uid',
           width: 170,
+          isShow:false,
           support: {
             edit: {},
             add: {},
