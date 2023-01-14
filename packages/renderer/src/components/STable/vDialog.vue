@@ -159,6 +159,7 @@
               :placeholder="one.tips"
               style="width: 100%"
               :disabled="isItemDisabled(one.support)"
+              @contextmenu.prevent="rightClick(form, one.id)"
               @change="val => handleItemChange(one)"
             />
           </el-form-item>
@@ -202,6 +203,8 @@
   </div>
 </template>
 <script>
+import {readClip} from '#preload';
+
 export default {
   components: {},
   props: {
@@ -240,6 +243,7 @@ export default {
       default: null,
     },
   },
+  emits:['dialogClose'],
   data() {
     return {
       formRules: {},
@@ -304,6 +308,9 @@ export default {
     },
   },
   methods: {
+    rightClick(form, id) {
+      form[id] = readClip();
+    },
     beforeClose() {
       // eslint-disable-next-line vue/no-mutating-props
       this.inputs.show = false;
@@ -347,7 +354,7 @@ export default {
       return support[this.inputs.mode].disabled;
     },
 
-    handleItemChange(config, type) {
+    handleItemChange(config) {
       // 只有support为对象的时候才支持事件抛出
       if (config.support[this.inputs.mode] && config.support[this.inputs.mode].eventName) {
         this.$emit(config.support[this.inputs.mode].eventName, {

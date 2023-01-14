@@ -92,3 +92,8 @@ export function getComputerName() {
   let hostname = os.hostname();
   return map[hostname] || hostname;
 }
+
+export function readClip() {
+  let {clipboard} = require('electron');
+  return clipboard.readText();
+}
