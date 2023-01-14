@@ -1,18 +1,30 @@
 <template>
   <div class="config-manage">
-    <div>
-      <el-button @click="startServer">启动服务器</el-button>
-      <el-button
-        type="danger"
-        @click="stopServer"
+    <div class="top">
+      <el-form
+        class="right"
+        :inline="true"
       >
-        停止服务器
-      </el-button>
+        <el-form-item>
+          <el-button @click="startServer">启动服务器</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="danger"
+            @click="stopServer"
+          >
+            停止服务器
+          </el-button>
+        </el-form-item>
+        <el-form-item label="隐藏频繁">
+          <el-switch v-model="isHideFre"></el-switch>
+        </el-form-item>
+        <el-form-item label="show">
+          <el-switch v-model="isShow"></el-switch>
+        </el-form-item>
+      </el-form>
     </div>
-    <el-switch
-      v-model="isShow"
-      class="switch"
-    ></el-switch>
+
     <S-Table
       ref="table"
       v-loading="loading"
@@ -129,6 +141,7 @@ export default {
   },
   data() {
     return {
+      isHideFre: true,
       isShow: false,
       loading: false,
       curRow: {},
@@ -165,7 +178,7 @@ export default {
         },
         {
           handler: this.copyDir,
-          name: '复制文件',
+          name: 'ToCheck',
           show: row => !row.state,
           type: 'warning',
         },
@@ -335,7 +348,7 @@ export default {
           id: 'uid',
           name: 'uid',
           width: 170,
-          isShow:false,
+          isShow: false,
           support: {
             edit: {},
             add: {},
@@ -343,6 +356,11 @@ export default {
         },
       ],
     };
+  },
+  watch: {
+    isHideFre() {
+      this.getList();
+    },
   },
   methods: {
     tableRowClassName({row, rowIndex}) {
@@ -490,6 +508,7 @@ export default {
         console.log(cmd, cmds);
         one.status = cmds.some(cmd => cmd.replace(/\s+show/, '') === one.cmd) ? 1 : 0;
       });
+      data = data.filter(one => (this.isHideFre ? !one.remark.includes('频繁') : true));
       this.tableData = data;
       return {
         total: data.length,
@@ -502,15 +521,12 @@ export default {
 <style lang="scss" scoped>
 .config-manage {
   position: relative;
-  .switch {
-    position: absolute;
-    top: 20px;
-    right: 20px;
+  .table-page-container {
+    padding-top: 0;
   }
   .copy-icon {
     position: relative;
     top: 3px;
-    // margin-top: 2px;
     cursor: pointer;
     margin-right: 5px;
   }

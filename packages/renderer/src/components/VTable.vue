@@ -268,7 +268,9 @@ export default {
       const btnLength = this.hasPermissionBtns.length;
       if (btnLength === 0) return 0;
       const str = this.hasPermissionBtns.map(one => one.name).join('');
-      return 32 * btnLength + 12 * str.length + 40 + (btnLength - 1) * 10;
+     let chiLength =  str.split('').filter(one=> one.match(/ [\u4e00-\u9fa5]/)).length;
+     let engLength  =  str.length - chiLength;
+      return 32 * btnLength + 12 * chiLength + engLength * 6  + 40 + (btnLength - 1) * 10;
     },
     itemsHandled() {
       return this.items.map(one => {
