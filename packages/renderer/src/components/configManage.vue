@@ -1,5 +1,14 @@
 <template>
   <div class="config-manage">
+    <div>
+      <el-button @click="startServer">启动服务器</el-button>
+      <el-button
+        type="danger"
+        @click="stopServer"
+      >
+        停止服务器
+      </el-button>
+    </div>
     <el-switch
       v-model="isShow"
       class="switch"
@@ -87,7 +96,27 @@ export default {
   setup() {
     let store = useStore();
     let {pidInfo} = store;
+ 
+    let useServer = ()=>{
+      let startServer = ()=>{
+        window.serverProcess =  cmd('cd ../xiudongServer && node index.js', data => {
+          console.log(data);
+          // if (data === 'done') {
+          //   r();
+          // }
+        });
+      };
+      let stopServer = ()=>{
+        window.serverProcess.close();
+      };
+      return {
+        stopServer,
+        startServer,
+      };
+    };
+
     return {
+      ...useServer(),
       pidInfo,
     };
   },
