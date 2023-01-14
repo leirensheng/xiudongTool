@@ -96,17 +96,17 @@ export default {
   setup() {
     let store = useStore();
     let {pidInfo} = store;
- 
-    let useServer = ()=>{
-      let startServer = ()=>{
-        window.serverProcess =  cmd('cd ../xiudongServer && node index.js', data => {
+
+    let useServer = () => {
+      let startServer = () => {
+        window.serverProcess = cmd('cd ../xiudongServer && node index.js', data => {
           console.log(data);
           // if (data === 'done') {
           //   r();
           // }
         });
       };
-      let stopServer = ()=>{
+      let stopServer = () => {
         window.serverProcess.close();
       };
       return {
@@ -218,7 +218,7 @@ export default {
           id: 'activityName',
           minWidth: 200,
           name: '演出',
-          valueType:'slot',
+          valueType: 'slot',
           support: {
             query: {},
           },
@@ -499,7 +499,7 @@ export default {
     top: 20px;
     right: 20px;
   }
-  .copy-icon{
+  .copy-icon {
     position: relative;
     top: 3px;
     // margin-top: 2px;
@@ -510,7 +510,7 @@ export default {
 </style>
 
 <style lang="scss">
-.el-table{
+.el-table {
   color: white;
 }
 .el-table .blue {

@@ -9,8 +9,8 @@ import 'element-plus/dist/index.css';
 import './global.scss';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-    app.component(key, component);
-  }
+  app.component(key, component);
+}
 app.component('CmdTerminal', cmdTerminal);
 app.component('STable', STable);
 
