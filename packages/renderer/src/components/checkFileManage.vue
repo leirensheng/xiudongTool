@@ -41,11 +41,12 @@
 import {readDir} from '#preload';
 import {useStore} from '/@/store/global';
 import {ref} from 'vue';
-import {getRunningCheck} from '/@/utils/index.js';
+import {getRunningCheck,getRunningUser} from '/@/utils/index.js';
 export default {
   setup() {
     let store = useStore();
     let {pidInfo} = store;
+    // getRunningUser(pidInfo);
     let cmdStr = ref('');
     let terminal = ref(null);
     let loading = ref(false);
