@@ -41,20 +41,22 @@
     >
       <template #username="{row}">
         <div>
-          <span v-if="!row.hasSuccess">{{ row.username }}</span>
+          <template v-if="!row.hasSuccess">
+            <span v-if="row.uid">{{ row.username }}</span>
+            <el-tag
+              v-if="!row.uid"
+              type="danger"
+              effect="dark"
+            >
+              {{ row.username }}
+            </el-tag>
+          </template>
           <el-tag
             v-else
             type="success"
             effect="dark"
           >
             {{ row.username }}-ok
-          </el-tag>
-          <el-tag
-            v-if="!row.uid"
-            type="danger"
-            effect="dark"
-          >
-            无uid
           </el-tag>
         </div>
       </template>
@@ -430,12 +432,15 @@ export default {
         }
       });
     },
-    start(row) {
-      this.curRow = row;
+    getCmd(row) {
       let cmds = Object.keys(this.pidInfo);
       let runningCmd = cmds.find(cmd => cmd.replace(/\s+show/, '') === row.cmd);
       let cmd = runningCmd || row.cmd + ' ' + (this.isShow ? 'show' : '');
-      this.cmd = cmd.trim();
+      return cmd.trim();
+    },
+    start(row) {
+      this.curRow = row;
+      this.cmd = this.getCmd(row);
       console.log(this.cmd);
       this.dialogVisible = true;
       row.status = 1;
@@ -486,6 +491,27 @@ export default {
       let str = await readFile('config.json');
       return JSON.parse(str);
     },
+    async stopFrequency(data) {
+      let timer;
+      data.forEach(one => {
+        if (one.remark.includes('频繁')) {
+          let cmd = this.getCmd(one);
+          let prePid = this.pidInfo[cmd];
+          if (prePid) {
+            const socketURL = 'ws://127.0.0.1:4000/socket/';
+            let ws = new WebSocket(socketURL + prePid);
+            ws.onopen = () => {
+              ws.close();
+              delete this.pidInfo[cmd];
+              clearTimeout(timer);
+              timer = setTimeout(() => {
+                this.getList();
+              }, 200);
+            };
+          }
+        }
+      });
+    },
     async getData({queryItems}) {
       let obj = await this.getConfigFile();
       let data = Object.entries(obj).map(([key, val]) => ({
@@ -505,10 +531,10 @@ export default {
         let cmd = `npm run start ${one.username}`;
         one.cmd = cmd;
         one.hasSuccess = Boolean(one.hasSuccess);
-        console.log(cmd, cmds);
         one.status = cmds.some(cmd => cmd.replace(/\s+show/, '') === one.cmd) ? 1 : 0;
       });
       data = data.filter(one => (this.isHideFre ? !one.remark.includes('频繁') : true));
+      this.stopFrequency(data);
       this.tableData = data;
       return {
         total: data.length,

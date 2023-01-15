@@ -40,7 +40,7 @@ export default {
   },
   data() {
     return {
-      activeName: 'LocalConfig',
+      activeName: 'ConfigManage',
       tabs: [
         {
           name: 'SearchActivity',
