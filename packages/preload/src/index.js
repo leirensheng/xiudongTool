@@ -95,5 +95,5 @@ export function getComputerName() {
 
 export function readClip() {
   let {clipboard} = require('electron');
-  return clipboard.readText();
+  return clipboard.readText().trim().replace('尊敬的用户，你的UID是：','');
 }
