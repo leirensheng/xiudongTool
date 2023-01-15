@@ -1,6 +1,13 @@
 import {app, BrowserWindow} from 'electron';
 import {join} from 'path';
 import {URL} from 'url';
+import axios from 'axios';
+
+// const { ipcMain } = require('electron'); 
+// let pidInfo = {};
+// ipcMain.on('setPidInfo',(event,arg) => { 
+//   pidInfo = arg;
+// });
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
@@ -53,6 +60,10 @@ export async function restoreOrCreateWindow() {
 
   if (window === undefined) {
     window = await createWindow();
+
+    window.on('close', () => {
+      axios.get('http://127.0.0.1:4000/closeAll');
+    });
   }
 
   if (window.isMinimized()) {
