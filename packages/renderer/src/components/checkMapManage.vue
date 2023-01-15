@@ -136,7 +136,7 @@ export default {
         {
           id: 'curShowName',
           name: '名称',
-          //   minWidth: 150,
+          minWidth: 200,
           support: {
             query: {},
           },
@@ -145,6 +145,7 @@ export default {
         {
           id: 'showTime',
           name: '演出时间',
+          width: 110,
         },
         {
           id: 'loopTicketType',
@@ -154,6 +155,8 @@ export default {
         {
           id: 'waitForTime',
           name: '开抢时间',
+          width: 110,
+
           options: [],
           support: {
             edit: {
@@ -170,6 +173,7 @@ export default {
         {
           id: 'onlyMonitorType',
           name: '检测类型',
+          width: 120,
           valueType: 'slot',
           options: [],
           support: {
@@ -193,7 +197,7 @@ export default {
         {
           id: 'dateOrder',
           name: '日期序号',
-          width: 150,
+          width: 60,
           support: {
             edit: {
               type: 'number',
