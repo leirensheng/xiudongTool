@@ -50,7 +50,9 @@
                 v-else
                 type="success"
                 effect="dark"
-              > {{ row.username }}-ok </el-tag>
+              >
+                {{ row.username }}-ok
+              </el-tag>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
@@ -372,7 +374,7 @@ export default {
         cmd('npm run pay ' + row.username);
       }
     },
-    async stop(row){
+    async stop(row) {
       let pid = this.pidInfo[this.getCmd(row)];
       await axios.get('http://127.0.0.1:4000/close/' + pid);
       delete this.pidInfo[this.cmd];
