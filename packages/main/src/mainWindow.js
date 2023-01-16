@@ -3,9 +3,9 @@ import {join} from 'path';
 import {URL} from 'url';
 import axios from 'axios';
 
-// const { ipcMain } = require('electron'); 
+// const { ipcMain } = require('electron');
 // let pidInfo = {};
-// ipcMain.on('setPidInfo',(event,arg) => { 
+// ipcMain.on('setPidInfo',(event,arg) => {
 //   pidInfo = arg;
 // });
 

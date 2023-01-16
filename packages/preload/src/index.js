@@ -98,16 +98,14 @@ export function readClip() {
   return clipboard.readText().trim().replace('尊敬的用户，你的UID是：', '');
 }
 
-
-export function sendMsgToMain(eventName,val) {
-  const { ipcRenderer } = require('electron'); 
-  ipcRenderer.send(eventName,val); 
+export function sendMsgToMain(eventName, val) {
+  const {ipcRenderer} = require('electron');
+  ipcRenderer.send(eventName, val);
 }
 
 export function openExe() {
-  const { shell } = require('electron');
+  const {shell} = require('electron');
   const path = require('path');
-  const app = path.resolve(__dirname,'../../../../xiudongServer/dist/server.exe');
+  const app = path.resolve(__dirname, '../../../../xiudongServer/dist/server.exe');
   shell.openExternal(app);
 }
-
