@@ -115,7 +115,7 @@ export default {
       let startServer = () => {
         window.serverProcess = cmd('cd ../xiudongServer && pm2 start index.js');
       };
-      
+
       return {
         startServer,
       };
