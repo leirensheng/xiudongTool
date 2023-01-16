@@ -49,7 +49,7 @@ export default {
     this.init();
   },
   beforeUnmount() {
-    this.socket.close();
+    this.socket&&this.socket.close();
   },
   methods: {
     async close() {

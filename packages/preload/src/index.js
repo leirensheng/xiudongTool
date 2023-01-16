@@ -97,6 +97,10 @@ export function readClip() {
   let {clipboard} = require('electron');
   return clipboard.readText().trim().replace('尊敬的用户，你的UID是：', '');
 }
+export function copyText(str) {
+  let {clipboard} = require('electron');
+  return  clipboard.writeText(str);
+}
 
 export function sendMsgToMain(eventName, val) {
   const {ipcRenderer} = require('electron');

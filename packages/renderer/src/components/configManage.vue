@@ -60,6 +60,17 @@
           </el-dropdown>
         </div>
       </template>
+      <template #activityId="{row}">
+        <div>
+          <el-icon
+            class="copy-icon"
+            @click="copyText(row.activityId)"
+          >
+            <DocumentCopy />
+          </el-icon>
+          <span>{{ row.activityId }}</span>
+        </div>
+      </template>
       <template #activityName="{row}">
         <div>
           <el-icon
@@ -105,11 +116,12 @@
 </template>
 
 <script>
-import {readFile, cmd, writeFile} from '#preload';
+import {readFile, cmd, copyText,writeFile} from '#preload';
 import {ElMessageBox} from 'element-plus';
 import {useStore} from '/@/store/global';
 import CmdTerminal2 from './cmdTerminal2.vue';
 import axios from 'axios';
+import {ElNotification} from 'element-plus';
 
 export default {
   components: {
@@ -121,7 +133,7 @@ export default {
 
     let useServer = () => {
       let startServer = () => {
-        window.serverProcess = cmd('cd ../xiudongServer && pm2 start index.js');
+        cmd('cd ../xiudongServer && pm2 restart index.js');
       };
 
       return {
@@ -223,7 +235,8 @@ export default {
         {
           id: 'activityId',
           name: '演出id',
-          width: 55,
+          width: 100,
+          valueType: 'slot',
           support: {
             add: {},
             edit: {},
@@ -358,6 +371,14 @@ export default {
     },
   },
   methods: {
+    copyText(str){
+      copyText(str);
+      ElNotification({
+              title: '成功',
+              message: '复制成功',
+              type: 'success',
+            });
+    },
     async toOrder(row) {
       if (!row.status) {
         cmd('npm run pay ' + row.username);
