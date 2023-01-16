@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import {readFile, cmd, copyText,writeFile} from '#preload';
+import {readFile, cmd, copyText, writeFile} from '#preload';
 import {ElMessageBox} from 'element-plus';
 import {useStore} from '/@/store/global';
 import CmdTerminal2 from './cmdTerminal2.vue';
@@ -373,13 +373,13 @@ export default {
     },
   },
   methods: {
-    copyText(str){
+    copyText(str) {
       copyText(str);
       ElNotification({
-              title: '成功',
-              message: '复制成功',
-              type: 'success',
-            });
+        title: '成功',
+        message: '复制成功',
+        type: 'success',
+      });
     },
     async toOrder(row) {
       if (!row.status) {

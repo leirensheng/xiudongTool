@@ -99,7 +99,7 @@ export function readClip() {
 }
 export function copyText(str) {
   let {clipboard} = require('electron');
-  return  clipboard.writeText(str);
+  return clipboard.writeText(str);
 }
 
 export function sendMsgToMain(eventName, val) {
