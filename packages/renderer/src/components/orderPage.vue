@@ -66,7 +66,6 @@ export default {
       cmd('npm run pay ' + username);
     },
 
-
     async getCheckFile() {
       let str = await readFile('config.json');
       return JSON.parse(str);
