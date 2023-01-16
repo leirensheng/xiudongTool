@@ -34,23 +34,30 @@
     >
       <template #username="{row}">
         <div>
-          <template v-if="!row.hasSuccess">
-            <span v-if="row.uid">{{ row.username }}</span>
-            <el-tag
-              v-if="!row.uid"
-              type="danger"
-              effect="dark"
-            >
-              {{ row.username }}
-            </el-tag>
-          </template>
-          <el-tag
-            v-else
-            type="success"
-            effect="dark"
-          >
-            {{ row.username }}-ok
-          </el-tag>
+          <el-dropdown trigger="contextmenu">
+            <span class="el-dropdown-link">
+              <template v-if="!row.hasSuccess">
+                <span v-if="row.uid">{{ row.username }}</span>
+                <el-tag
+                  v-if="!row.uid"
+                  type="danger"
+                  effect="dark"
+                >
+                  {{ row.username }}
+                </el-tag>
+              </template>
+              <el-tag
+                v-else
+                type="success"
+                effect="dark"
+              > {{ row.username }}-ok </el-tag>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click="toOrder(row)">订单</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </div>
       </template>
       <template #activityName="{row}">
@@ -102,6 +109,7 @@ import {readFile, cmd, writeFile} from '#preload';
 import {ElMessageBox} from 'element-plus';
 import {useStore} from '/@/store/global';
 import CmdTerminal2 from './cmdTerminal2.vue';
+import axios from 'axios';
 
 export default {
   components: {
@@ -115,7 +123,7 @@ export default {
       let startServer = () => {
         window.serverProcess = cmd('cd ../xiudongServer && pm2 start index.js');
       };
-      
+
       return {
         startServer,
       };
@@ -350,6 +358,26 @@ export default {
     },
   },
   methods: {
+    async toOrder(row) {
+      if (!row.status) {
+        cmd('npm run pay ' + row.username);
+      } else {
+        await ElMessageBox.confirm('运行中,是否终止?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        });
+        await this.stop(row);
+
+        cmd('npm run pay ' + row.username);
+      }
+    },
+    async stop(row){
+      let pid = this.pidInfo[this.getCmd(row)];
+      await axios.get('http://127.0.0.1:4000/close/' + pid);
+      delete this.pidInfo[this.cmd];
+      this.getList();
+    },
     tableRowClassName({row, rowIndex}) {
       if (row.remark && row.remark.includes('频繁')) {
         return 'grey';
@@ -556,5 +584,9 @@ export default {
 }
 .el-table .grey {
   --el-table-tr-bg-color: rgba(35, 35, 35, 0.5);
+}
+.el-dropdown-link {
+  width: 100%;
+  padding: 15px 25px;
 }
 </style>

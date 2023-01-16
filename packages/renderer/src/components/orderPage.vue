@@ -65,14 +65,7 @@ export default {
     openOrder({username}) {
       cmd('npm run pay ' + username);
     },
-    async updateFile({key, val, isAdd}) {
-      let fileData = await this.getCheckFile();
-      if (isAdd && fileData[key] !== undefined) {
-        throw new Error('已经有了' + key);
-      }
-      fileData[key] = val;
-      await writeFile('config.json', JSON.stringify(fileData, null, 4));
-    },
+
 
     async getCheckFile() {
       let str = await readFile('config.json');
