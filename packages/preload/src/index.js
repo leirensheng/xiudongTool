@@ -104,3 +104,10 @@ export function sendMsgToMain(eventName,val) {
   ipcRenderer.send(eventName,val); 
 }
 
+export function openExe() {
+  const { shell } = require('electron');
+  const path = require('path');
+  const app = path.resolve(__dirname,'../../../../xiudongServer/dist/server.exe');
+  shell.openExternal(app);
+}
+

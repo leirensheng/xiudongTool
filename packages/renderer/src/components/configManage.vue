@@ -6,16 +6,9 @@
         :inline="true"
       >
         <el-form-item>
-          <el-button @click="startServer">启动服务器</el-button>
+          <el-button @click="startServer">重启服务器</el-button>
         </el-form-item>
-        <el-form-item>
-          <el-button
-            type="danger"
-            @click="stopServer"
-          >
-            停止服务器
-          </el-button>
-        </el-form-item>
+
         <el-form-item label="隐藏频繁">
           <el-switch v-model="isHideFre"></el-switch>
         </el-form-item>
@@ -120,18 +113,10 @@ export default {
 
     let useServer = () => {
       let startServer = () => {
-        window.serverProcess = cmd('cd ../xiudongServer && node index.js', data => {
-          console.log(data);
-          // if (data === 'done') {
-          //   r();
-          // }
-        });
+        window.serverProcess = cmd('cd ../xiudongServer && pm2 start index.js');
       };
-      let stopServer = () => {
-        window.serverProcess.close();
-      };
+      
       return {
-        stopServer,
         startServer,
       };
     };
