@@ -48,15 +48,15 @@ export default {
   mounted() {
     this.init();
   },
-  beforeUnmount(){
+  beforeUnmount() {
     this.socket.close();
   },
   methods: {
     async close() {
-      let pid =this.pidInfo[this.cmd];
+      let pid = this.pidInfo[this.cmd];
       this.socket.close();
-      await axios.get('http://127.0.0.1:4000/close/'+ pid);
-      delete  this.pidInfo[this.cmd];
+      await axios.get('http://127.0.0.1:4000/close/' + pid);
+      delete this.pidInfo[this.cmd];
       this.$emit('exit');
     },
     async init() {
