@@ -530,7 +530,7 @@ export default {
     async stopFrequency(data) {
       let timer;
       data.forEach(one => {
-        if (one.remark.includes('频繁')) {
+        if (one.remark&&one.remark.includes('频繁')) {
           let cmd = this.getCmd(one);
           let prePid = this.pidInfo[cmd];
           if (prePid) {
@@ -569,7 +569,7 @@ export default {
         one.hasSuccess = Boolean(one.hasSuccess);
         one.status = cmds.some(cmd => cmd.replace(/\s+show/, '') === one.cmd) ? 1 : 0;
       });
-      data = data.filter(one => (this.isHideFre ? !one.remark.includes('频繁') : true));
+      data = data.filter(one => (this.isHideFre ?!(one.remark&&one.remark.includes('频繁')) : true));
       this.stopFrequency(data);
       this.tableData = data;
       return {
