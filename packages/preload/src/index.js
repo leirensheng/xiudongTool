@@ -149,7 +149,7 @@ export async function copyFile(name) {
   var localFile = fs.createReadStream(zipPath);
   var formData = new FormData();
   formData.append('file', localFile);
-  let rest =formData.get('file');
+  let rest = formData.get('file');
   console.log(rest);
   console.log(formData);
   var headers = formData.getHeaders(); //获取headers

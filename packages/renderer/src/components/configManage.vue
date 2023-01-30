@@ -50,7 +50,9 @@
                 v-else
                 type="success"
                 effect="dark"
-              > {{ row.username }}-ok </el-tag>
+              >
+                {{ row.username }}-ok
+              </el-tag>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
@@ -116,7 +118,7 @@
 </template>
 
 <script>
-import {readFile, cmd, copyText, writeFile,copyFile} from '#preload';
+import {readFile, cmd, copyText, writeFile, copyFile} from '#preload';
 import {ElMessageBox} from 'element-plus';
 import {useStore} from '/@/store/global';
 import CmdTerminal2 from './cmdTerminal2.vue';
