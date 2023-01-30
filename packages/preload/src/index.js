@@ -99,7 +99,7 @@ export function readClip() {
 }
 export function copyText(str) {
   let {clipboard} = require('electron');
-  return  clipboard.writeText(str);
+  return clipboard.writeText(str);
 }
 
 export function sendMsgToMain(eventName, val) {
@@ -112,4 +112,64 @@ export function openExe() {
   const path = require('path');
   const app = path.resolve(__dirname, '../../../../xiudongServer/dist/server.exe');
   shell.openExternal(app);
+}
+
+export function getContentLength(formData) {
+  return new Promise((resolve, reject) => {
+    formData.getLength(async (err, length) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(length);
+    });
+  });
+}
+
+export function zip(dest, zipPath) {
+  let AdmZip = require('adm-zip');
+  const file = new AdmZip();
+  // 压缩文件夹
+  file.addLocalFolder(dest);
+  console.time();
+  file.writeZip(zipPath);
+  console.timeEnd();
+}
+
+export async function copyFile(name) {
+  const fs = require('fs');
+  const axios = require('axios');
+  const path = require('path');
+  const FormData = require('form-data');
+  console.log(0);
+  const dest = path.resolve(__dirname, '../../../../xiudongPupp/userData/', name);
+  console.log(111, dest, name);
+  const zipPath = path.resolve(dest, name + '.zip');
+  zip(dest, zipPath);
+
+  var localFile = fs.createReadStream(zipPath);
+  var formData = new FormData();
+  formData.append('file', localFile);
+  let rest = formData.get('file');
+  console.log(rest);
+  console.log(formData);
+  var headers = formData.getHeaders(); //获取headers
+
+  formData.getLength(async function (err, length) {
+    if (err) {
+      return;
+    }
+    //设置长度，important!!!
+    headers['content-length'] = length;
+    console.log(12, length);
+    await axios
+      .post('http://127.0.0.1:4000/file', formData, {'Content-Type': 'multipart/formData'})
+      .then(res => {
+        console.log('上传成功', res.data);
+      })
+      .catch(res => {
+        console.log(res.data);
+      });
+  });
+  // var headers = formData.getHeaders();
+  // headers['content-length'] = await getContentLength(formData);
 }

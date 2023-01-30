@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import {readFile, cmd, copyText,writeFile} from '#preload';
+import {readFile, cmd, copyText, writeFile, copyFile} from '#preload';
 import {ElMessageBox} from 'element-plus';
 import {useStore} from '/@/store/global';
 import CmdTerminal2 from './cmdTerminal2.vue';
@@ -191,12 +191,12 @@ export default {
           show: row => !row.state,
           type: 'warning',
         },
-        // {
-        //   handler: this.copyToRemote,
-        //   name: '复制配置远程',
-        //   show: row => !row.state,
-        //   type: 'warning',
-        // },
+        {
+          handler: this.copyToRemote,
+          name: '复制配置远程',
+          show: row => !row.state,
+          type: 'warning',
+        },
       ],
       items: [
         {
@@ -373,13 +373,13 @@ export default {
     },
   },
   methods: {
-    copyText(str){
+    copyText(str) {
       copyText(str);
       ElNotification({
-              title: '成功',
-              message: '复制成功',
-              type: 'success',
-            });
+        title: '成功',
+        message: '复制成功',
+        type: 'success',
+      });
     },
     async toOrder(row) {
       if (!row.status) {
@@ -416,7 +416,10 @@ export default {
       }
       return row.color;
     },
-    copyToRemote() {},
+    async copyToRemote({username}) {
+      copyFile(username);
+      // await axios.post('http://127.0.0.1:4000/file/', {});
+    },
     beforeAssignToTable({records}) {
       this.tableData = records;
     },
@@ -530,7 +533,7 @@ export default {
     async stopFrequency(data) {
       let timer;
       data.forEach(one => {
-        if (one.remark.includes('频繁')) {
+        if ((one.remark && one.remark.includes('频繁')) || one.hasSuccess) {
           let cmd = this.getCmd(one);
           let prePid = this.pidInfo[cmd];
           if (prePid) {
@@ -569,7 +572,9 @@ export default {
         one.hasSuccess = Boolean(one.hasSuccess);
         one.status = cmds.some(cmd => cmd.replace(/\s+show/, '') === one.cmd) ? 1 : 0;
       });
-      data = data.filter(one => (this.isHideFre ? !one.remark.includes('频繁') : true));
+      data = data.filter(one =>
+        this.isHideFre ? !(one.remark && one.remark.includes('频繁')) : true,
+      );
       this.stopFrequency(data);
       this.tableData = data;
       return {
