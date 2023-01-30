@@ -50,9 +50,7 @@
                 v-else
                 type="success"
                 effect="dark"
-              >
-                {{ row.username }}-ok
-              </el-tag>
+              > {{ row.username }}-ok </el-tag>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
@@ -530,7 +528,7 @@ export default {
     async stopFrequency(data) {
       let timer;
       data.forEach(one => {
-        if (one.remark&&one.remark.includes('频繁')) {
+        if ((one.remark && one.remark.includes('频繁')) || one.hasSuccess) {
           let cmd = this.getCmd(one);
           let prePid = this.pidInfo[cmd];
           if (prePid) {
@@ -569,7 +567,9 @@ export default {
         one.hasSuccess = Boolean(one.hasSuccess);
         one.status = cmds.some(cmd => cmd.replace(/\s+show/, '') === one.cmd) ? 1 : 0;
       });
-      data = data.filter(one => (this.isHideFre ?!(one.remark&&one.remark.includes('频繁')) : true));
+      data = data.filter(one =>
+        this.isHideFre ? !(one.remark && one.remark.includes('频繁')) : true,
+      );
       this.stopFrequency(data);
       this.tableData = data;
       return {
