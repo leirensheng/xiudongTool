@@ -116,7 +116,7 @@
 </template>
 
 <script>
-import {readFile, cmd, copyText, writeFile} from '#preload';
+import {readFile, cmd, copyText, writeFile,copyFile} from '#preload';
 import {ElMessageBox} from 'element-plus';
 import {useStore} from '/@/store/global';
 import CmdTerminal2 from './cmdTerminal2.vue';
@@ -189,12 +189,12 @@ export default {
           show: row => !row.state,
           type: 'warning',
         },
-        // {
-        //   handler: this.copyToRemote,
-        //   name: '复制配置远程',
-        //   show: row => !row.state,
-        //   type: 'warning',
-        // },
+        {
+          handler: this.copyToRemote,
+          name: '复制配置远程',
+          show: row => !row.state,
+          type: 'warning',
+        },
       ],
       items: [
         {
@@ -414,7 +414,10 @@ export default {
       }
       return row.color;
     },
-    copyToRemote() {},
+    async copyToRemote({username}) {
+      copyFile(username);
+      // await axios.post('http://127.0.0.1:4000/file/', {});
+    },
     beforeAssignToTable({records}) {
       this.tableData = records;
     },
