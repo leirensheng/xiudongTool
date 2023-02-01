@@ -50,9 +50,7 @@
                 v-else
                 type="success"
                 effect="dark"
-              >
-                {{ row.username }}-ok
-              </el-tag>
+              > {{ row.username }}-ok </el-tag>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
@@ -114,11 +112,36 @@
         ></cmd-terminal2>
       </div>
     </el-dialog>
+
+    <el-dialog
+      v-model="remoteDialogVisible"
+      width="80%"
+    >
+      <el-radio-group
+        v-model="remotePc"
+        size="large"
+      >
+        <el-radio-button
+          v-for="one in pcs"
+          :key="one"
+          :disabled="one===pcName"
+          :label="one"
+        />
+      </el-radio-group>
+
+      <el-button
+        :loading="sending"
+        type="success"
+        @click="send"
+      >
+        发送
+      </el-button>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import {readFile, cmd, copyText, writeFile, copyFile} from '#preload';
+import {readFile, cmd, copyText, writeFile,getComputerName} from '#preload';
 import {ElMessageBox} from 'element-plus';
 import {useStore} from '/@/store/global';
 import CmdTerminal2 from './cmdTerminal2.vue';
@@ -150,6 +173,11 @@ export default {
   },
   data() {
     return {
+      pcName: '',
+      pcs:['新电脑','4.3','4.4'],
+      remoteDialogVisible: false,
+      sending: false,
+      remotePc: '新电脑',
       isHideFre: true,
       isShow: false,
       loading: false,
@@ -372,6 +400,10 @@ export default {
       this.getList();
     },
   },
+  created(){
+    this.pcName = getComputerName();
+     console.log(this.pcName);
+  },
   methods: {
     copyText(str) {
       copyText(str);
@@ -416,9 +448,44 @@ export default {
       }
       return row.color;
     },
-    async copyToRemote({username}) {
-      copyFile(username);
-      // await axios.post('http://127.0.0.1:4000/file/', {});
+    async send() {
+      let map = {
+        新电脑: 'leirensheng.dynv6.net',
+        4.3: '192.168.4.3',
+        4.4: '192.168.4.4',
+      };
+      this.sending = true;
+      let res = await axios(
+        'http://127.0.0.1:4000/copyUserFile?name=' +
+          encodeURIComponent(this.curRow.username) +
+          '&host=' +
+          encodeURIComponent(map[this.remotePc]),
+        {
+          timeout: 10000,
+        },
+      );
+      this.sending = false;
+      if (res === 'ok') {
+        ElNotification({
+          title: '成功',
+          message: '复制成功',
+          type: 'success',
+        });
+        this.remove(this.curRow);
+        this.getList();
+      } else {
+        ElNotification({
+          title: '失败',
+          message: res,
+          type: 'error',
+        });
+      }
+      this.remoteDialogVisible = false;
+    },
+    async copyToRemote(row) {
+      this.curRow = row;
+      console.log(11111, row);
+      this.remoteDialogVisible = true;
     },
     beforeAssignToTable({records}) {
       this.tableData = records;
