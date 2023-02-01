@@ -50,7 +50,9 @@
                 v-else
                 type="success"
                 effect="dark"
-              > {{ row.username }}-ok </el-tag>
+              >
+                {{ row.username }}-ok
+              </el-tag>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
@@ -459,7 +461,7 @@ export default {
       let config = obj[this.curRow.username];
       let res = await axios.post(
         'http://127.0.0.1:4000/copyUserFile',
-        {username:this.curRow.username,host:map[this.remotePc],config},
+        {username: this.curRow.username, host: map[this.remotePc], config},
         {
           timeout: 10000,
         },
