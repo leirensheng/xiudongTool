@@ -465,13 +465,13 @@ export default {
         },
       );
       this.sending = false;
-      if (res === 'ok') {
+      if (res.data === 'ok') {
         ElNotification({
           title: '成功',
           message: '复制成功',
           type: 'success',
         });
-        this.remove(this.curRow);
+        // this.remove(this.curRow);
         this.getList();
       } else {
         ElNotification({
