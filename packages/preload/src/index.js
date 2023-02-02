@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const fs = require('fs');
 const path = require('path');
 
@@ -173,4 +175,22 @@ export async function copyFile(name) {
   });
   // var headers = formData.getHeaders();
   // headers['content-length'] = await getContentLength(formData);
+}
+
+export async function cloneRemoteConfig(ip, username, data) {
+  let http = require('http');
+  http
+    .get(`http://${ip}:4000/downloadConfig?username=${username}`, res => {
+      const dest = path.resolve(__dirname, '../../../../xiudongPupp/userData/', username + '.zip');
+
+      const file = fs.createWriteStream(dest);
+      res.pipe(file);
+      file.on('finish', () => {
+        file.close();
+      });
+    })
+    .on('error', err => {
+      console.log('Error: ', err.message);
+    });
+  // console.log('done');
 }
