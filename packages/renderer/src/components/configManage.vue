@@ -50,7 +50,9 @@
                 v-else
                 type="success"
                 effect="dark"
-              > {{ row.username }}-ok </el-tag>
+              >
+                {{ row.username }}-ok
+              </el-tag>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
