@@ -27,6 +27,7 @@ import CheckFileManage from '/@/components/checkFileManage.vue';
 import CheckFileFileRename from '/@/components/checkFileFileRename.vue';
 import onlyTest from '/@/components/onlyTest.vue';
 import LocalConfig from '/@/components/localConfig.vue';
+import RemoteConfig from '/@/components/remoteConfig.vue';
 export default {
   components: {
     SearchActivity,
@@ -36,11 +37,12 @@ export default {
     CheckFileManage,
     CheckFileFileRename,
     onlyTest,
+    RemoteConfig,
     LocalConfig,
   },
   data() {
     return {
-      activeName: 'ConfigManage',
+      activeName: 'RemoteConfig',
       tabs: [
         {
           name: 'SearchActivity',
@@ -69,6 +71,10 @@ export default {
         {
           name: 'CheckFileFileRename',
           title: 'check重命名',
+        },
+        {
+          name: 'remoteConfig',
+          title: '远程配置',
         },
         {
           name: 'onlyTest',
