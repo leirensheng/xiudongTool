@@ -183,7 +183,7 @@ export default {
   data() {
     return {
       pcName: '',
-      pcs: ['新电脑', '4.3', '4.4'],
+      pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4'],
       remoteDialogVisible: false,
       sending: false,
       remotePc: '新电脑',
