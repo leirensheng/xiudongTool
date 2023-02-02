@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import {getComputerName,cloneRemoteConfig} from '#preload';
+import {getComputerName, cloneRemoteConfig} from '#preload';
 import axios from 'axios';
 import {ElNotification} from 'element-plus';
 
@@ -47,8 +47,8 @@ export default {
       data: [],
     };
   },
-  computed:{
-    remoteIp(){
+  computed: {
+    remoteIp() {
       let map = {
         新电脑: this.pcName.includes('虚拟机') ? '192.168.4.1' : 'leirensheng.dynv6.net',
         '虚拟机4.3': '192.168.4.3',
@@ -79,7 +79,7 @@ export default {
       }
     },
     async loadConfig() {
-      this.data=[]
+      this.data = [];
       let res = await axios({
         url: `http://${this.remoteIp}:4000/getAllUserConfig`,
       });
