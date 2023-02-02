@@ -57,6 +57,13 @@
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item @click="toOrder(row)">订单</el-dropdown-item>
+
+                <el-dropdown-item
+                  v-if="!row.status"
+                  @click="copyToRemote(row)"
+                >
+                  复制配置到其他电脑
+                </el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -205,6 +212,7 @@ export default {
         },
         {
           type: 'primary',
+          show: row => row.status !== 1,
           editConfig: {
             handler: this.handleEdit,
           },
@@ -213,18 +221,13 @@ export default {
         {
           handler: row => this.remove(row),
           name: '删除',
+          show: row => row.status !== 1,
           type: 'danger',
         },
         {
           handler: this.copyDir,
           name: 'ToCheck',
-          show: row => !row.state,
-          type: 'warning',
-        },
-        {
-          handler: this.copyToRemote,
-          name: '复制配置远程',
-          show: row => !row.state,
+          show: row => row.status !== 1,
           type: 'warning',
         },
       ],
@@ -452,7 +455,7 @@ export default {
     },
     async send() {
       let map = {
-        新电脑: 'leirensheng.dynv6.net',
+        新电脑: this.pcName.includes('虚拟机') ? '192.168.4.1' : 'leirensheng.dynv6.net',
         '虚拟机4.3': '192.168.4.3',
         '虚拟机4.4': '192.168.4.4',
       };
