@@ -453,8 +453,8 @@ export default {
     async send() {
       let map = {
         新电脑: 'leirensheng.dynv6.net',
-        4.3: '192.168.4.3',
-        4.4: '192.168.4.4',
+        '虚拟机4.3': '192.168.4.3',
+        '虚拟机4.4': '192.168.4.4',
       };
       this.sending = true;
       let obj = await this.getConfigFile();
