@@ -50,9 +50,7 @@
                 v-else
                 type="success"
                 effect="dark"
-              >
-                {{ row.username }}-ok
-              </el-tag>
+              > {{ row.username }}-ok </el-tag>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
@@ -455,7 +453,7 @@ export default {
     },
     async send() {
       let map = {
-        新电脑: 'leirensheng.dynv6.net',
+        新电脑: this.pcName.includes('虚拟机') ? '192.168.4.1' : 'leirensheng.dynv6.net',
         4.3: '192.168.4.3',
         4.4: '192.168.4.4',
       };
