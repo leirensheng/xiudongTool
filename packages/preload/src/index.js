@@ -138,59 +138,37 @@ export function zip(dest, zipPath) {
   console.timeEnd();
 }
 
-export async function copyFile(name) {
-  const fs = require('fs');
-  const axios = require('axios');
-  const path = require('path');
-  const FormData = require('form-data');
-  console.log(0);
-  const dest = path.resolve(__dirname, '../../../../xiudongPupp/userData/', name);
-  console.log(111, dest, name);
-  const zipPath = path.resolve(dest, name + '.zip');
-  zip(dest, zipPath);
-
-  var localFile = fs.createReadStream(zipPath);
-  var formData = new FormData();
-  formData.append('file', localFile);
-  let rest = formData.get('file');
-  console.log(rest);
-  console.log(formData);
-  var headers = formData.getHeaders(); //获取headers
-
-  formData.getLength(async function (err, length) {
-    if (err) {
-      return;
-    }
-    //设置长度，important!!!
-    headers['content-length'] = length;
-    console.log(12, length);
-    await axios
-      .post('http://127.0.0.1:4000/file', formData, {'Content-Type': 'multipart/formData'})
-      .then(res => {
-        console.log('上传成功', res.data);
-      })
-      .catch(res => {
-        console.log(res.data);
-      });
-  });
-  // var headers = formData.getHeaders();
-  // headers['content-length'] = await getContentLength(formData);
+export function unZip(dest, name) {
+  let AdmZip = require('adm-zip');
+  let filePath = path.resolve(dest, name + '.zip');
+  const admzip = new AdmZip(filePath);
+  admzip.extractAllTo(path.resolve(dest, name));
+  fs.unlinkSync(filePath);
 }
 
 export async function cloneRemoteConfig(ip, username, data) {
   let http = require('http');
-  http
-    .get(`http://${ip}:4000/downloadConfig?username=${username}`, res => {
-      const dest = path.resolve(__dirname, '../../../../xiudongPupp/userData/', username + '.zip');
+  return new Promise((resolve, reject) => {
+    http
+      .get(`http://${ip}:4000/downloadConfig?username=${username}`, res => {
+        let folder = path.resolve(__dirname, '../../../../xiudongPupp/userData/');
+        const dest = path.resolve(folder, username + '.zip');
 
-      const file = fs.createWriteStream(dest);
-      res.pipe(file);
-      file.on('finish', () => {
-        file.close();
+        const file = fs.createWriteStream(dest);
+        res.pipe(file);
+        file.on('finish', async () => {
+          file.close();
+          await unZip(folder, username);
+          let config = await readFile('config.json');
+          config = JSON.parse(config);
+          config[username] = data;
+          await writeFile('config.json', JSON.stringify(config, null, 4));
+          resolve();
+        });
+      })
+      .on('error', err => {
+        console.log('Error: ', err.message);
+        reject(err);
       });
-    })
-    .on('error', err => {
-      console.log('Error: ', err.message);
-    });
-  // console.log('done');
+  });
 }
