@@ -1,13 +1,30 @@
 <template>
   <div>
-    <el-radio-group v-model="remotePc" size="large">
-      <el-radio-button v-for="one in pcs" :key="one" :disabled="one === pcName" :label="one" />
+    <el-radio-group
+      v-model="remotePc"
+      size="large"
+    >
+      <el-radio-button
+        v-for="one in pcs"
+        :key="one"
+        :disabled="one === pcName"
+        :label="one"
+      />
     </el-radio-group>
 
-    <el-button type="success" @click="loadConfig"> 读取 </el-button>
+    <el-button
+      type="success"
+      @click="loadConfig"
+    >
+      读取
+    </el-button>
 
     <div class="res">
-      <div v-for="(item, index) in data" :key="index" class="item">
+      <div
+        v-for="(item, index) in data"
+        :key="index"
+        class="item"
+      >
         <div class="name">{{ item.username }}</div>
         <div class="activity">{{ item.activity }}</div>
         <el-button @click="clone(item.username)">拉取</el-button>
