@@ -1,30 +1,13 @@
 <template>
   <div>
-    <el-radio-group
-      v-model="remotePc"
-      size="large"
-    >
-      <el-radio-button
-        v-for="one in pcs"
-        :key="one"
-        :disabled="one === pcName"
-        :label="one"
-      />
+    <el-radio-group v-model="remotePc" size="large">
+      <el-radio-button v-for="one in pcs" :key="one" :disabled="one === pcName" :label="one" />
     </el-radio-group>
 
-    <el-button
-      type="success"
-      @click="loadConfig"
-    >
-      读取
-    </el-button>
+    <el-button type="success" @click="loadConfig"> 读取 </el-button>
 
     <div class="res">
-      <div
-        v-for="(item, index) in data"
-        :key="index"
-        class="item"
-      >
+      <div v-for="(item, index) in data" :key="index" class="item">
         <div class="name">{{ item.username }}</div>
         <div class="activity">{{ item.activity }}</div>
         <el-button @click="clone(item.username)">拉取</el-button>
@@ -34,7 +17,7 @@
 </template>
 
 <script>
-import {getComputerName,cloneRemoteConfig} from '#preload';
+import {getComputerName, cloneRemoteConfig} from '#preload';
 import axios from 'axios';
 import {ElNotification} from 'element-plus';
 
@@ -47,8 +30,8 @@ export default {
       data: [],
     };
   },
-  computed:{
-    remoteIp(){
+  computed: {
+    remoteIp() {
       let map = {
         新电脑: this.pcName.includes('虚拟机') ? '192.168.4.1' : 'leirensheng.dynv6.net',
         '虚拟机4.3': '192.168.4.3',
@@ -79,15 +62,24 @@ export default {
       }
     },
     async loadConfig() {
-      this.data=[]
-      let res = await axios({
-        url: `http://${this.remoteIp}:4000/getAllUserConfig`,
-      });
-      this.data = Object.entries(res.data).map(([username, one]) => ({
-        username,
-        activity: one.activityName,
-      }));
-      console.log(res);
+      try {
+        this.data = [];
+        let res = await axios({
+          timeout: 3000,
+          url: `http://${this.remoteIp}:4000/getAllUserConfig`,
+        });
+        this.data = Object.entries(res.data).map(([username, one]) => ({
+          username,
+          activity: one.activityName,
+        }));
+        console.log(res);
+      } catch (e) {
+        ElNotification({
+          title: '失败',
+          message: e.message,
+          type: 'error',
+        });
+      }
     },
   },
 };
