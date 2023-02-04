@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button>一键处理</el-button>
+    <el-button @click="auto">一键处理</el-button>
     <S-Table
       ref="table"
       :highlight-current-row="false"
@@ -30,8 +30,18 @@
 import {readDir, rmDir, rename} from '#preload';
 import {ElMessageBox} from 'element-plus';
 let getNumber = str => Number(str.match(/data(\d+)/)[1]);
+import {getRunningCheck} from '/@/utils/index.js';
+import {useStore} from '/@/store/global';
+import {ElNotification} from 'element-plus';
 
 export default {
+  setup() {
+    let store = useStore();
+    let {pidInfo} = store;
+    return {
+      pidInfo,
+    };
+  },
   data() {
     return {
       allData: [],
@@ -42,12 +52,14 @@ export default {
             handler: this.handleEdit,
           },
           name: '重命名',
+          disabled: row => row.disabled,
           type: 'success',
         },
 
         {
           handler: this.remove,
           name: '删除',
+          disabled: row => row.disabled,
           type: 'danger',
         },
       ],
@@ -66,7 +78,6 @@ export default {
       ],
     };
   },
-
   methods: {
     async remove({username}) {
       await ElMessageBox.confirm(`确定删除【${username}】?`, '提示', {
@@ -78,21 +89,21 @@ export default {
       await this.getList();
     },
     async onDialogOpen(form) {
-      this.current = form.username;
+      this.currentUsername = form.username;
       return form;
     },
     async handleEdit({username}) {
       console.log(username);
-      if (username !== this.current) {
+      if (username !== this.currentUsername) {
         if (this.allData.find(one => one.username === username)) {
           throw new Error('有了' + username);
         } else {
-          await rename('./checkData/' + this.current, './checkData/' + username);
+          await rename('./checkData/' + this.currentUsername, './checkData/' + username);
         }
       }
     },
     getList() {
-      this.$refs.table.getList();
+      return this.$refs.table.getList();
     },
     checkIsContinue(data) {
       let startBreak = data.find((one, i) =>
@@ -100,15 +111,45 @@ export default {
           ? getNumber(data[i + 1].username) !== getNumber(one.username) + 1
           : false,
       );
-      console.log(11111, startBreak);
       if (startBreak) {
         startBreak.status = 1;
         this.startBreak = startBreak.username;
+      } else {
+        this.startBreak = '';
       }
+    },
+    getLastName() {
+      let arr = [...this.allData].filter(one => !one.disabled);
+      arr.reverse();
+      if (arr.length) {
+        return arr[0].username;
+      }
+      return '';
+    },
+    async auto() {
+      console.time();
+      await this.getList();
+      console.timeEnd();
+
+      while (this.startBreak) {
+        let nextName = `data${getNumber(this.startBreak) + 1}`;
+        console.log(nextName);
+
+        this.currentUsername = this.getLastName();
+        console.log('准备将' + this.currentUsername + '改成' + nextName);
+        await this.handleEdit({username: nextName});
+        await this.getList();
+      }
+      ElNotification({
+        title: '成功',
+        message: '处理成功',
+        type: 'success',
+      });
     },
     async getData({queryItems}) {
       let allUser = await readDir('checkData');
-      let allData = allUser.map(username => ({username}));
+      let usedNames = await getRunningCheck(this.pidInfo);
+      let allData = allUser.map(username => ({username, disabled: usedNames.includes(username)}));
       this.allData = allData;
 
       let items = queryItems.filter(item => item.value);
@@ -120,6 +161,7 @@ export default {
         return getNumber(a.username) - getNumber(b.username);
       });
       this.checkIsContinue(allData);
+      this.allData = allData;
       return {
         total: allData.length,
         records: allData,

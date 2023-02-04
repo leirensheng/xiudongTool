@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 const fs = require('fs');
 const path = require('path');
 
