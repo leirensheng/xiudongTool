@@ -37,7 +37,7 @@
 import {getComputerName, cloneRemoteConfig} from '#preload';
 import axios from 'axios';
 import {ElNotification} from 'element-plus';
-
+import {getRunningUser} from '/@/utils/index.js';
 export default {
   data() {
     return {
@@ -81,16 +81,25 @@ export default {
     async loadConfig() {
       try {
         this.data = [];
-        let res = await axios({
+        let {
+          data: {config, pidToCmd},
+        } = await axios({
           timeout: 3000,
           url: `http://${this.remoteIp}:4000/getAllUserConfig`,
         });
-        this.data = Object.entries(res.data).map(([username, one]) => ({
-          username,
-          activity: one.activityName,
-          config: one,
-        }));
-        console.log(res);
+
+        let pidInfo = {};
+        Object.entries(pidToCmd).forEach(([key, value]) => {
+          pidInfo[value] = key;
+        });
+        let runnings = getRunningUser(pidInfo);
+        this.data = Object.entries(config)
+          .map(([username, one]) => ({
+            username,
+            activity: one.activityName,
+            config: one,
+          }))
+          .filter(one => !runnings.includes(one.username));
       } catch (e) {
         ElNotification({
           title: '失败',
