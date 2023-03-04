@@ -65,7 +65,6 @@
                   复制配置到其他电脑
                 </el-dropdown-item>
 
-
                 <el-dropdown-item
                   v-if="!row.status"
                   @click="copyDir(row)"
