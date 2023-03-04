@@ -23,8 +23,8 @@
         <el-table-column
           v-if="isShowIndex"
           type="index"
-          label="序号"
-          width="50"
+          label="i"
+          width="60"
           align="center"
         />
         <el-table-column
