@@ -185,7 +185,7 @@ export default {
         cmd('cd ../xiudongServer && pm2 start index.js');
       };
 
-      let stopServer = ()=>{
+      let stopServer = () => {
         cmd('cd ../xiudongServer && pm2 stop index.js');
       };
       return {
@@ -193,7 +193,6 @@ export default {
         stopServer,
       };
     };
-
 
     return {
       ...useServer(),
