@@ -6,7 +6,9 @@
         :inline="true"
       >
         <el-form-item>
-          <el-button @click="startServer">重启服务器</el-button>
+          <el-button @click="stopServer">关闭服务器</el-button>
+
+          <el-button @click="startServer">启动服务器</el-button>
         </el-form-item>
 
         <el-form-item label="隐藏频繁">
@@ -181,13 +183,18 @@ export default {
 
     let useServer = () => {
       let startServer = () => {
-        cmd('cd ../xiudongServer && pm2 restart index.js');
+        cmd('cd ../xiudongServer && pm2 start index.js');
       };
 
+      let stopServer = ()=>{
+        cmd('cd ../xiudongServer && pm2 stop index.js');
+      };
       return {
         startServer,
+        stopServer,
       };
     };
+
 
     return {
       ...useServer(),
