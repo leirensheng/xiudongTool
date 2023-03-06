@@ -242,7 +242,7 @@ export default {
       items: [
         {
           id: 'hasSuccess',
-          name: '是否已经成功',
+          name: 'isSuccess',
           isShow: false,
           options: [
             {name: '是', id: true},
@@ -519,7 +519,6 @@ export default {
       let {value} = await ElMessageBox.prompt('', '输入新用户');
       let {value: phone} = await ElMessageBox.prompt('', '用户手机号');
       this.loading = true;
-
       await this.cmdCopy(value, username, phone);
       await this.getList();
       this.loading = false;
