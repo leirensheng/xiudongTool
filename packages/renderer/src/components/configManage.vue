@@ -6,7 +6,9 @@
         :inline="true"
       >
         <el-form-item>
-          <el-button @click="startServer">重启服务器</el-button>
+          <el-button @click="stopServer">关闭服务器</el-button>
+
+          <el-button @click="startServer">启动服务器</el-button>
         </el-form-item>
 
         <el-form-item label="隐藏频繁">
@@ -63,6 +65,19 @@
                   @click="copyToRemote(row)"
                 >
                   复制配置到其他电脑
+                </el-dropdown-item>
+
+                <el-dropdown-item
+                  v-if="!row.status"
+                  @click="copyDir(row)"
+                >
+                  toCheck
+                </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="!row.status"
+                  @click="remove(row)"
+                >
+                  删除
                 </el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -167,11 +182,15 @@ export default {
 
     let useServer = () => {
       let startServer = () => {
-        cmd('cd ../xiudongServer && pm2 restart index.js');
+        cmd('cd ../xiudongServer && pm2 start index.js');
       };
 
+      let stopServer = () => {
+        cmd('cd ../xiudongServer && pm2 stop index.js');
+      };
       return {
         startServer,
+        stopServer,
       };
     };
 
@@ -218,23 +237,11 @@ export default {
           },
           name: '编辑',
         },
-        {
-          handler: row => this.remove(row),
-          name: '删除',
-          show: row => row.status !== 1,
-          type: 'danger',
-        },
-        {
-          handler: this.copyDir,
-          name: 'ToCheck',
-          show: row => row.status !== 1,
-          type: 'warning',
-        },
       ],
       items: [
         {
           id: 'hasSuccess',
-          name: '是否已经成功',
+          name: 'isSuccess',
           isShow: false,
           options: [
             {name: '是', id: true},
@@ -248,7 +255,7 @@ export default {
         },
         {
           id: 'username',
-          name: '用户名',
+          name: 'user',
           width: 100,
           valueType: 'slot',
           support: {
@@ -258,7 +265,7 @@ export default {
         },
         {
           id: 'port',
-          name: '端口',
+          name: 'port',
           width: 80,
           support: {
             query: {},
@@ -269,7 +276,7 @@ export default {
 
         {
           id: 'activityId',
-          name: '演出id',
+          name: 'showId',
           width: 100,
           valueType: 'slot',
           support: {
@@ -280,7 +287,7 @@ export default {
         {
           id: 'activityName',
           minWidth: 200,
-          name: '演出',
+          name: 'show',
           valueType: 'slot',
           support: {
             query: {},
@@ -289,8 +296,8 @@ export default {
 
         {
           id: 'nameIndex',
-          name: '观演人',
-          width: 50,
+          name: 'order',
+          width: 67,
           support: {
             edit: {
               type: 'number',
@@ -318,7 +325,7 @@ export default {
 
         {
           id: 'phone',
-          name: '手机',
+          name: 'phone',
           required: true,
           support: {
             add: {},
@@ -328,13 +335,13 @@ export default {
         },
         {
           id: 'showTime',
-          name: '演出时间',
+          name: 'showTime',
           width: 110,
         },
 
         {
           id: 'targetTypes',
-          name: '目标',
+          name: 'target',
           valueType: 'slot',
           options: [],
           support: {
@@ -357,7 +364,7 @@ export default {
         },
         {
           id: 'remark',
-          name: '备注',
+          name: 'remark',
           width: 100,
           support: {
             query: {},
@@ -511,7 +518,6 @@ export default {
       let {value} = await ElMessageBox.prompt('', '输入新用户');
       let {value: phone} = await ElMessageBox.prompt('', '用户手机号');
       this.loading = true;
-
       await this.cmdCopy(value, username, phone);
       await this.getList();
       this.loading = false;
