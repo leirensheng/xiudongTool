@@ -93,7 +93,12 @@ export default {
       let ws = new WebSocket(socketURL + pid);
       ws.onopen = () => {
         if (!prePid) {
-          let map = {公司: 'd:/xiudongPupp', 新电脑: 'e:/xiudongPupp', '虚拟机4.3': 'f:/xiudongPupp','虚拟机4.4': 'f:/xiudongPupp'};
+          let map = {
+            公司: 'd:/xiudongPupp',
+            新电脑: 'e:/xiudongPupp',
+            '虚拟机4.3': 'f:/xiudongPupp',
+            '虚拟机4.4': 'f:/xiudongPupp',
+          };
           ws.send(`cd ${map[getComputerName()]} && ${this.cmd} \r\n`);
         }
       };
