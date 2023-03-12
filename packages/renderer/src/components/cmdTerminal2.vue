@@ -93,7 +93,6 @@ export default {
       ws.onopen = () => {
         if (!prePid) {
           ws.send(`${this.cmd} \r\n`);
-
         }
       };
       this.socket = ws;
