@@ -19,7 +19,6 @@ import 'xterm/css/xterm.css';
 import {AttachAddon} from 'xterm-addon-attach';
 import {FitAddon} from 'xterm-addon-fit';
 import {useStore} from '/@/store/global';
-import {getComputerName} from '#preload';
 
 export default {
   props: {
@@ -93,13 +92,7 @@ export default {
       let ws = new WebSocket(socketURL + pid);
       ws.onopen = () => {
         if (!prePid) {
-          let map = {
-            公司: 'd:/xiudongPupp',
-            新电脑: 'e:/xiudongPupp',
-            '虚拟机4.3': 'f:/xiudongPupp',
-            '虚拟机4.4': 'f:/xiudongPupp',
-          };
-          ws.send(`cd ${map[getComputerName()]} && ${this.cmd} \r\n`);
+          ws.send(`${this.cmd} \r\n`);
         }
       };
       this.socket = ws;
