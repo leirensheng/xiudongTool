@@ -56,12 +56,11 @@ export default {
       sendStop();
       setTimeout(async () => {
         let pid = this.pidInfo[this.cmd];
-      this.socket.close();
-      await axios.get('http://127.0.0.1:4000/close/' + pid);
-      delete this.pidInfo[this.cmd];
-      this.$emit('exit');
+        this.socket.close();
+        await axios.get('http://127.0.0.1:4000/close/' + pid);
+        delete this.pidInfo[this.cmd];
+        this.$emit('exit');
       }, 200);
-    
     },
     async init() {
       const socketURL = 'ws://127.0.0.1:4000/socket/';
