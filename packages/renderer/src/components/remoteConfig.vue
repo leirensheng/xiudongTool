@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import {getComputerName, cloneRemoteConfig} from '#preload';
+import {getComputerName, cloneRemoteConfig, getRemoteIp} from '#preload';
 import axios from 'axios';
 import {ElNotification} from 'element-plus';
 import {getRunningUser} from '/@/utils/index.js';
@@ -42,19 +42,14 @@ export default {
   data() {
     return {
       remotePc: '',
-      pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4'],
+      pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4','联想'],
       pcName: '',
       data: [],
     };
   },
   computed: {
     remoteIp() {
-      let map = {
-        新电脑: this.pcName.includes('虚拟机') ? '192.168.4.1' : 'leirensheng.dynv6.net',
-        '虚拟机4.3': '192.168.4.3',
-        '虚拟机4.4': '192.168.4.4',
-      };
-      return map[this.remotePc];
+      return getRemoteIp(this.remotePc);
     },
   },
   created() {

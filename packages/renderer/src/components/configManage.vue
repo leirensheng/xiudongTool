@@ -165,7 +165,7 @@
 </template>
 
 <script>
-import {readFile, cmd, copyText, writeFile, getComputerName} from '#preload';
+import {readFile, cmd, copyText, writeFile, getComputerName, getRemoteIp} from '#preload';
 import {ElMessageBox} from 'element-plus';
 import {useStore} from '/@/store/global';
 import CmdTerminal2 from './cmdTerminal2.vue';
@@ -202,7 +202,7 @@ export default {
   data() {
     return {
       pcName: '',
-      pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4'],
+      pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4', '联想'],
       remoteDialogVisible: false,
       sending: false,
       remotePc: '新电脑',
@@ -461,17 +461,12 @@ export default {
       return row.color;
     },
     async send() {
-      let map = {
-        新电脑: this.pcName.includes('虚拟机') ? '192.168.4.1' : 'leirensheng.dynv6.net',
-        '虚拟机4.3': '192.168.4.3',
-        '虚拟机4.4': '192.168.4.4',
-      };
       this.sending = true;
       let obj = await this.getConfigFile();
       let config = obj[this.curRow.username];
       let res = await axios.post(
         'http://127.0.0.1:4000/copyUserFile',
-        {username: this.curRow.username, host: map[this.remotePc], config},
+        {username: this.curRow.username, host: getRemoteIp(this.remotePc), config},
         {
           timeout: 20000,
         },
