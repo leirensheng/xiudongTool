@@ -177,14 +177,17 @@ export async function cloneRemoteConfig(ip, username, data) {
   });
 }
 
-
-export function getRemoteIp (name){
+export function getRemoteIp(name) {
   let pcName = getComputerName();
   let map = {
-    新电脑: pcName.includes('虚拟机') ? '192.168.4.1' : pcName==='联想'? '192.168.5.1': 'leirensheng.dynv6.net',
+    新电脑: pcName.includes('虚拟机')
+      ? '192.168.4.1'
+      : pcName === '联想'
+      ? '192.168.5.1'
+      : 'leirensheng.dynv6.net',
     '虚拟机4.3': '192.168.4.3',
     '虚拟机4.4': '192.168.4.4',
-    '联想': '192.168.5.2',
+    联想: '192.168.5.2',
   };
   return map[name];
 }
