@@ -2,7 +2,7 @@
 SendMode Input
 SetWorkingDir, %A_ScriptDir%
 
-WinActivate, ahk_exe electron.exe
-click 800 800
+MouseClick, left , 0, -120, 1, 0, , R
 send ^c
+sleep 600
 send ^c

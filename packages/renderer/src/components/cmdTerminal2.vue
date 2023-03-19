@@ -14,12 +14,12 @@
 
 <script>
 import axios from 'axios';
-import {Terminal} from 'xterm';
+import { Terminal } from 'xterm';
 import 'xterm/css/xterm.css';
-import {AttachAddon} from 'xterm-addon-attach';
-import {FitAddon} from 'xterm-addon-fit';
-import {useStore} from '/@/store/global';
-import {sendStop} from '#preload';
+import { AttachAddon } from 'xterm-addon-attach';
+import { FitAddon } from 'xterm-addon-fit';
+import { useStore } from '/@/store/global';
+import { sendStop } from '#preload';
 
 export default {
   props: {
@@ -31,7 +31,7 @@ export default {
   emits: ['exit'],
   setup() {
     let store = useStore();
-    let {pidInfo} = store;
+    let { pidInfo } = store;
     return {
       pidInfo,
     };
@@ -53,15 +53,12 @@ export default {
   },
   methods: {
     async close() {
-      sendStop();
-      setTimeout(async () => {
-        let pid = this.pidInfo[this.cmd];
+      await sendStop();
+      let pid = this.pidInfo[this.cmd];
       this.socket.close();
       await axios.get('http://127.0.0.1:4000/close/' + pid);
       delete this.pidInfo[this.cmd];
       this.$emit('exit');
-      }, 200);
-    
     },
     async init() {
       const socketURL = 'ws://127.0.0.1:4000/socket/';
@@ -120,6 +117,7 @@ export default {
 #terminal {
   height: 100%;
 }
+
 .close-wrap {
   padding: 10px;
   display: flex;
