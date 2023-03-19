@@ -19,7 +19,7 @@ import 'xterm/css/xterm.css';
 import { AttachAddon } from 'xterm-addon-attach';
 import { FitAddon } from 'xterm-addon-fit';
 import { useStore } from '/@/store/global';
-import { sendStop } from '#preload';
+import { sendStop,getComputerName } from '#preload';
 
 export default {
   props: {
@@ -53,7 +53,10 @@ export default {
   },
   methods: {
     async close() {
-      await sendStop();
+      let computer = getComputerName();
+      if(['新电脑','联想'].includes(computer)){
+        await sendStop();
+      }
       let pid = this.pidInfo[this.cmd];
       this.socket.close();
       await axios.get('http://127.0.0.1:4000/close/' + pid);
