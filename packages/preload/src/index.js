@@ -111,7 +111,7 @@ export function sendMsgToMain(eventName, val) {
 export function sendStop() {
   const child = require('child_process');
   return new Promise((resolve, reject) => {
-    child.execFile(path.resolve(__dirname,'../../..//sendStop.exe'), (err) => {
+    child.execFile(path.resolve(__dirname, '../../..//sendStop.exe'), err => {
       if (err) {
         reject(err);
       } else {
