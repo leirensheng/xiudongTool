@@ -192,19 +192,19 @@ export function getRemoteIp(name) {
   return map[name];
 }
 
-export  function doTwice(fn, host) {
-  return async (...args)=>{
+export function doTwice(fn, host) {
+  return async (...args) => {
     let res = await readFile('localConfig.json');
     let {dnsIp} = JSON.parse(res);
-  
+
     if (host.includes('leirensheng') && dnsIp) {
       try {
         res = await fn(dnsIp, ...args);
       } catch (e) {
-        res = await fn(host,...args);
+        res = await fn(host, ...args);
       }
     } else {
-      res = await fn(host,...args);
+      res = await fn(host, ...args);
     }
     return res;
   };
