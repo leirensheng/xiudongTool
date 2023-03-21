@@ -479,14 +479,14 @@ export default {
           type: 'success',
         });
         // this.remove(this.curRow);
-        
+
         await ElMessageBox.confirm(`复制完成,删除配置【${this.curRow.username}】?`, '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning',
-          });
-         await this.remove(this.curRow, true);
-         this.getList();
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        });
+        await this.remove(this.curRow, true);
+        this.getList();
       } else {
         ElNotification({
           title: '失败',
