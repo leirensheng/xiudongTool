@@ -23,11 +23,14 @@
         </el-button>
       </el-form-item>
     </el-form>
+
+    {{ config.dnsIp }}
+    <el-button @click="refreshIp">更新dns</el-button>
   </div>
 </template>
 
 <script>
-import {readFile, writeFile} from '#preload';
+import {readFile, writeFile,cmd} from '#preload';
 import {ElNotification} from 'element-plus';
 
 export default {
@@ -40,6 +43,18 @@ export default {
     this.getConfig();
   },
   methods: {
+    refreshIp(){
+        cmd('nslookup leirensheng.dynv6.net',(val)=>{
+          console.log(val);
+          let res =val.trim().match(/(\d.*$)/);
+          if(res){
+            let ip = res[1];
+            console.log(ip);
+            this.config.dnsIp = ip;
+            this.onSubmit();
+          }
+        });
+    },
     async onSubmit() {
       await writeFile('localConfig.json', JSON.stringify(this.config, null, 4));
       ElNotification({

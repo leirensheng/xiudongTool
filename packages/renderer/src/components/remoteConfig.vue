@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import {getComputerName, cloneRemoteConfig, getRemoteIp} from '#preload';
+import {getComputerName, cloneRemoteConfig, getRemoteIp,doTwice} from '#preload';
 import axios from 'axios';
 import {ElNotification} from 'element-plus';
 import {getRunningUser} from '/@/utils/index.js';
@@ -59,7 +59,8 @@ export default {
   methods: {
     async clone({username, config}) {
       try {
-        await cloneRemoteConfig(this.remoteIp, username, JSON.parse(JSON.stringify(config)));
+        let fn = doTwice(cloneRemoteConfig, this.remoteIp);
+        await fn(username, JSON.parse(JSON.stringify(config)));
         ElNotification({
           title: '成功',
           message: '拉取成功',
@@ -76,12 +77,17 @@ export default {
     async loadConfig() {
       try {
         this.data = [];
+
+        let send = (ip)=> axios({
+          timeout: 3000,
+          url: `http://${ip}:4000/getAllUserConfig`,
+        });
+
+        let fn = doTwice(send, this.remoteIp);
+
         let {
           data: {config, pidToCmd},
-        } = await axios({
-          timeout: 3000,
-          url: `http://${this.remoteIp}:4000/getAllUserConfig`,
-        });
+        } = await fn();
 
         let pidInfo = {};
         Object.entries(pidToCmd).forEach(([key, value]) => {
