@@ -28,6 +28,8 @@ import CheckFileFileRename from '/@/components/checkFileFileRename.vue';
 import onlyTest from '/@/components/onlyTest.vue';
 import LocalConfig from '/@/components/localConfig.vue';
 import RemoteConfig from '/@/components/remoteConfig.vue';
+import {getIp} from './utils/index.js';
+ 
 export default {
   components: {
     SearchActivity,
@@ -82,6 +84,9 @@ export default {
         },
       ],
     };
+  },
+  created(){
+    getIp();
   },
   mounted() {},
   methods: {},
