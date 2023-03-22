@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import {getComputerName, cloneRemoteConfig, getRemoteIp,doTwice} from '#preload';
+import {getComputerName, cloneRemoteConfig, getRemoteIp, doTwice} from '#preload';
 import axios from 'axios';
 import {ElNotification} from 'element-plus';
 import {getRunningUser,getIp} from '/@/utils/index.js';
@@ -78,10 +78,11 @@ export default {
       try {
         this.data = [];
 
-        let send = (ip)=> axios({
-          timeout: 3000,
-          url: `http://${ip}:4000/getAllUserConfig`,
-        });
+        let send = ip =>
+          axios({
+            timeout: 3000,
+            url: `http://${ip}:4000/getAllUserConfig`,
+          });
 
         let fn = doTwice(send, this.remoteIp);
 
