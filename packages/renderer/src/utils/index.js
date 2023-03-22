@@ -39,7 +39,7 @@ let getIp = async () => {
     let ip = await refreshIp();
     ElNotification({
       title: 'DNS更新成功',
-      message:ip,
+      message: ip,
       type: 'success',
     });
   } catch (e) {

@@ -43,7 +43,7 @@ export default {
     this.getConfig();
   },
   methods: {
-    async  refreshIp(){
+    async refreshIp() {
       await getIp();
       this.getConfig();
     },
