@@ -1,6 +1,6 @@
 const shell = require('shelljs');
 
-export function cmd(str, cb) {
+export default function cmd(str, cb) {
   let val = 'cd ../xiudongPupp &&' + str;
   var child = shell.exec(val, {async: true, silent: true});
   if (cb) {

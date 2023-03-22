@@ -1,10 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-
 export {sha256sum} from './nodeCrypto';
 export {versions} from './versions';
-export {cmd} from './cmd.js';
-
+import cmd from './cmd.js';
+export {cmd};
 export function readFile(name) {
   return new Promise((resolve, reject) => {
     fs.readFile(path.resolve('../xiudongPupp', name), 'utf-8', (e, res) => {
@@ -192,20 +191,51 @@ export function getRemoteIp(name) {
   return map[name];
 }
 
-export  function doTwice(fn, host) {
-  return async (...args)=>{
+export function doTwice(fn, host) {
+  return async (...args) => {
     let res = await readFile('localConfig.json');
     let {dnsIp} = JSON.parse(res);
-  
+
     if (host.includes('leirensheng') && dnsIp) {
       try {
         res = await fn(dnsIp, ...args);
       } catch (e) {
-        res = await fn(host,...args);
+        res = await fn(host, ...args);
       }
     } else {
-      res = await fn(host,...args);
+      res = await fn(host, ...args);
     }
     return res;
   };
+}
+
+export function refreshIp() {
+  return new Promise((resolve, reject) => {
+    let str = '';
+    cmd('nslookup leirensheng.dynv6.net', async val => {
+      str += val;
+      if (val.includes('done')) {
+        try {
+          console.log(str);
+          let res = str
+            .replace('done', '')
+            .trim()
+            .match(/(\d.*$)/);
+          if (res && !str.includes('Non-existent domain')) {
+            let ip = res[1];
+            let config = await readFile('localConfig.json');
+            config = JSON.parse(config);
+            config.dnsIp = ip;
+            await writeFile('localConfig.json', JSON.stringify(config, null, 4));
+            resolve(ip);
+          } else {
+            reject();
+          }
+        } catch (e) {
+          console.log(e);
+          reject(e);
+        }
+      }
+    });
+  });
 }

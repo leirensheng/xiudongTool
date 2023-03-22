@@ -37,7 +37,7 @@
 import {getComputerName, cloneRemoteConfig, getRemoteIp,doTwice} from '#preload';
 import axios from 'axios';
 import {ElNotification} from 'element-plus';
-import {getRunningUser} from '/@/utils/index.js';
+import {getRunningUser,getIp} from '/@/utils/index.js';
 export default {
   data() {
     return {
@@ -107,6 +107,7 @@ export default {
           message: e.message,
           type: 'error',
         });
+        getIp();
       }
     },
   },

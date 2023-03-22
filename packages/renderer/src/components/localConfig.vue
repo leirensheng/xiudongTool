@@ -30,9 +30,9 @@
 </template>
 
 <script>
-import {readFile, writeFile,cmd} from '#preload';
+import {readFile, writeFile} from '#preload';
 import {ElNotification} from 'element-plus';
-
+import {getIp} from '../utils/index.js';
 export default {
   data() {
     return {
@@ -43,17 +43,9 @@ export default {
     this.getConfig();
   },
   methods: {
-    refreshIp(){
-        cmd('nslookup leirensheng.dynv6.net',(val)=>{
-          console.log(val);
-          let res =val.trim().match(/(\d.*$)/);
-          if(res){
-            let ip = res[1];
-            console.log(ip);
-            this.config.dnsIp = ip;
-            this.onSubmit();
-          }
-        });
+    async  refreshIp(){
+      await getIp();
+      this.getConfig();
     },
     async onSubmit() {
       await writeFile('localConfig.json', JSON.stringify(this.config, null, 4));

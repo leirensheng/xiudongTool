@@ -1,4 +1,6 @@
-// eslint-disable-next-line import/prefer-default-export
+import {refreshIp} from '#preload';
+import {ElNotification} from 'element-plus';
+
 export function debounce(fn, time = 2500) {
   let timer = null;
   return (...args) => {
@@ -32,4 +34,20 @@ let getRunningUser = pidInfo => {
   return res;
 };
 
-export {getRunningCheck, getRunningUser};
+let getIp = async () => {
+  try {
+    let ip = await refreshIp();
+    ElNotification({
+      title: 'DNS更新成功',
+      message:ip,
+      type: 'success',
+    });
+  } catch (e) {
+    ElNotification({
+      title: 'DNS更新出错',
+      type: 'error',
+    });
+  }
+};
+
+export {getRunningCheck, getRunningUser, getIp};
