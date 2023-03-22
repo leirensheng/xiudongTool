@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import {getComputerName, cloneRemoteConfig} from '#preload';
+import {getComputerName, cloneRemoteConfig, getRemoteIp, doTwice} from '#preload';
 import axios from 'axios';
 import {ElNotification} from 'element-plus';
 import {getRunningUser} from '/@/utils/index.js';
@@ -42,19 +42,14 @@ export default {
   data() {
     return {
       remotePc: '',
-      pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4'],
+      pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4', '联想'],
       pcName: '',
       data: [],
     };
   },
   computed: {
     remoteIp() {
-      let map = {
-        新电脑: this.pcName.includes('虚拟机') ? '192.168.4.1' : 'leirensheng.dynv6.net',
-        '虚拟机4.3': '192.168.4.3',
-        '虚拟机4.4': '192.168.4.4',
-      };
-      return map[this.remotePc];
+      return getRemoteIp(this.remotePc);
     },
   },
   created() {
@@ -64,7 +59,8 @@ export default {
   methods: {
     async clone({username, config}) {
       try {
-        await cloneRemoteConfig(this.remoteIp, username, JSON.parse(JSON.stringify(config)));
+        let fn = doTwice(cloneRemoteConfig, this.remoteIp);
+        await fn(username, JSON.parse(JSON.stringify(config)));
         ElNotification({
           title: '成功',
           message: '拉取成功',
@@ -81,12 +77,18 @@ export default {
     async loadConfig() {
       try {
         this.data = [];
+
+        let send = ip =>
+          axios({
+            timeout: 3000,
+            url: `http://${ip}:4000/getAllUserConfig`,
+          });
+
+        let fn = doTwice(send, this.remoteIp);
+
         let {
           data: {config, pidToCmd},
-        } = await axios({
-          timeout: 3000,
-          url: `http://${this.remoteIp}:4000/getAllUserConfig`,
-        });
+        } = await fn();
 
         let pidInfo = {};
         Object.entries(pidToCmd).forEach(([key, value]) => {
