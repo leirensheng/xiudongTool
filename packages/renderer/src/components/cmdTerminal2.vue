@@ -14,12 +14,12 @@
 
 <script>
 import axios from 'axios';
-import { Terminal } from 'xterm';
+import {Terminal} from 'xterm';
 import 'xterm/css/xterm.css';
-import { AttachAddon } from 'xterm-addon-attach';
-import { FitAddon } from 'xterm-addon-fit';
-import { useStore } from '/@/store/global';
-import { sendStop, getComputerName } from '#preload';
+import {AttachAddon} from 'xterm-addon-attach';
+import {FitAddon} from 'xterm-addon-fit';
+import {useStore} from '/@/store/global';
+import {sendStop, getComputerName} from '#preload';
 
 export default {
   props: {
@@ -31,7 +31,7 @@ export default {
   emits: ['exit', 'message'],
   setup() {
     let store = useStore();
-    let { pidInfo } = store;
+    let {pidInfo} = store;
     return {
       pidInfo,
     };
@@ -110,7 +110,6 @@ export default {
       ws.onmessage = val => {
         this.$emit('message', val.data);
       };
-
 
       let attachAddon = new AttachAddon(ws);
       term.loadAddon(attachAddon);
