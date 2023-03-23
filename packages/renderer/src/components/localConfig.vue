@@ -4,12 +4,12 @@
       :form="config"
       inline
     >
-      <el-form-item label="有票不提示">
+      <!-- <el-form-item label="有票不提示">
         <el-switch v-model="config.noSend"></el-switch>
-      </el-form-item>
-      <el-form-item label="不自动付">
+      </el-form-item> -->
+      <!-- <el-form-item label="不自动付">
         <el-switch v-model="config.noAutoPay"></el-switch>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="服务器ip">
         <el-input v-model="config.checkServerIp"></el-input>
       </el-form-item>
@@ -24,26 +24,76 @@
       </el-form-item>
     </el-form>
 
-    {{ config.dnsIp }}
-    <el-button @click="refreshIp">更新dns</el-button>
+    <div>
+      <span
+        class="show-ip"
+        @click="copyText(config.dnsIp + ':5678')"
+      >
+        <el-icon class="copy-icon">
+          <DocumentCopy />
+        </el-icon>{{ config.dnsIp }}:5678</span>
+      <el-button @click="refreshDns">更新DNS</el-button>
+      <el-button
+        style="margin-left: 20px;"
+        @click="refreshIp"
+      >
+        更新IP
+      </el-button>
+    </div>
+    <div>
+      <cmd-terminal2
+        v-if="isStart"
+        ref="terminal"
+        cmd="node updateWanIp.js"
+        @message="handleMessage"
+        @exit="isStart = false"
+      ></cmd-terminal2>
+    </div>
   </div>
 </template>
 
 <script>
-import {readFile, writeFile} from '#preload';
-import {ElNotification} from 'element-plus';
-import {getIp} from '../utils/index.js';
+import { readFile, writeFile, copyText } from '#preload';
+import { ElNotification } from 'element-plus';
+import { getIp } from '../utils/index.js';
 export default {
   data() {
     return {
+      isStart: false,
       config: {},
     };
   },
   created() {
     this.getConfig();
   },
+  beforeUnmount() {
+    this.isStart && this.$refs.terminal.close();
+  },
   methods: {
-    async refreshIp() {
+    copyText(str) {
+      copyText(str);
+      ElNotification({
+        title: '成功',
+        message: '复制成功',
+        type: 'success',
+      });
+    },
+    async handleMessage(val) {
+      if (val.includes('成功')) {
+        let dnsIp = val.match(/\[(.*?)\]/);
+        await writeFile('localConfig.json', JSON.stringify({ ...this.config, dnsIp }, null, 4));
+        ElNotification({
+          title: '成功',
+          message: 'WAN ip更新成功',
+          type: 'success',
+        });
+      }
+    },
+
+    refreshIp() {
+      this.isStart = true;
+    },
+    async refreshDns() {
       await getIp();
       this.getConfig();
     },
@@ -64,4 +114,14 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.show-ip {
+  cursor: pointer;
+
+  i {
+    position: relative;
+    top: 2px;
+    margin-right: 10px;
+  }
+}
+</style>

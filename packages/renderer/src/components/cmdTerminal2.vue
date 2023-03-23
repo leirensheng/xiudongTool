@@ -14,12 +14,12 @@
 
 <script>
 import axios from 'axios';
-import {Terminal} from 'xterm';
+import { Terminal } from 'xterm';
 import 'xterm/css/xterm.css';
-import {AttachAddon} from 'xterm-addon-attach';
-import {FitAddon} from 'xterm-addon-fit';
-import {useStore} from '/@/store/global';
-import {sendStop, getComputerName} from '#preload';
+import { AttachAddon } from 'xterm-addon-attach';
+import { FitAddon } from 'xterm-addon-fit';
+import { useStore } from '/@/store/global';
+import { sendStop, getComputerName } from '#preload';
 
 export default {
   props: {
@@ -28,10 +28,10 @@ export default {
       default: '',
     },
   },
-  emits: ['exit'],
+  emits: ['exit', 'message'],
   setup() {
     let store = useStore();
-    let {pidInfo} = store;
+    let { pidInfo } = store;
     return {
       pidInfo,
     };
@@ -94,6 +94,11 @@ export default {
       term.open(document.getElementById('terminal'));
       term.focus();
 
+      term.onSelectionChange(() => {
+        let content = term.getSelection();
+        navigator.clipboard.writeText(content);
+      });
+
       let ws = new WebSocket(socketURL + pid);
       ws.onopen = () => {
         if (!prePid) {
@@ -101,6 +106,12 @@ export default {
         }
       };
       this.socket = ws;
+
+      ws.onmessage = val => {
+        this.$emit('message', val.data);
+      };
+
+
       let attachAddon = new AttachAddon(ws);
       term.loadAddon(attachAddon);
       var fitAddon = new FitAddon();
