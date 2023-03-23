@@ -1,5 +1,6 @@
 import {refreshIp} from '#preload';
 import {ElNotification} from 'element-plus';
+import axios from 'axios';
 
 export function debounce(fn, time = 2500) {
   let timer = null;
@@ -50,4 +51,22 @@ let getIp = async () => {
   }
 };
 
-export {getRunningCheck, getRunningUser, getIp};
+let startCmdWithPidInfo = async cmd => {
+  const socketURL = 'ws://127.0.0.1:4000/socket/';
+
+  let pid = await axios
+    .get('http://127.0.0.1:4000/terminal')
+    .then(res => res.data)
+    .catch(err => {
+      throw new Error(err);
+    });
+  console.log('新增进程:' + pid);
+  this.pidInfo[this.cmd] = pid;
+
+  let ws = new WebSocket(socketURL + pid);
+  ws.onopen = () => {
+    ws.send(`${cmd} \r\n`);
+  };
+};
+
+export {getRunningCheck, getRunningUser, getIp, startCmdWithPidInfo};
