@@ -30,11 +30,12 @@
         @click="copyText(config.dnsIp + ':5678')"
       >
         <el-icon class="copy-icon">
-          <DocumentCopy />
-        </el-icon>{{ config.dnsIp }}:5678</span>
+          <DocumentCopy /> </el-icon
+        >{{ config.dnsIp }}:5678</span
+      >
       <el-button @click="refreshDns">更新DNS</el-button>
       <el-button
-        style="margin-left: 20px;"
+        style="margin-left: 20px"
         @click="refreshIp"
       >
         更新IP
@@ -53,9 +54,9 @@
 </template>
 
 <script>
-import { readFile, writeFile, copyText } from '#preload';
-import { ElNotification } from 'element-plus';
-import { getIp } from '../utils/index.js';
+import {readFile, writeFile, copyText} from '#preload';
+import {ElNotification} from 'element-plus';
+import {getIp} from '../utils/index.js';
 export default {
   data() {
     return {
@@ -81,7 +82,7 @@ export default {
     async handleMessage(val) {
       if (val.includes('成功')) {
         let dnsIp = val.match(/\[(.*?)\]/);
-        await writeFile('localConfig.json', JSON.stringify({ ...this.config, dnsIp }, null, 4));
+        await writeFile('localConfig.json', JSON.stringify({...this.config, dnsIp}, null, 4));
         ElNotification({
           title: '成功',
           message: 'WAN ip更新成功',
