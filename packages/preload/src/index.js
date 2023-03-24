@@ -212,7 +212,7 @@ export function doTwice(fn, host) {
 export function refreshIp() {
   return new Promise((resolve, reject) => {
     let str = '';
-    cmd('nslookup leirensheng.dynv6.net', async val => {
+    cmd('nslookup leirensheng.dynv6.net 8.8.8.8', async val => {
       str += val;
       if (val.includes('done')) {
         try {
