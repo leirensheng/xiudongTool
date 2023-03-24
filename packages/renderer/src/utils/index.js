@@ -51,7 +51,7 @@ let getIp = async () => {
   }
 };
 
-let startCmdWithPidInfo = (cmd) => {
+let startCmdWithPidInfo = cmd => {
   return new Promise(resolve => {
     const socketURL = 'ws://127.0.0.1:4000/socket/';
     axios

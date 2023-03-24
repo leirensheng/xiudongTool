@@ -432,7 +432,6 @@ export default {
     isHideFre() {
       this.getList();
     },
-
   },
   created() {
     this.pcName = getComputerName();

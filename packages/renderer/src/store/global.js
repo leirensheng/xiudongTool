@@ -6,7 +6,7 @@ export const useStore = defineStore('global', {
     };
   },
   actions: {
-    setPidInfo(val){
+    setPidInfo(val) {
       this.pidInfo = val;
     },
   },
