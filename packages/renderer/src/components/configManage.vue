@@ -176,9 +176,9 @@ import {ElMessageBox} from 'element-plus';
 import {useStore} from '/@/store/global';
 import CmdTerminal2 from './cmdTerminal2.vue';
 import axios from 'axios';
-import { ElNotification } from 'element-plus';
-import { getIp, startCmdWithPidInfo,sleep } from '/@/utils/index.js';
-import { storeToRefs } from 'pinia';
+import {ElNotification} from 'element-plus';
+import {getIp, startCmdWithPidInfo, sleep} from '/@/utils/index.js';
+import {storeToRefs} from 'pinia';
 
 export default {
   components: {
@@ -186,8 +186,8 @@ export default {
   },
   setup() {
     let store = useStore();
-    let {setPidInfo} =store;
-    let { pidInfo } = storeToRefs(store);
+    let {setPidInfo} = store;
+    let {pidInfo} = storeToRefs(store);
 
     let useServer = () => {
       let startServer = () => {
@@ -422,7 +422,6 @@ export default {
     isHideFre() {
       this.getList();
     },
-
   },
   created() {
     this.pcName = getComputerName();
@@ -431,16 +430,20 @@ export default {
     async recover() {
       this.recovering = true;
       let pidInfo = JSON.parse(localStorage.getItem('pidInfo') || '{}');
-      let arr = Object.keys(pidInfo).filter(one => one.includes('npm run start')).map(one => one.replace('npm run start ', ''));
-      let cmds = this.tableData.filter(one => !one.status && arr.includes(one.username)).map(one => one.cmd);
+      let arr = Object.keys(pidInfo)
+        .filter(one => one.includes('npm run start'))
+        .map(one => one.replace('npm run start ', ''));
+      let cmds = this.tableData
+        .filter(one => !one.status && arr.includes(one.username))
+        .map(one => one.cmd);
 
-      if(cmds.length){
-        for(let cmd of cmds){
+      if (cmds.length) {
+        for (let cmd of cmds) {
           let pid = await startCmdWithPidInfo(cmd);
-          pidInfo[cmd]  = pid;
+          pidInfo[cmd] = pid;
           await sleep(200);
         }
-  
+
         this.setPidInfo(pidInfo);
         this.getList();
       }
