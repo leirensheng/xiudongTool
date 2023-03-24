@@ -51,22 +51,25 @@ let getIp = async () => {
   }
 };
 
-let startCmdWithPidInfo = async cmd => {
-  const socketURL = 'ws://127.0.0.1:4000/socket/';
-
-  let pid = await axios
-    .get('http://127.0.0.1:4000/terminal')
-    .then(res => res.data)
-    .catch(err => {
-      throw new Error(err);
-    });
-  console.log('新增进程:' + pid);
-  this.pidInfo[this.cmd] = pid;
-
-  let ws = new WebSocket(socketURL + pid);
-  ws.onopen = () => {
-    ws.send(`${cmd} \r\n`);
-  };
+let startCmdWithPidInfo = (cmd) => {
+  return new Promise(resolve => {
+    const socketURL = 'ws://127.0.0.1:4000/socket/';
+    axios
+      .get('http://127.0.0.1:4000/terminal')
+      .then(res => res.data)
+      .then(pid => {
+        console.log('新增进程:' + pid);
+        let ws = new WebSocket(socketURL + pid);
+        ws.onopen = () => {
+          ws.send(`${cmd} \r\n`);
+          ws.close();
+          resolve(pid);
+        };
+      });
+  });
 };
-
-export {getRunningCheck, getRunningUser, getIp, startCmdWithPidInfo};
+let sleep = time =>
+  new Promise(r => {
+    setTimeout(r, time);
+  });
+export {getRunningCheck, getRunningUser, getIp, startCmdWithPidInfo, sleep};

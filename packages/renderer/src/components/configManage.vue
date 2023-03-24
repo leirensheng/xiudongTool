@@ -10,7 +10,12 @@
 
           <el-button @click="startServer">启动服务器</el-button>
           {{ pidInfo }}
-          <el-button @click="recover">恢复之前状态</el-button>
+          <el-button
+            v-loading="recovering"
+            @click="recover"
+          >
+            恢复之前状态
+          </el-button>
         </el-form-item>
 
         <el-form-item label="隐藏频繁">
@@ -173,7 +178,8 @@ import { useStore } from '/@/store/global';
 import CmdTerminal2 from './cmdTerminal2.vue';
 import axios from 'axios';
 import { ElNotification } from 'element-plus';
-import { getIp } from '/@/utils/index.js';
+import { getIp, startCmdWithPidInfo,sleep } from '/@/utils/index.js';
+import { storeToRefs } from 'pinia';
 
 export default {
   components: {
@@ -181,15 +187,17 @@ export default {
   },
   setup() {
     let store = useStore();
-    let { pidInfo } = store;
+    let {setPidInfo} =store;
+    let { pidInfo } = storeToRefs(store);
+
 
     let useServer = () => {
       let startServer = () => {
-        cmd(' pm2 start index.js');
+        cmd('cd ../xiudongServer && pm2 start index.js');
       };
 
       let stopServer = () => {
-        cmd(' pm2 stop index.js');
+        cmd('cd ../xiudongServer && pm2 stop index.js');
       };
       return {
         startServer,
@@ -200,10 +208,12 @@ export default {
     return {
       ...useServer(),
       pidInfo,
+      setPidInfo,
     };
   },
   data() {
     return {
+      recovering: false,
       pcName: '',
       pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4', '联想'],
       remoteDialogVisible: false,
@@ -414,25 +424,29 @@ export default {
     isHideFre() {
       this.getList();
     },
-    pidInfo: {
-      deep: true,
-      handler(val) {
-        localStorage.setItem('pidInfo', JSON.stringify(val));
-      },
-    },
+
   },
   created() {
     this.pcName = getComputerName();
-    console.log(this.pcName);
   },
   methods: {
-    recover() {
-      let obj = JSON.parse(localStorage.getItem('pidInfo') || '{}');
-      let arr = Object.keys(obj).filter(one => one.includes('npm run start')).map(one => one.replace('npm run start ', ''));
+    async recover() {
+      this.recovering = true;
+      let pidInfo = JSON.parse(localStorage.getItem('pidInfo') || '{}');
+      let arr = Object.keys(pidInfo).filter(one => one.includes('npm run start')).map(one => one.replace('npm run start ', ''));
       let cmds = this.tableData.filter(one => !one.status && arr.includes(one.username)).map(one => one.cmd);
-      console.log(arr, cmds);
-      // console.log(this.tableData);
 
+      if(cmds.length){
+        for(let cmd of cmds){
+          let pid = await startCmdWithPidInfo(cmd);
+          pidInfo[cmd]  = pid;
+          await sleep(200);
+        }
+  
+        this.setPidInfo(pidInfo);
+        this.getList();
+      }
+      this.recovering = false;
     },
     copyText(str) {
       copyText(str);

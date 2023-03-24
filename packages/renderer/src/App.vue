@@ -5,7 +5,7 @@
       class="demo-tabs"
     >
       <el-tab-pane
-        v-for="({title, name}, index) in tabs"
+        v-for="({ title, name }, index) in tabs"
         :key="index"
         :label="title"
         :name="name"
@@ -28,7 +28,9 @@ import CheckFileFileRename from '/@/components/checkFileFileRename.vue';
 import onlyTest from '/@/components/onlyTest.vue';
 import LocalConfig from '/@/components/localConfig.vue';
 import RemoteConfig from '/@/components/remoteConfig.vue';
-import {getIp} from './utils/index.js';
+import { getIp } from './utils/index.js';
+import { useStore } from '/@/store/global';
+import { storeToRefs } from 'pinia';
 
 export default {
   components: {
@@ -41,6 +43,11 @@ export default {
     onlyTest,
     RemoteConfig,
     LocalConfig,
+  },
+  setup() {
+    let store = useStore();
+    let { pidInfo } = storeToRefs(store);
+    return { pidInfo };
   },
   data() {
     return {
@@ -85,10 +92,18 @@ export default {
       ],
     };
   },
+  watch: {
+    pidInfo: {
+      deep: true,
+      handler(val) {
+        localStorage.setItem('pidInfo', JSON.stringify(val));
+      },
+    },
+  },
   created() {
     getIp();
   },
-  mounted() {},
+  mounted() { },
   methods: {},
 };
 </script>
@@ -98,12 +113,14 @@ export default {
   height: 100%;
   width: 100%;
 }
+
 .app {
   height: 100vh;
   padding: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+
   .content {
     flex: 1;
     overflow: auto;
