@@ -9,7 +9,6 @@
           <el-button @click="stopServer">关闭服务器</el-button>
 
           <el-button @click="startServer">启动服务器</el-button>
-          {{ pidInfo }}
           <el-button
             v-loading="recovering"
             @click="recover"
