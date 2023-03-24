@@ -37,7 +37,7 @@ app.on('activate', restoreOrCreateWindow);
 app
   .whenReady()
   .then(restoreOrCreateWindow)
-  .then(cmd('cd ../xiudongServer && pm2 start index.js'))
+  .then(cmd('cd ../xiudongServer && pm2 stop index.js && pm2 start index.js'))
   .catch(e => console.error('Failed create window:', e));
 
 /**
