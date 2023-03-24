@@ -29,7 +29,8 @@
         class="show-ip"
         @click="copyText(config.dnsIp + ':5678')"
       >
-        <el-icon class="copy-icon"> <DocumentCopy /> </el-icon>{{ config.dnsIp }}:5678</span>
+        <el-icon class="copy-icon"> <DocumentCopy /> </el-icon>{{ config.dnsIp }}:5678</span
+      >
       <el-button @click="refreshDns">更新DNS</el-button>
       <el-button
         style="margin-left: 20px"
