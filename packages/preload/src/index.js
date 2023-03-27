@@ -211,7 +211,7 @@ export function doTwice(fn, host) {
   };
 }
 
-export async function  refreshIp() {
+export async function refreshIp() {
   let ip = await getDynv6Ip();
   let config = await readFile('localConfig.json');
   config = JSON.parse(config);
