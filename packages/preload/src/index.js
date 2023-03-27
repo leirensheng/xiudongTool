@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+let getDynv6Ip = require('../../../../xiudongPupp/getDynv6Ip');
+
 export {sha256sum} from './nodeCrypto';
 export {versions} from './versions';
 import cmd from './cmd.js';
@@ -209,33 +211,11 @@ export function doTwice(fn, host) {
   };
 }
 
-export function refreshIp() {
-  return new Promise((resolve, reject) => {
-    let str = '';
-    cmd('nslookup leirensheng.dynv6.net 8.8.8.8', async val => {
-      str += val;
-      if (val.includes('done')) {
-        try {
-          console.log(str);
-          let res = str
-            .replace('done', '')
-            .trim()
-            .match(/(\d.*$)/);
-          if (res && !str.includes('Non-existent domain')) {
-            let ip = res[1];
-            let config = await readFile('localConfig.json');
-            config = JSON.parse(config);
-            config.dnsIp = ip;
-            await writeFile('localConfig.json', JSON.stringify(config, null, 4));
-            resolve(ip);
-          } else {
-            reject();
-          }
-        } catch (e) {
-          console.log(e);
-          reject(e);
-        }
-      }
-    });
-  });
+export async function  refreshIp() {
+  let ip = await getDynv6Ip();
+  let config = await readFile('localConfig.json');
+  config = JSON.parse(config);
+  config.dnsIp = ip;
+  await writeFile('localConfig.json', JSON.stringify(config, null, 4));
+  return ip;
 }

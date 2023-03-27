@@ -29,9 +29,13 @@
         class="show-ip"
         @click="copyText(config.dnsIp + ':5678')"
       >
-        <el-icon class="copy-icon"> <DocumentCopy /> </el-icon>{{ config.dnsIp }}:5678</span
+        <el-icon class="copy-icon"> <DocumentCopy /> </el-icon>{{ config.dnsIp }}:5678</span>
+      <el-button
+        :loading="loadingDns"
+        @click="refreshDns"
       >
-      <el-button @click="refreshDns">更新DNS</el-button>
+        更新DNS
+      </el-button>
       <el-button
         style="margin-left: 20px"
         @click="refreshIp"
@@ -59,6 +63,7 @@ export default {
   data() {
     return {
       isStart: false,
+      loadingDns:false,
       config: {},
     };
   },
@@ -93,8 +98,10 @@ export default {
       this.isStart = true;
     },
     async refreshDns() {
+      this.loadingDns = true;
       await getIp();
       this.getConfig();
+      this.loadingDns = false;
     },
     async onSubmit() {
       await writeFile('localConfig.json', JSON.stringify(this.config, null, 4));
