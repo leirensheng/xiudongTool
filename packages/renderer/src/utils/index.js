@@ -51,7 +51,7 @@ let getIp = async () => {
   }
 };
 
-let startCmdWithPidInfo = cmd => {
+let startCmdWithPidInfo = (cmd, successMsg = '信息获取完成') => {
   return new Promise(resolve => {
     const socketURL = 'ws://127.0.0.1:4000/socket/';
     axios
@@ -60,10 +60,14 @@ let startCmdWithPidInfo = cmd => {
       .then(pid => {
         console.log('新增进程:' + pid);
         let ws = new WebSocket(socketURL + pid);
+        ws.onmessage = ({data}) => {
+          if (data.includes(successMsg)) {
+            ws.close();
+            resolve(pid);
+          }
+        };
         ws.onopen = () => {
           ws.send(`${cmd} \r\n`);
-          ws.close();
-          resolve(pid);
         };
       });
   });
