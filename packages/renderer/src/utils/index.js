@@ -52,7 +52,7 @@ let getIp = async () => {
 };
 
 let startCmdWithPidInfo = (cmd, successMsg = '信息获取完成') => {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     const socketURL = 'ws://127.0.0.1:4000/socket/';
     axios
       .get('http://127.0.0.1:4000/terminal')
@@ -64,6 +64,10 @@ let startCmdWithPidInfo = (cmd, successMsg = '信息获取完成') => {
           if (data.includes(successMsg)) {
             ws.close();
             resolve(pid);
+          } else if (data.includes('需要登陆')) {
+            ws.close();
+            axios.get('http://127.0.0.1:4000/close/' + pid);
+            reject(new Error(cmd + '需要登录'));
           }
         };
         ws.onopen = () => {

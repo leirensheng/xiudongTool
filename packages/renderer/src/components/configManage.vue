@@ -444,21 +444,29 @@ export default {
     async recover() {
       this.recovering = true;
       let pidInfo = JSON.parse(localStorage.getItem('pidInfo') || '{}');
-      let cmds = Object.keys(pidInfo);
-
-      let userCmds = cmds.filter(one => one.includes('npm run start'));
-      let checkCmds = cmds.filter(one => one.includes('npm run check'));
-      for (let cmd of userCmds) {
-        let pid = await startCmdWithPidInfo(cmd, '信息获取完成');
-        pidInfo[cmd] = pid;
+      try{
+        let cmds = Object.keys(pidInfo);
+  
+        let userCmds = cmds.filter(one => one.includes('npm run start'));
+        let checkCmds = cmds.filter(one => one.includes('npm run check'));
+        for (let cmd of userCmds) {
+          let pid = await startCmdWithPidInfo(cmd, '信息获取完成');
+          pidInfo[cmd] = pid;
+        }
+        for (let cmd of checkCmds) {
+          let pid = await startCmdWithPidInfo(cmd, '开始进行');
+          pidInfo[cmd] = pid;
+        }
+        this.setPidInfo(pidInfo);
+        this.getList();
+      }catch(e){
+        ElNotification({
+          title: '失败',
+          message: e.message,
+          type: 'error',
+        });
       }
-      for (let cmd of checkCmds) {
-        let pid = await startCmdWithPidInfo(cmd, '开始进行');
-        pidInfo[cmd] = pid;
-      }
 
-      this.setPidInfo(pidInfo);
-      this.getList();
       this.recovering = false;
     },
     copyText(str) {
