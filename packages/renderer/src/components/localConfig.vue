@@ -194,7 +194,7 @@ export default {
 
 .server-info {
   margin-top: 15px;
-  height: 200px;
+  max-height: 60vh;
   overflow-y: auto;
   .row {
     display: flex;
