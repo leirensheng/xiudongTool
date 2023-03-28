@@ -164,7 +164,13 @@ export default {
       let allConfig = await readFile('config.json');
       allConfig = JSON.parse(allConfig);
 
-      let noSaveData = Object.values(allConfig).map(one => ({ name: one.activityName, activityId: one.activityId, ip: '', showTime: one.showTime })).filter(one => ![hasConfigActivities].includes(one.activityId));
+      let noSaveData=[];
+      let data = Object.values(allConfig).map(one => ({ name: one.activityName, activityId: one.activityId, ip: '', showTime: one.showTime })).filter(one => ![hasConfigActivities].includes(one.activityId));
+      for(let one of data){
+        if(noSaveData.every(item=>item.activityId!==one.activityId)){
+          noSaveData.push(one);
+        }
+      }
 
       this.items = [
         ...savedData,
