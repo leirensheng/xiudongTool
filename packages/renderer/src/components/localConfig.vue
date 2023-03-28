@@ -30,8 +30,7 @@
         @click="copyText(config.dnsIp + ':5678')"
       >
         <el-icon class="copy-icon">
-          <DocumentCopy />
-        </el-icon>{{ config.dnsIp }}:5678</span>
+          <DocumentCopy /> </el-icon>{{ config.dnsIp }}:5678</span>
       <el-button
         :loading="loadingDns"
         @click="refreshDns"
@@ -71,18 +70,16 @@
 </template>
 
 <script>
-import { readFile, writeFile, copyText } from '#preload';
-import { ElNotification } from 'element-plus';
-import { getIp } from '../utils/index.js';
+import {readFile, writeFile, copyText} from '#preload';
+import {ElNotification} from 'element-plus';
+import {getIp} from '../utils/index.js';
 export default {
   data() {
     return {
       isStart: false,
       loadingDns: false,
       config: {},
-      items: [
-
-      ],
+      items: [],
     };
   },
   created() {
@@ -103,7 +100,7 @@ export default {
     async handleMessage(val) {
       if (val.includes('成功')) {
         let dnsIp = val.match(/\[(.*?)\]/);
-        await writeFile('localConfig.json', JSON.stringify({ ...this.config, dnsIp }, null, 4));
+        await writeFile('localConfig.json', JSON.stringify({...this.config, dnsIp}, null, 4));
         ElNotification({
           title: '成功',
           message: 'WAN ip更新成功',
@@ -122,27 +119,34 @@ export default {
       this.loadingDns = false;
     },
     getServerInfo() {
-      return this.items.filter(one => one.ip).reduce((prev, cur) => {
-        let key = cur.name + '_' + cur.activityId;
-        prev[key] = cur.ip;
-        return prev;
-      }, {});
+      return this.items
+        .filter(one => one.ip)
+        .reduce((prev, cur) => {
+          let key = cur.name + '_' + cur.activityId;
+          prev[key] = cur.ip;
+          return prev;
+        }, {});
     },
     async onSubmit() {
       let serverInfo = this.getServerInfo();
 
-
-      await writeFile('localConfig.json', JSON.stringify({
-        ...this.config,
-        serverInfo,
-      }, null, 4));
+      await writeFile(
+        'localConfig.json',
+        JSON.stringify(
+          {
+            ...this.config,
+            serverInfo,
+          },
+          null,
+          4,
+        ),
+      );
       ElNotification({
         title: '成功',
         message: '保存成功',
         type: 'success',
       });
       this.getConfig();
-
     },
     async getConfig() {
       let str = await readFile('localConfig.json');
@@ -160,7 +164,6 @@ export default {
         };
       });
 
-
       let allConfig = await readFile('config.json');
       allConfig = JSON.parse(allConfig);
 
@@ -172,10 +175,7 @@ export default {
         }
       }
 
-      this.items = [
-        ...savedData,
-        ...noSaveData,
-      ];
+      this.items = [...savedData, ...noSaveData];
     },
   },
 };
