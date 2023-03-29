@@ -9,41 +9,34 @@
       v-if="dialogVisible"
       ref="terminal"
       cmd="npm run calc"
-      @exit="dialogVisible= false"
+      @exit="dialogVisible = false"
     ></cmd-terminal2>
   </el-dialog>
 </template>
 
 <script>
 export default {
-    data() {
-        return {
-            dialogVisible: false,
-            msg:'',
-        };
+  data() {
+    return {
+      dialogVisible: false,
+      msg: '',
+    };
+  },
+  watch: {
+    dialogVisible(val) {
+      if (!val) {
+        this.$refs.terminal.close();
+      }
     },
-    watch:{
-        dialogVisible(val){
-            if(!val){
-                this.$refs.terminal.close();
-            }
-        },
+  },
+  created() {},
+  mounted() {},
+  methods: {
+    start() {
+      this.dialogVisible = true;
     },
-    created() {
-
-    },
-    mounted() {
-
-    },
-    methods: {
-        start(){
-            this.dialogVisible = true;
-
-        },
-    },
+  },
 };
 </script>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>
