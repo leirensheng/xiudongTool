@@ -8,6 +8,7 @@
         <el-form-item>
           <el-button @click="stopServer">关闭服务器</el-button>
           <el-button @click="startServer">启动服务器</el-button>
+          <calc-user></calc-user>
           <el-button
             v-if="isShowRecover"
             :loading="recovering"
@@ -179,10 +180,11 @@ import axios from 'axios';
 import {ElNotification} from 'element-plus';
 import {getIp, startCmdWithPidInfo} from '/@/utils/index.js';
 import {storeToRefs} from 'pinia';
-
+import CalcUser from '/@/components/calcUser.vue';
 export default {
   components: {
     CmdTerminal2,
+    CalcUser,
   },
   setup() {
     let store = useStore();
