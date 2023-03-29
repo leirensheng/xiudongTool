@@ -1,11 +1,5 @@
 <template>
   <div class="check-config">
-    <el-button
-      class="reset"
-      @click="reset"
-    >
-      重置
-    </el-button>
     <div class="items">
       <div
         v-for="item in allNumbers"
@@ -74,6 +68,14 @@
       @click="confirm"
     >
       启动
+    </el-button>
+
+
+    <el-button
+      class="reset"
+      @click="reset"
+    >
+      重置
     </el-button>
   </div>
 </template>
@@ -243,9 +245,7 @@ export default {
 <style lang="scss" scoped>
 .check-config {
   .reset {
-    margin: 0 auto;
-    display: block;
-    margin-bottom: 10px;
+    margin-left: 40%;
   }
 }
 .items {
