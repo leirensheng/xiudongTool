@@ -2,7 +2,7 @@
   <el-dialog
     v-bind="$attrs"
     width="80%"
-    :title="runningCmd || cmd"
+    :title="title"
     @close="beforeClose"
   >
     <div
@@ -67,6 +67,10 @@ export default {
     };
   },
   computed: {
+    title(){
+      let {showTime,curShowName} = this.config;
+      return `${this.runningCmd || this.cmd}__${curShowName}__${showTime}`;
+    },
     isRunning() {
       return !!this.runningCmd;
     },

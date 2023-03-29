@@ -128,7 +128,7 @@
 
     <el-dialog
       v-model="dialogVisible"
-      :title="curRow.username"
+      :title="title"
       width="80%"
       @close="handleClose"
     >
@@ -420,6 +420,10 @@ export default {
     };
   },
   computed: {
+    title(){
+      let {activityName,username,showTime} = this.curRow;
+      return `${username}__${activityName}__${showTime}`; 
+    },
     isShowRecover() {
       let pidInfo = JSON.parse(localStorage.getItem('pidInfo') || '{}');
       let usernames = Object.keys(pidInfo)
@@ -441,6 +445,7 @@ export default {
   },
   methods: {
     async recover() {
+      window.noSetLocalStorage = true;
       this.recovering = true;
       let pidInfo = JSON.parse(localStorage.getItem('pidInfo') || '{}');
       try {
@@ -451,14 +456,19 @@ export default {
         for (let cmd of userCmds) {
           let pid = await startCmdWithPidInfo(cmd, '信息获取完成');
           pidInfo[cmd] = pid;
+          this.setPidInfo(pidInfo);
         }
         for (let cmd of checkCmds) {
           let pid = await startCmdWithPidInfo(cmd, '开始进行');
           pidInfo[cmd] = pid;
+          this.setPidInfo(pidInfo);
         }
-        this.setPidInfo(pidInfo);
+
+        window.noSetLocalStorage = false;
+        this.setPidInfo({...pidInfo});
         this.getList();
       } catch (e) {
+        window.noSetLocalStorage = false;
         ElNotification({
           title: '失败',
           message: e.message,
