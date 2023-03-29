@@ -281,8 +281,12 @@ export default {
           width: 80,
           support: {
             query: {},
-            add: {},
-            edit: {},
+            add: {
+              type:'number',
+            },
+            edit: {
+              type:'number',
+            },
           },
         },
 
@@ -292,8 +296,12 @@ export default {
           width: 100,
           valueType: 'slot',
           support: {
-            add: {},
-            edit: {},
+            add: {
+              type:'number',
+            },
+            edit: {
+              type:'number',
+            },
           },
         },
         {
