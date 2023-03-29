@@ -14,7 +14,7 @@
           class="filter-item query-item"
           :style="{width: one.support.query.width + 'px'}"
           @keyup.enter="handleFilter"
-          @change="
+          @input="
             val => {
               handleQueryChange(val, one.id, one);
             }
@@ -80,14 +80,14 @@
           :name="one.slotName"
         />
       </template>
-      <el-button
+      <!-- <el-button
         class="filter-item"
         type="primary"
         size="default"
         @click="handleFilter"
       >
         查询
-      </el-button>
+      </el-button> -->
       <el-button
         v-if="supportReset"
         class="filter-item"
@@ -329,6 +329,7 @@ export default {
       }
       this.getRealParams(id, newVal);
       this.$emit('queryChange', id, val, this.params);
+      this.handleFilter();
     },
 
     checkStart(id, val, params, endId) {

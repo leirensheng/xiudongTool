@@ -7,7 +7,6 @@
       >
         <el-form-item>
           <el-button @click="stopServer">关闭服务器</el-button>
-
           <el-button @click="startServer">启动服务器</el-button>
           <el-button
             v-if="isShowRecover"
@@ -306,6 +305,11 @@ export default {
             query: {},
           },
         },
+        {
+          id: 'showTime',
+          name: 'showTime',
+          width: 110,
+        },
 
         {
           id: 'nameIndex',
@@ -345,11 +349,6 @@ export default {
             query: {},
             edit: {},
           },
-        },
-        {
-          id: 'showTime',
-          name: 'showTime',
-          width: 110,
         },
 
         {
