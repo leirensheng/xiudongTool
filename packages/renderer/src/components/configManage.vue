@@ -420,9 +420,9 @@ export default {
     };
   },
   computed: {
-    title(){
-      let {activityName,username,showTime} = this.curRow;
-      return `${username}__${activityName}__${showTime}`; 
+    title() {
+      let {activityName, username, showTime} = this.curRow;
+      return `${username}__${activityName}__${showTime}`;
     },
     isShowRecover() {
       let pidInfo = JSON.parse(localStorage.getItem('pidInfo') || '{}');

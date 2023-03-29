@@ -67,8 +67,8 @@ export default {
     };
   },
   computed: {
-    title(){
-      let {showTime,curShowName} = this.config;
+    title() {
+      let {showTime, curShowName} = this.config;
       return `${this.runningCmd || this.cmd}__${curShowName}__${showTime}`;
     },
     isRunning() {
