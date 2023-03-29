@@ -769,11 +769,11 @@ export default {
 }
 
 .el-table .blue {
-  --el-table-tr-bg-color: rgba(6, 216, 231, 0.5);
+  --el-table-tr-bg-color: rgba(69, 123, 199, 0.5);
 }
 
 .el-table .green {
-  --el-table-tr-bg-color: rgba(98, 232, 31, 0.5);
+  // --el-table-tr-bg-color: rgba(72, 94, 125, 0.5);
 }
 
 .el-table .grey {
