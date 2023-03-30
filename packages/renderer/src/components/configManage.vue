@@ -9,13 +9,10 @@
           <el-button @click="stopServer">关闭服务器</el-button>
           <el-button @click="startServer">启动服务器</el-button>
           <calc-user></calc-user>
-          <el-button
-            v-if="isShowRecover"
-            :loading="recovering"
-            @click="recover"
-          >
-            恢复之前状态
-          </el-button>
+          <recover-state
+            :table-data="tableData"
+            @get-list="getList"
+          ></recover-state>
         </el-form-item>
 
         <el-form-item label="隐藏频繁">
@@ -41,7 +38,7 @@
       :on-dialog-open="onDialogOpen"
       @before-assign-to-table="beforeAssignToTable"
     >
-      <template #username="{row}">
+      <template #username="{ row }">
         <div>
           <el-dropdown trigger="contextmenu">
             <span class="el-dropdown-link">
@@ -91,7 +88,7 @@
           </el-dropdown>
         </div>
       </template>
-      <template #activityId="{row}">
+      <template #activityId="{ row }">
         <div>
           <el-icon
             class="copy-icon"
@@ -102,7 +99,7 @@
           <span>{{ row.activityId }}</span>
         </div>
       </template>
-      <template #activityName="{row}">
+      <template #activityName="{ row }">
         <div>
           <el-icon
             class="copy-icon"
@@ -113,7 +110,7 @@
           <span>{{ row.activityName }}</span>
         </div>
       </template>
-      <template #targetTypes="{row}">
+      <template #targetTypes="{ row }">
         <el-tag
           v-for="(item, i) in row.targetTypes"
           :key="item"
@@ -172,24 +169,25 @@
 </template>
 
 <script>
-import {readFile, readDir, cmd, copyText, writeFile, getComputerName, getRemoteIp} from '#preload';
-import {ElMessageBox} from 'element-plus';
-import {useStore} from '/@/store/global';
+import { readFile, readDir, cmd, copyText, writeFile, getComputerName, getRemoteIp } from '#preload';
+import { ElMessageBox } from 'element-plus';
+import { useStore } from '/@/store/global';
 import CmdTerminal2 from './cmdTerminal2.vue';
 import axios from 'axios';
-import {ElNotification} from 'element-plus';
-import {getIp, startCmdWithPidInfo} from '/@/utils/index.js';
-import {storeToRefs} from 'pinia';
+import { ElNotification } from 'element-plus';
+import { getIp} from '/@/utils/index.js';
+import { storeToRefs } from 'pinia';
 import CalcUser from '/@/components/calcUser.vue';
+import RecoverState from '/@/components/recoverState.vue';
 export default {
   components: {
     CmdTerminal2,
     CalcUser,
+    RecoverState,
   },
   setup() {
     let store = useStore();
-    let {setPidInfo} = store;
-    let {pidInfo} = storeToRefs(store);
+    let { pidInfo } = storeToRefs(store);
 
     let useServer = () => {
       let startServer = () => {
@@ -208,13 +206,11 @@ export default {
     return {
       ...useServer(),
       pidInfo,
-      setPidInfo,
     };
   },
   data() {
     return {
       tableData: [],
-      recovering: false,
       pcName: '',
       pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4', '联想'],
       remoteDialogVisible: false,
@@ -258,8 +254,8 @@ export default {
           name: 'isSuccess',
           isShow: false,
           options: [
-            {name: '是', id: true},
-            {name: '否', id: false},
+            { name: '是', id: true },
+            { name: '否', id: false },
           ],
           support: {
             query: {
@@ -272,7 +268,7 @@ export default {
           name: 'user',
           width: 100,
           valueType: 'slot',
-          rules: [{validator: this.validateUser, trigger: 'blur'}],
+          rules: [{ validator: this.validateUser, trigger: 'blur' }],
           support: {
             query: {},
             add: {},
@@ -412,8 +408,8 @@ export default {
             },
           },
           options: [
-            {id: true, name: '是'},
-            {id: false, name: '否'},
+            { id: true, name: '是' },
+            { id: false, name: '否' },
           ],
         },
 
@@ -432,18 +428,8 @@ export default {
   },
   computed: {
     title() {
-      let {activityName, username, showTime} = this.curRow;
+      let { activityName, username, showTime } = this.curRow;
       return `${username}__${activityName}__${showTime}`;
-    },
-    isShowRecover() {
-      let pidInfo = JSON.parse(localStorage.getItem('pidInfo') || '{}');
-      let usernames = Object.keys(pidInfo)
-        .filter(one => one.includes('npm run start'))
-        .map(one => one.replace('npm run start ', ''));
-      let cmds = this.tableData
-        .filter(one => !one.status && usernames.includes(one.username))
-        .map(one => one.cmd);
-      return cmds.length !== 0;
     },
   },
   watch: {
@@ -463,40 +449,7 @@ export default {
       }
       callback();
     },
-    async recover() {
-      window.noSetLocalStorage = true;
-      this.recovering = true;
-      let pidInfo = JSON.parse(localStorage.getItem('pidInfo') || '{}');
-      try {
-        let cmds = Object.keys(pidInfo);
 
-        let userCmds = cmds.filter(one => one.includes('npm run start'));
-        let checkCmds = cmds.filter(one => one.includes('npm run check'));
-        for (let cmd of userCmds) {
-          let pid = await startCmdWithPidInfo(cmd, '信息获取完成');
-          pidInfo[cmd] = pid;
-          this.setPidInfo(pidInfo);
-        }
-        for (let cmd of checkCmds) {
-          let pid = await startCmdWithPidInfo(cmd, '开始进行');
-          pidInfo[cmd] = pid;
-          this.setPidInfo(pidInfo);
-        }
-
-        window.noSetLocalStorage = false;
-        this.setPidInfo({...pidInfo});
-        this.getList();
-      } catch (e) {
-        window.noSetLocalStorage = false;
-        ElNotification({
-          title: '失败',
-          message: e.message,
-          type: 'error',
-        });
-      }
-
-      this.recovering = false;
-    },
     copyText(str) {
       copyText(str);
       ElNotification({
@@ -525,7 +478,7 @@ export default {
       delete this.pidInfo[this.cmd];
       this.getList();
     },
-    tableRowClassName({row, rowIndex}) {
+    tableRowClassName({ row, rowIndex }) {
       if (row.remark && row.remark.includes('频繁')) {
         return 'grey';
       }
@@ -546,7 +499,7 @@ export default {
       let config = obj[this.curRow.username];
       let res = await axios.post(
         'http://127.0.0.1:4000/copyUserFile',
-        {username: this.curRow.username, host: getRemoteIp(this.remotePc), config},
+        { username: this.curRow.username, host: getRemoteIp(this.remotePc), config },
         {
           timeout: 20000,
         },
@@ -582,7 +535,7 @@ export default {
       console.log(11111, row);
       this.remoteDialogVisible = true;
     },
-    beforeAssignToTable({records}) {
+    beforeAssignToTable({ records }) {
       this.tableData = records;
     },
     getStyle(row) {
@@ -597,9 +550,9 @@ export default {
     getList() {
       return this.$refs.table.getList();
     },
-    async copy({username}) {
-      let {value} = await ElMessageBox.prompt('', '输入新用户');
-      let {value: phone} = await ElMessageBox.prompt('', '用户手机号');
+    async copy({ username }) {
+      let { value } = await ElMessageBox.prompt('', '输入新用户');
+      let { value: phone } = await ElMessageBox.prompt('', '用户手机号');
       this.loading = true;
       await this.cmdCopy(value, username, phone);
       await this.getList();
@@ -646,13 +599,13 @@ export default {
       row.status = 1;
     },
     async handlerAdd(val) {
-      await this.updateFile({key: val.username, val, isAdd: true});
+      await this.updateFile({ key: val.username, val, isAdd: true });
       await this.getList();
       let target = this.tableData.find(one => one.username === val.username);
       this.start(target);
     },
     async handleEdit(val) {
-      let obj = {...val};
+      let obj = { ...val };
       delete obj.ticketTypes;
       delete obj.username;
       await this.updateFile({
@@ -661,7 +614,7 @@ export default {
       });
       await this.$refs.table.getList();
     },
-    async updateFile({key, val, isAdd}) {
+    async updateFile({ key, val, isAdd }) {
       let fileData = await this.getConfigFile();
       if (isAdd && fileData[key] !== undefined) {
         throw new Error('已经有了' + key);
@@ -671,7 +624,7 @@ export default {
     },
     async onDialogOpen(form) {
       let target = this.items.find(one => one.id === 'targetTypes');
-      target.options = (form.ticketTypes || []).map(one => ({id: one, name: one}));
+      target.options = (form.ticketTypes || []).map(one => ({ id: one, name: one }));
       return form;
     },
     async remove(obj, noShowConfirm) {
@@ -712,7 +665,7 @@ export default {
         }
       });
     },
-    async getData({queryItems}) {
+    async getData({ queryItems }) {
       let obj = await this.getConfigFile();
       let data = Object.entries(obj).map(([key, val]) => ({
         ...val,
@@ -722,7 +675,7 @@ export default {
 
       let items = queryItems.filter(item => item.value);
       data = data.filter(one => {
-        return items.every(({value, column}) => String(one[column]).indexOf(value) !== -1);
+        return items.every(({ value, column }) => String(one[column]).indexOf(value) !== -1);
       });
       data.sort((a, b) => new Date(b.port) - new Date(a.port));
 

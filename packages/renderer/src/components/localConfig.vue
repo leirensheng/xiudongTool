@@ -1,6 +1,5 @@
 <template>
   <div>
-    fdsf
     <el-form
       :form="config"
       inline
