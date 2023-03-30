@@ -63,13 +63,14 @@ export default {
 
     },
     methods: {
-        openDialog() {
+       async openDialog() {
             let msg = this.failCmds.join('__');
-            ElMessageBox.confirm(`恢复失败: ${msg}`, '提示', {
+            await  ElMessageBox.confirm(`恢复失败: ${msg}`, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning',
             });
+            this.failCmds = [];
         },
         async recoverOne(pidInfo, cmd, successMsg) {
             try {

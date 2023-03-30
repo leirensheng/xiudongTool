@@ -123,7 +123,7 @@ export default {
       return this.items
         .filter(one => one.ip)
         .reduce((prev, cur) => {
-          let key = cur.name + '_' + cur.activityId;
+          let key = cur.name + '_' + cur.activityId + '_' + cur.showTime;
           prev[key] = cur.ip;
           return prev;
         }, {});
@@ -156,12 +156,13 @@ export default {
       let info = config.serverInfo;
       let hasConfigActivities = [];
       let savedData = Object.entries(info).map(([key, ip]) => {
-        let [name, activityId] = key.split('_');
+        let [name, activityId, showTime] = key.split('_');
         hasConfigActivities.push(activityId);
         return {
           name,
           activityId,
           ip,
+          showTime,
         };
       });
 
@@ -178,7 +179,7 @@ export default {
 
       let uniqueIds = [...new Set(configs.map(one => one.activityId))];
       savedData = savedData.filter(one => uniqueIds.includes(one.activityId));
-      
+
       let savedIds = savedData.map(one => one.activityId);
       let notSaveIds = uniqueIds.filter(one => !savedIds.includes(one));
       let notSaveData = [];

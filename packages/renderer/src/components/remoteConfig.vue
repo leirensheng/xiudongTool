@@ -12,6 +12,20 @@
       />
     </el-radio-group>
 
+    <div class="ping">
+      <el-input
+        v-model="remoteTestIp"
+        placeholder="远程ip"
+        @contextmenu.prevent="rightClick"
+      ></el-input>
+      <el-button
+        type="primary"
+        @click="ping"
+      >
+        连通性测试
+      </el-button>
+    </div>
+
     <el-button
       type="success"
       @click="loadConfig"
@@ -34,10 +48,12 @@
 </template>
 
 <script>
-import {getComputerName, cloneRemoteConfig, getRemoteIp, doTwice} from '#preload';
+import { getComputerName, cloneRemoteConfig, getRemoteIp, doTwice } from '#preload';
 import axios from 'axios';
-import {ElNotification} from 'element-plus';
-import {getRunningUser, getIp} from '/@/utils/index.js';
+import { ElNotification } from 'element-plus';
+import { getRunningUser, getIp } from '/@/utils/index.js';
+import { readClip } from '#preload';
+
 export default {
   data() {
     return {
@@ -45,6 +61,7 @@ export default {
       pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4', '联想'],
       pcName: '',
       data: [],
+      remoteTestIp: '',
     };
   },
   computed: {
@@ -57,7 +74,20 @@ export default {
     console.log(this.pcName);
   },
   methods: {
-    async clone({username, config}) {
+    rightClick() {
+      this.remoteTestIp = readClip().replace(':5678','');
+    },
+    async ping() {
+      let startTime = Date.now();
+      await axios(`http://${this.remoteTestIp}:4000/ping`);
+      let timeUsed = Date.now() - startTime;
+      ElNotification({
+        title: '成功',
+        message: timeUsed + 'ms',
+        type: 'success',
+      });
+    },
+    async clone({ username, config }) {
       try {
         let fn = doTwice(cloneRemoteConfig, this.remoteIp);
         await fn(username, JSON.parse(JSON.stringify(config)));
@@ -87,7 +117,7 @@ export default {
         let fn = doTwice(send, this.remoteIp);
 
         let {
-          data: {config, pidToCmd},
+          data: { config, pidToCmd },
         } = await fn();
 
         let pidInfo = {};
@@ -119,16 +149,34 @@ export default {
 .res {
   margin-top: 20px;
 }
+
 .item {
   padding: 10px;
   display: flex;
   gap: 15px;
   border-bottom: 1px solid white;
+
   .name {
     width: 5%;
   }
+
   .activity {
     width: 70%;
+  }
+}
+
+.ping {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+
+  :first-child {
+    width: 200px;
+  }
+
+  :last-child {
+    flex-grow: 0;
+    width: auto;
   }
 }
 </style>
