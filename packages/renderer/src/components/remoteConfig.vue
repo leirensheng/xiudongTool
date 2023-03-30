@@ -25,8 +25,6 @@
       />
     </el-radio-group>
 
-
-
     <el-button
       type="success"
       @click="loadConfig"
@@ -49,11 +47,11 @@
 </template>
 
 <script>
-import { getComputerName, cloneRemoteConfig, getRemoteIp, doTwice } from '#preload';
+import {getComputerName, cloneRemoteConfig, getRemoteIp, doTwice} from '#preload';
 import axios from 'axios';
-import { ElNotification } from 'element-plus';
-import { getRunningUser, getIp } from '/@/utils/index.js';
-import { readClip } from '#preload';
+import {ElNotification} from 'element-plus';
+import {getRunningUser, getIp} from '/@/utils/index.js';
+import {readClip} from '#preload';
 
 export default {
   data() {
@@ -76,7 +74,7 @@ export default {
   },
   methods: {
     rightClick() {
-      this.remoteTestIp = readClip().replace(':5678','');
+      this.remoteTestIp = readClip().replace(':5678', '');
     },
     async ping() {
       let startTime = Date.now();
@@ -88,7 +86,7 @@ export default {
         type: 'success',
       });
     },
-    async clone({ username, config }) {
+    async clone({username, config}) {
       try {
         let fn = doTwice(cloneRemoteConfig, this.remoteIp);
         await fn(username, JSON.parse(JSON.stringify(config)));
@@ -118,7 +116,7 @@ export default {
         let fn = doTwice(send, this.remoteIp);
 
         let {
-          data: { config, pidToCmd },
+          data: {config, pidToCmd},
         } = await fn();
 
         let pidInfo = {};
