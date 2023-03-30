@@ -29,9 +29,7 @@
         class="show-ip"
         @click="copyText(config.dnsIp + ':5678')"
       >
-        <el-icon class="copy-icon">
-          <DocumentCopy /> </el-icon
-        >{{ config.dnsIp }}:5678</span
+        <el-icon class="copy-icon"> <DocumentCopy /> </el-icon>{{ config.dnsIp }}:5678</span
       >
       <el-button
         :loading="loadingDns"
@@ -124,7 +122,7 @@ export default {
       return this.items
         .filter(one => one.ip)
         .reduce((prev, cur) => {
-          let key = cur.name + '_' + cur.activityId;
+          let key = cur.name + '_' + cur.activityId + '_' + cur.showTime;
           prev[key] = cur.ip;
           return prev;
         }, {});
@@ -157,12 +155,13 @@ export default {
       let info = config.serverInfo;
       let hasConfigActivities = [];
       let savedData = Object.entries(info).map(([key, ip]) => {
-        let [name, activityId] = key.split('_');
+        let [name, activityId, showTime] = key.split('_');
         hasConfigActivities.push(activityId);
         return {
           name,
           activityId,
           ip,
+          showTime,
         };
       });
 
