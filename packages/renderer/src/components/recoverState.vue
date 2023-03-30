@@ -4,7 +4,7 @@
     :loading="recovering"
     @click="recover"
   >
-    恢复之前状态
+    恢复
   </el-button>
   
   <el-button
