@@ -9,13 +9,10 @@
           <el-button @click="stopServer">关闭服务器</el-button>
           <el-button @click="startServer">启动服务器</el-button>
           <calc-user></calc-user>
-          <el-button
-            v-if="isShowRecover"
-            :loading="recovering"
-            @click="recover"
-          >
-            恢复之前状态
-          </el-button>
+          <recover-state
+            :table-data="tableData"
+            @get-list="getList"
+          ></recover-state>
         </el-form-item>
 
         <el-form-item label="隐藏频繁">
@@ -178,17 +175,18 @@ import {useStore} from '/@/store/global';
 import CmdTerminal2 from './cmdTerminal2.vue';
 import axios from 'axios';
 import {ElNotification} from 'element-plus';
-import {getIp, startCmdWithPidInfo} from '/@/utils/index.js';
+import {getIp} from '/@/utils/index.js';
 import {storeToRefs} from 'pinia';
 import CalcUser from '/@/components/calcUser.vue';
+import RecoverState from '/@/components/recoverState.vue';
 export default {
   components: {
     CmdTerminal2,
     CalcUser,
+    RecoverState,
   },
   setup() {
     let store = useStore();
-    let {setPidInfo} = store;
     let {pidInfo} = storeToRefs(store);
 
     let useServer = () => {
@@ -208,13 +206,11 @@ export default {
     return {
       ...useServer(),
       pidInfo,
-      setPidInfo,
     };
   },
   data() {
     return {
       tableData: [],
-      recovering: false,
       pcName: '',
       pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4', '联想'],
       remoteDialogVisible: false,
@@ -435,16 +431,6 @@ export default {
       let {activityName, username, showTime} = this.curRow;
       return `${username}__${activityName}__${showTime}`;
     },
-    isShowRecover() {
-      let pidInfo = JSON.parse(localStorage.getItem('pidInfo') || '{}');
-      let usernames = Object.keys(pidInfo)
-        .filter(one => one.includes('npm run start'))
-        .map(one => one.replace('npm run start ', ''));
-      let cmds = this.tableData
-        .filter(one => !one.status && usernames.includes(one.username))
-        .map(one => one.cmd);
-      return cmds.length !== 0;
-    },
   },
   watch: {
     isHideFre() {
@@ -463,40 +449,7 @@ export default {
       }
       callback();
     },
-    async recover() {
-      window.noSetLocalStorage = true;
-      this.recovering = true;
-      let pidInfo = JSON.parse(localStorage.getItem('pidInfo') || '{}');
-      try {
-        let cmds = Object.keys(pidInfo);
 
-        let userCmds = cmds.filter(one => one.includes('npm run start'));
-        let checkCmds = cmds.filter(one => one.includes('npm run check'));
-        for (let cmd of userCmds) {
-          let pid = await startCmdWithPidInfo(cmd, '信息获取完成');
-          pidInfo[cmd] = pid;
-          this.setPidInfo(pidInfo);
-        }
-        for (let cmd of checkCmds) {
-          let pid = await startCmdWithPidInfo(cmd, '开始进行');
-          pidInfo[cmd] = pid;
-          this.setPidInfo(pidInfo);
-        }
-
-        window.noSetLocalStorage = false;
-        this.setPidInfo({...pidInfo});
-        this.getList();
-      } catch (e) {
-        window.noSetLocalStorage = false;
-        ElNotification({
-          title: '失败',
-          message: e.message,
-          type: 'error',
-        });
-      }
-
-      this.recovering = false;
-    },
     copyText(str) {
       copyText(str);
       ElNotification({

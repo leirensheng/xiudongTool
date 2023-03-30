@@ -29,7 +29,9 @@
         class="show-ip"
         @click="copyText(config.dnsIp + ':5678')"
       >
-        <el-icon class="copy-icon"> <DocumentCopy /> </el-icon>{{ config.dnsIp }}:5678</span
+        <el-icon class="copy-icon">
+          <DocumentCopy /> </el-icon
+        >{{ config.dnsIp }}:5678</span
       >
       <el-button
         :loading="loadingDns"
@@ -167,22 +169,25 @@ export default {
       let allConfig = await readFile('config.json');
       allConfig = JSON.parse(allConfig);
 
-      let noSaveData = [];
-      let data = Object.values(allConfig)
-        .map(one => ({
-          name: one.activityName,
-          activityId: one.activityId,
-          ip: '',
-          showTime: one.showTime,
-        }))
-        .filter(one => ![hasConfigActivities].includes(one.activityId));
-      for (let one of data) {
-        if (noSaveData.every(item => item.activityId !== one.activityId)) {
-          noSaveData.push(one);
-        }
+      let configs = Object.values(allConfig).map(one => ({
+        name: one.activityName,
+        activityId: one.activityId,
+        ip: '',
+        showTime: one.showTime,
+      }));
+
+      let uniqueIds = [...new Set(configs.map(one => one.activityId))];
+      savedData = savedData.filter(one => uniqueIds.includes(one.activityId));
+
+      let savedIds = savedData.map(one => one.activityId);
+      let notSaveIds = uniqueIds.filter(one => !savedIds.includes(one));
+      let notSaveData = [];
+      for (let activityId of notSaveIds) {
+        let target = configs.find(item => item.activityId === activityId);
+        notSaveData.push(target);
       }
 
-      this.items = [...savedData, ...noSaveData];
+      this.items = [...savedData, ...notSaveData];
     },
   },
 };
@@ -203,10 +208,12 @@ export default {
   margin-top: 15px;
   max-height: 60vh;
   overflow-y: auto;
+
   .row {
     display: flex;
     align-items: center;
     line-height: 2.5;
+
     .show {
       overflow: hidden;
       text-align: right;
