@@ -30,8 +30,9 @@
         @click="copyText(config.dnsIp + ':5678')"
       >
         <el-icon class="copy-icon">
-          <DocumentCopy />
-        </el-icon>{{ config.dnsIp }}:5678</span>
+          <DocumentCopy /> </el-icon
+        >{{ config.dnsIp }}:5678</span
+      >
       <el-button
         :loading="loadingDns"
         @click="refreshDns"
@@ -71,9 +72,9 @@
 </template>
 
 <script>
-import { readFile, writeFile, copyText } from '#preload';
-import { ElNotification } from 'element-plus';
-import { getIp } from '../utils/index.js';
+import {readFile, writeFile, copyText} from '#preload';
+import {ElNotification} from 'element-plus';
+import {getIp} from '../utils/index.js';
 export default {
   data() {
     return {
@@ -101,7 +102,7 @@ export default {
     async handleMessage(val) {
       if (val.includes('成功')) {
         let dnsIp = val.match(/\[(.*?)\]/);
-        await writeFile('localConfig.json', JSON.stringify({ ...this.config, dnsIp }, null, 4));
+        await writeFile('localConfig.json', JSON.stringify({...this.config, dnsIp}, null, 4));
         ElNotification({
           title: '成功',
           message: 'WAN ip更新成功',
@@ -168,17 +169,16 @@ export default {
       let allConfig = await readFile('config.json');
       allConfig = JSON.parse(allConfig);
 
-      let configs = Object.values(allConfig)
-        .map(one => ({
-          name: one.activityName,
-          activityId: one.activityId,
-          ip: '',
-          showTime: one.showTime,
-        }));
+      let configs = Object.values(allConfig).map(one => ({
+        name: one.activityName,
+        activityId: one.activityId,
+        ip: '',
+        showTime: one.showTime,
+      }));
 
       let uniqueIds = [...new Set(configs.map(one => one.activityId))];
       savedData = savedData.filter(one => uniqueIds.includes(one.activityId));
-      
+
       let savedIds = savedData.map(one => one.activityId);
       let notSaveIds = uniqueIds.filter(one => !savedIds.includes(one));
       let notSaveData = [];
