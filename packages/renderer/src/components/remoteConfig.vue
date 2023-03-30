@@ -1,17 +1,5 @@
 <template>
   <div>
-    <el-radio-group
-      v-model="remotePc"
-      size="large"
-    >
-      <el-radio-button
-        v-for="one in pcs"
-        :key="one"
-        :disabled="one === pcName"
-        :label="one"
-      />
-    </el-radio-group>
-
     <div class="ping">
       <el-input
         v-model="remoteTestIp"
@@ -25,6 +13,19 @@
         连通性测试
       </el-button>
     </div>
+    <el-radio-group
+      v-model="remotePc"
+      size="large"
+    >
+      <el-radio-button
+        v-for="one in pcs"
+        :key="one"
+        :disabled="one === pcName"
+        :label="one"
+      />
+    </el-radio-group>
+
+
 
     <el-button
       type="success"
