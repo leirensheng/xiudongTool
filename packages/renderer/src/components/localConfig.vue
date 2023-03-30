@@ -214,7 +214,7 @@ export default {
     }
 
     .val {
-      width: 300px;
+      width: 100px;
     }
   }
 }
