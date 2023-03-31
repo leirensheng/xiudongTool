@@ -21,6 +21,7 @@ import {startCmdWithPidInfo} from '/@/utils/index.js';
 import {ElNotification} from 'element-plus';
 import {useStore} from '/@/store/global';
 import {ElMessageBox} from 'element-plus';
+import {storeToRefs} from 'pinia';
 
 export default {
   props: {
@@ -32,16 +33,18 @@ export default {
   emits: ['getList'],
   setup() {
     let store = useStore();
-    let {setPidInfo} = store;
+    let {setPidInfo, setFailCmds} = store;
+    let {failCmds} = storeToRefs(store);
+
     return {
       setPidInfo,
+      setFailCmds,
+      failCmds,
     };
   },
   data() {
     return {
       recovering: false,
-
-      failCmds: [],
     };
   },
   computed: {
@@ -57,7 +60,6 @@ export default {
     },
   },
   created() {},
-  mounted() {},
   methods: {
     async openDialog() {
       let msg = this.failCmds.join('__');
@@ -66,17 +68,18 @@ export default {
         cancelButtonText: '取消',
         type: 'warning',
       });
-      this.failCmds = [];
+      this.setFailCmds([]);
     },
     async recoverOne(pidInfo, cmd, successMsg) {
       try {
         let pid = await startCmdWithPidInfo(cmd, successMsg);
         pidInfo[cmd] = pid;
-        this.setPidInfo(pidInfo);
       } catch (e) {
+        delete pidInfo[cmd];
         this.failCmds.push(cmd);
         console.log(e);
       }
+      this.setPidInfo(pidInfo);
     },
 
     async recover() {

@@ -214,9 +214,10 @@ export function doTwice(fn, host) {
 
 export async function refreshIp() {
   let ip = await getDynv6Ip();
-  let config = await readFile('localConfig.json');
-  config = JSON.parse(config);
-  config.dnsIp = ip;
-  await writeFile('localConfig.json', JSON.stringify(config, null, 4));
+  let configStr = await readFile('localConfig.json');
+  let config = JSON.parse(configStr);
+  let oldIp = config.dnsIp;
+  configStr = configStr.replace(oldIp, ip);
+  await writeFile('localConfig.json', configStr);
   return ip;
 }

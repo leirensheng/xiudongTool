@@ -51,7 +51,7 @@ export default {
   },
   data() {
     return {
-      activeName: 'RemoteConfig',
+      activeName: 'ConfigManage',
       tabs: [
         {
           name: 'SearchActivity',

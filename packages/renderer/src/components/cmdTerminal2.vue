@@ -27,6 +27,10 @@ export default {
       type: String,
       default: '',
     },
+    noSetLocalStorage: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['exit', 'message'],
   setup() {
@@ -60,6 +64,10 @@ export default {
       let pid = this.pidInfo[this.cmd];
       this.socket.close();
       await axios.get('http://127.0.0.1:4000/close/' + pid);
+      window.noSetLocalStorage = this.noSetLocalStorage;
+      setTimeout(() => {
+        window.noSetLocalStorage = false;
+      }, 200);
       delete this.pidInfo[this.cmd];
       this.$emit('exit');
     },
@@ -78,6 +86,10 @@ export default {
             throw new Error(err);
           });
         console.log('新增进程:' + pid);
+        window.noSetLocalStorage = this.noSetLocalStorage;
+        setTimeout(() => {
+          window.noSetLocalStorage = false;
+        }, 200);
         this.pidInfo[this.cmd] = pid;
       } else {
         pid = prePid;
