@@ -8,6 +8,7 @@
     <cmd-terminal2
       v-if="dialogVisible"
       ref="terminal"
+      no-set-local-storage
       cmd="npm run calc"
       @exit="dialogVisible = false"
     ></cmd-terminal2>

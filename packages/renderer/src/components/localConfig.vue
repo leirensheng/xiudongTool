@@ -29,8 +29,7 @@
         class="show-ip"
         @click="copyText(config.dnsIp + ':5678')"
       >
-        <el-icon class="copy-icon"> <DocumentCopy /> </el-icon>{{ config.dnsIp }}:5678</span
-      >
+        <el-icon class="copy-icon"> <DocumentCopy /> </el-icon>{{ config.dnsIp }}:5678</span>
       <el-button
         :loading="loadingDns"
         @click="refreshDns"
@@ -48,6 +47,7 @@
       <cmd-terminal2
         v-if="isStart"
         ref="terminal"
+        no-set-local-storage
         cmd="node updateWanIp.js"
         @message="handleMessage"
         @exit="isStart = false"
