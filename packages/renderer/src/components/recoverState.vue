@@ -75,7 +75,7 @@ export default {
         let pid = await startCmdWithPidInfo(cmd, successMsg);
         pidInfo[cmd] = pid;
       } catch (e) {
-        delete pidInfo[cmd]; 
+        delete pidInfo[cmd];
         this.failCmds.push(cmd);
         console.log(e);
       }
@@ -97,7 +97,7 @@ export default {
         for (let cmd of checkCmds) {
           await this.recoverOne(pidInfo, cmd, '开始进行');
         }
-        
+
         window.noSetLocalStorage = false;
         this.setPidInfo({...pidInfo});
         this.$emit('getList');
