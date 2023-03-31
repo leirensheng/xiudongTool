@@ -99,8 +99,7 @@ export default {
     },
     async handleMessage(val) {
       if (val.includes('成功')) {
-        let dnsIp = val.match(/\[(.*?)\]/);
-        await writeFile('localConfig.json', JSON.stringify({...this.config, dnsIp}, null, 4));
+        this.refreshDns();
         ElNotification({
           title: '成功',
           message: 'WAN ip更新成功',
