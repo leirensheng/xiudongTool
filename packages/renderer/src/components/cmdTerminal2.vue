@@ -14,12 +14,12 @@
 
 <script>
 import axios from 'axios';
-import {Terminal} from 'xterm';
+import { Terminal } from 'xterm';
 import 'xterm/css/xterm.css';
-import {AttachAddon} from 'xterm-addon-attach';
-import {FitAddon} from 'xterm-addon-fit';
-import {useStore} from '/@/store/global';
-import {sendStop, getComputerName} from '#preload';
+import { AttachAddon } from 'xterm-addon-attach';
+import { FitAddon } from 'xterm-addon-fit';
+import { useStore } from '/@/store/global';
+import { sendStop, getComputerName } from '#preload';
 
 export default {
   props: {
@@ -35,7 +35,7 @@ export default {
   emits: ['exit', 'message'],
   setup() {
     let store = useStore();
-    let {pidInfo} = store;
+    let { pidInfo } = store;
     return {
       pidInfo,
     };
@@ -64,6 +64,10 @@ export default {
       let pid = this.pidInfo[this.cmd];
       this.socket.close();
       await axios.get('http://127.0.0.1:4000/close/' + pid);
+      window.noSetLocalStorage = this.noSetLocalStorage;
+      setTimeout(() => {
+        window.noSetLocalStorage = false;
+      }, 200);
       delete this.pidInfo[this.cmd];
       this.$emit('exit');
     },
@@ -83,10 +87,10 @@ export default {
           });
         console.log('新增进程:' + pid);
         window.noSetLocalStorage = this.noSetLocalStorage;
-        this.pidInfo[this.cmd] = pid;
         setTimeout(() => {
           window.noSetLocalStorage = false;
         }, 200);
+        this.pidInfo[this.cmd] = pid;
       } else {
         pid = prePid;
         console.log('连接进程:', pid);
