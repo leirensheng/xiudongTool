@@ -126,6 +126,7 @@
               v-model="form[one.id]"
               :min="0"
               :label="one.tips"
+              @contextmenu.prevent="rightClick(form, one.id)"
               @change="val => handleItemChange(one)"
             />
 
