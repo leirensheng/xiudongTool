@@ -216,7 +216,7 @@ export async function refreshIp() {
   let configStr = await readFile('localConfig.json');
   let config = JSON.parse(configStr);
   let oldIp = config.dnsIp;
-  configStr = configStr.replace(oldIp,ip);
+  configStr = configStr.replace(oldIp, ip);
   await writeFile('localConfig.json', configStr);
   return ip;
 }
