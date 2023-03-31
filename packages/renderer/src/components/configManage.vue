@@ -65,14 +65,14 @@
                 <el-dropdown-item @click="toOrder(row)">订单</el-dropdown-item>
 
                 <el-dropdown-item
-                  v-if="!row.status"
+                  v-if="!row.status && !row.hasSuccess"
                   @click="copyToRemote(row)"
                 >
                   复制配置到其他电脑
                 </el-dropdown-item>
 
                 <el-dropdown-item
-                  v-if="!row.status"
+                  v-if="!row.status && !row.hasSuccess"
                   @click="copyDir(row)"
                 >
                   toCheck
