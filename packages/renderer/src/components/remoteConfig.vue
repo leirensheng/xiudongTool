@@ -57,7 +57,7 @@ export default {
   data() {
     return {
       remotePc: '',
-      pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4', '联想'],
+      pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4', '联想','公司'],
       pcName: '',
       data: [],
       remoteTestIp: '',
