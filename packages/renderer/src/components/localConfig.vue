@@ -29,8 +29,7 @@
         class="show-ip"
         @click="copyText(config.dnsIp + ':5678')"
       >
-        <el-icon class="copy-icon"> <DocumentCopy /> </el-icon>{{ config.dnsIp }}:5678</span
-      >
+        <el-icon class="copy-icon"> <DocumentCopy /> </el-icon>{{ config.dnsIp }}:5678</span>
       <el-button
         :loading="loadingDns"
         @click="refreshDns"
@@ -175,14 +174,14 @@ export default {
         showTime: one.showTime,
       }));
 
-      let uniqueIds = [...new Set(configs.map(one => one.activityId))];
+      let uniqueIds = [...new Set(configs.map(one => String(one.activityId)))];
       savedData = savedData.filter(one => uniqueIds.includes(one.activityId));
 
       let savedIds = savedData.map(one => one.activityId);
       let notSaveIds = uniqueIds.filter(one => !savedIds.includes(one));
       let notSaveData = [];
       for (let activityId of notSaveIds) {
-        let target = configs.find(item => item.activityId === activityId);
+        let target = configs.find(item => String(item.activityId) === activityId);
         notSaveData.push(target);
       }
 
