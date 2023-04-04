@@ -1,5 +1,6 @@
 <template>
   <div class="config-manage">
+    145455
     <div class="top">
       <el-form
         class="right"
@@ -492,7 +493,7 @@ export default {
       let colors = ['blue', 'green'];
       if (rowIndex === 0) {
         row.color = colors[0];
-      } else if (row.port === this.tableData[rowIndex - 1].port) {
+      } else if (Number(row.port) === Number(this.tableData[rowIndex - 1].port)) {
         row.color = this.tableData[rowIndex - 1].color;
       } else {
         let preColor = this.tableData[rowIndex - 1].color;
@@ -688,7 +689,7 @@ export default {
       data = data.filter(one => {
         return items.every(({value, column}) => String(one[column]).indexOf(value) !== -1);
       });
-      data.sort((a, b) => new Date(b.port) - new Date(a.port));
+      data.sort((a, b) => Number(b.port) - Number(a.port));
 
       let cmds = Object.keys(this.pidInfo);
       data.forEach(one => {
