@@ -454,8 +454,8 @@ export default {
     this.pcName = getComputerName();
   },
   methods: {
-    toTop(){
-       document.querySelector('.top').scrollIntoView();
+    toTop() {
+      document.querySelector('.top').scrollIntoView();
     },
     async validateUser(rule, value, callback) {
       let hasDirs = await readDir('userData');
@@ -730,13 +730,13 @@ export default {
 <style lang="scss" scoped>
 .config-manage {
   position: relative;
-  .to-top{
-  // z-index: 222;
-  position: fixed;
-  bottom: 40px;
-  cursor: pointer;
-  left: 10px;
-}
+  .to-top {
+    // z-index: 222;
+    position: fixed;
+    bottom: 40px;
+    cursor: pointer;
+    left: 10px;
+  }
   .table-page-container {
     padding-top: 0;
   }
@@ -751,7 +751,6 @@ export default {
 </style>
 
 <style lang="scss">
-
 .el-table {
   color: white;
 }
