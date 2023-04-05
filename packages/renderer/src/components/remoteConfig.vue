@@ -27,41 +27,211 @@
 
     <el-button
       type="success"
-      @click="loadConfig"
+      @click="getList"
     >
       读取
     </el-button>
+    <S-Table
+      ref="table"
+      :table-row-class-name="tableRowClassName"
+      :highlight-current-row="false"
+      :is-auto-height="true"
+      :items="items"
+      :api="loadConfig"
+      one-page-hide-pagination
+      :search-immediately="false"
+      :table-btns-config="tableBtnsConfig"
+      @before-assign-to-table="beforeAssignToTable"
+    >
+      <template #username="{ row }">
+        <div>
+          <el-dropdown trigger="contextmenu">
+            <span class="el-dropdown-link">
+              <template v-if="!row.hasSuccess">
+                <span v-if="row.uid">{{ row.username }}</span>
+                <el-tag
+                  v-if="!row.uid"
+                  type="danger"
+                  effect="dark"
+                >
+                  {{ row.username }}
+                </el-tag>
+              </template>
+              <el-tag
+                v-else
+                type="success"
+                effect="dark"
+              >
+                {{ row.username }}-ok
+              </el-tag>
+            </span>
+          </el-dropdown>
+        </div>
+      </template>
 
-    <div class="res">
-      <div
-        v-for="(item, index) in data"
-        :key="index"
-        class="item"
-      >
-        <div class="name">{{ item.username }}</div>
-        <div class="activity">{{ item.activity }}</div>
-        <el-button @click="clone(item)">拉取</el-button>
-      </div>
-    </div>
+
+      <template #targetTypes="{ row }">
+        <el-tag
+          v-for="(item, i) in row.targetTypes"
+          :key="item"
+          :type="types[i]"
+          effect="dark"
+          round
+          style="margin: 4px"
+        >
+          {{ item }}
+        </el-tag>
+      </template>
+    </S-Table>
   </div>
 </template>
 
 <script>
-import {getComputerName, cloneRemoteConfig, getRemoteIp, doTwice} from '#preload';
+import { getComputerName, cloneRemoteConfig, getRemoteIp, doTwice } from '#preload';
 import axios from 'axios';
-import {ElNotification} from 'element-plus';
-import {getRunningUser, getIp} from '/@/utils/index.js';
-import {readClip} from '#preload';
+import { ElNotification } from 'element-plus';
+import { readClip } from '#preload';
+import { getIp } from '/@/utils/index.js';
 
 export default {
   data() {
     return {
+      types: ['', 'success', 'danger', 'warning'],
+
       remotePc: '',
-      pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4', '联想', '公司'],
+      pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4', '公司'],
       pcName: '',
       data: [],
       remoteTestIp: '',
+      tableData: [],
+      items: [
+        {
+          id: 'hasSuccess',
+          name: 'isSuccess',
+          isShow: false,
+          options: [
+            { name: '是', id: true },
+            { name: '否', id: false },
+          ],
+          support: {
+            query: {
+              type: 'select',
+            },
+          },
+        },
+        {
+          id: 'username',
+          name: 'user',
+          width: 100,
+          valueType: 'slot',
+          support: {
+            query: {},
+          },
+        },
+        {
+          id: 'port',
+          name: 'port',
+          width: 80,
+          support: {
+            query: {},
+          },
+        },
+
+        {
+          id: 'activityId',
+          name: 'showId',
+          width: 100,
+        },
+        {
+          id: 'activityName',
+          minWidth: 200,
+          name: 'show',
+          support: {
+            query: {},
+          },
+        },
+        {
+          id: 'showTime',
+          name: 'showTime',
+          width: 110,
+        },
+
+        {
+          id: 'nameIndex',
+          name: 'order',
+          width: 67,
+
+        },
+
+
+        {
+          id: 'phone',
+          name: 'phone',
+          required: true,
+          support: {
+            query: {},
+          },
+        },
+
+        {
+          id: 'targetTypes',
+          name: 'target',
+          valueType: 'slot',
+          options: [],
+
+        },
+        {
+          id: 'ticketTypes',
+          name: '所有类型',
+          isShow: false,
+          //  valueType:'text',
+
+        },
+        {
+          id: 'remark',
+          name: 'remark',
+          width: 100,
+          support: {
+            query: {},
+          },
+        },
+
+        {
+          id: 'hasSuccess',
+          name: '是否成功',
+          width: 100,
+          isShow: false,
+          options: [
+            { id: true, name: '是' },
+            { id: false, name: '否' },
+          ],
+        },
+
+        {
+          id: 'uid',
+          name: 'uid',
+          width: 170,
+          isShow: false,
+
+        },
+      ],
+      tableBtnsConfig: [
+        {
+          type: 'success',
+          handler: this.clone,
+          show: row => row.status === 0,
+          name: '拉取',
+        },
+        {
+          type: 'danger',
+          handler: this.stop,
+          show: row => row.status === 1,
+          name: '停止',
+        },
+
+      ],
     };
+
   },
   computed: {
     remoteIp() {
@@ -73,6 +243,31 @@ export default {
     console.log(this.pcName);
   },
   methods: {
+    async stop({ pid }) {
+      await axios.get('http://127.0.0.1:4000/close/' + pid);
+
+    },
+    beforeAssignToTable({ records }) {
+      this.tableData = records;
+    },
+    getList() {
+      return this.$refs.table.getList();
+    },
+    tableRowClassName({ row, rowIndex }) {
+      if (row.remark && row.remark.includes('频繁')) {
+        return 'grey';
+      }
+      let colors = ['blue', 'green'];
+      if (rowIndex === 0) {
+        row.color = colors[0];
+      } else if (Number(row.port) === Number(this.tableData[rowIndex - 1].port)) {
+        row.color = this.tableData[rowIndex - 1].color;
+      } else {
+        let preColor = this.tableData[rowIndex - 1].color;
+        row.color = colors.find(one => one !== preColor);
+      }
+      return row.color;
+    },
     rightClick() {
       this.remoteTestIp = readClip().replace(':5678', '');
     },
@@ -86,7 +281,7 @@ export default {
         type: 'success',
       });
     },
-    async clone({username, config}) {
+    async clone({ username, config }) {
       try {
         let fn = doTwice(cloneRemoteConfig, this.remoteIp);
         await fn(username, JSON.parse(JSON.stringify(config)));
@@ -95,6 +290,7 @@ export default {
           message: '拉取成功',
           type: 'success',
         });
+        this.getList();
       } catch (e) {
         ElNotification({
           title: '失败',
@@ -103,7 +299,7 @@ export default {
         });
       }
     },
-    async loadConfig() {
+    async loadConfig({ queryItems }) {
       try {
         this.data = [];
 
@@ -116,21 +312,43 @@ export default {
         let fn = doTwice(send, this.remoteIp);
 
         let {
-          data: {config, pidToCmd},
+          data: { config, pidToCmd },
         } = await fn();
 
-        let pidInfo = {};
+        let cmds = Object.values(pidToCmd);
+
+        let cmdToPid = {};
         Object.entries(pidToCmd).forEach(([key, value]) => {
-          pidInfo[value] = key;
+          cmdToPid[value.replace(' show', '')] = key;
         });
-        let runnings = getRunningUser(pidInfo);
-        this.data = Object.entries(config)
+        let data = Object.entries(config)
           .map(([username, one]) => ({
             username,
-            activity: one.activityName,
+            ...one,
             config: one,
-          }))
-          .filter(one => !runnings.includes(one.username));
+            targetTypes: Object.keys(one.typeMap || []),
+          }));
+
+        let items = queryItems.filter(item => item.value);
+        data = data.filter(one => {
+          return items.every(({ value, column }) => String(one[column]).indexOf(value) !== -1);
+        });
+        data.sort((a, b) => Number(b.port) - Number(a.port));
+
+        data.forEach(one => {
+          let cmd = `npm run start ${one.username}`;
+          one.cmd = cmd;
+          one.hasSuccess = Boolean(one.hasSuccess);
+          one.status = cmds.some(cmd => cmd.replace(/\s+show/, '') === one.cmd) ? 1 : 0;
+          one.pid = cmdToPid[cmd];
+        });
+        this.tableData = data;
+
+
+        return {
+          total: this.tableData.length,
+          records: this.tableData,
+        };
       } catch (e) {
         ElNotification({
           title: '失败',

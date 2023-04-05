@@ -554,11 +554,6 @@ export default {
     beforeAssignToTable({records}) {
       this.tableData = records;
     },
-    getStyle(row) {
-      return {
-        color: row.hasSuccess ? 'green' : '',
-      };
-    },
     exit() {
       this.dialogVisible = false;
       this.curRow.status = 0;
