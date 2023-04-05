@@ -43,7 +43,7 @@
       :table-btns-config="tableBtnsConfig"
       @before-assign-to-table="beforeAssignToTable"
     >
-      <template #username="{ row }">
+      <template #username="{row}">
         <div>
           <el-dropdown trigger="contextmenu">
             <span class="el-dropdown-link">
@@ -69,8 +69,7 @@
         </div>
       </template>
 
-
-      <template #targetTypes="{ row }">
+      <template #targetTypes="{row}">
         <el-tag
           v-for="(item, i) in row.targetTypes"
           :key="item"
@@ -87,11 +86,11 @@
 </template>
 
 <script>
-import { getComputerName, cloneRemoteConfig, getRemoteIp, doTwice } from '#preload';
+import {getComputerName, cloneRemoteConfig, getRemoteIp, doTwice} from '#preload';
 import axios from 'axios';
-import { ElNotification } from 'element-plus';
-import { readClip } from '#preload';
-import { getIp } from '/@/utils/index.js';
+import {ElNotification} from 'element-plus';
+import {readClip} from '#preload';
+import {getIp} from '/@/utils/index.js';
 
 export default {
   data() {
@@ -110,8 +109,8 @@ export default {
           name: 'isSuccess',
           isShow: false,
           options: [
-            { name: '是', id: true },
-            { name: '否', id: false },
+            {name: '是', id: true},
+            {name: '否', id: false},
           ],
           support: {
             query: {
@@ -160,9 +159,7 @@ export default {
           id: 'nameIndex',
           name: 'order',
           width: 67,
-
         },
-
 
         {
           id: 'phone',
@@ -178,14 +175,12 @@ export default {
           name: 'target',
           valueType: 'slot',
           options: [],
-
         },
         {
           id: 'ticketTypes',
           name: '所有类型',
           isShow: false,
           //  valueType:'text',
-
         },
         {
           id: 'remark',
@@ -202,8 +197,8 @@ export default {
           width: 100,
           isShow: false,
           options: [
-            { id: true, name: '是' },
-            { id: false, name: '否' },
+            {id: true, name: '是'},
+            {id: false, name: '否'},
           ],
         },
 
@@ -212,7 +207,6 @@ export default {
           name: 'uid',
           width: 170,
           isShow: false,
-
         },
       ],
       tableBtnsConfig: [
@@ -228,10 +222,8 @@ export default {
           show: row => row.status === 1,
           name: '停止',
         },
-
       ],
     };
-
   },
   computed: {
     remoteIp() {
@@ -243,17 +235,16 @@ export default {
     console.log(this.pcName);
   },
   methods: {
-    async stop({ pid }) {
+    async stop({pid}) {
       await axios.get('http://127.0.0.1:4000/close/' + pid);
-
     },
-    beforeAssignToTable({ records }) {
+    beforeAssignToTable({records}) {
       this.tableData = records;
     },
     getList() {
       return this.$refs.table.getList();
     },
-    tableRowClassName({ row, rowIndex }) {
+    tableRowClassName({row, rowIndex}) {
       if (row.remark && row.remark.includes('频繁')) {
         return 'grey';
       }
@@ -281,7 +272,7 @@ export default {
         type: 'success',
       });
     },
-    async clone({ username, config }) {
+    async clone({username, config}) {
       try {
         let fn = doTwice(cloneRemoteConfig, this.remoteIp);
         await fn(username, JSON.parse(JSON.stringify(config)));
@@ -299,7 +290,7 @@ export default {
         });
       }
     },
-    async loadConfig({ queryItems }) {
+    async loadConfig({queryItems}) {
       try {
         this.data = [];
 
@@ -312,7 +303,7 @@ export default {
         let fn = doTwice(send, this.remoteIp);
 
         let {
-          data: { config, pidToCmd },
+          data: {config, pidToCmd},
         } = await fn();
 
         let cmds = Object.values(pidToCmd);
@@ -321,17 +312,16 @@ export default {
         Object.entries(pidToCmd).forEach(([key, value]) => {
           cmdToPid[value.replace(' show', '')] = key;
         });
-        let data = Object.entries(config)
-          .map(([username, one]) => ({
-            username,
-            ...one,
-            config: one,
-            targetTypes: Object.keys(one.typeMap || []),
-          }));
+        let data = Object.entries(config).map(([username, one]) => ({
+          username,
+          ...one,
+          config: one,
+          targetTypes: Object.keys(one.typeMap || []),
+        }));
 
         let items = queryItems.filter(item => item.value);
         data = data.filter(one => {
-          return items.every(({ value, column }) => String(one[column]).indexOf(value) !== -1);
+          return items.every(({value, column}) => String(one[column]).indexOf(value) !== -1);
         });
         data.sort((a, b) => Number(b.port) - Number(a.port));
 
@@ -343,7 +333,6 @@ export default {
           one.pid = cmdToPid[cmd];
         });
         this.tableData = data;
-
 
         return {
           total: this.tableData.length,
