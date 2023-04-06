@@ -25,7 +25,6 @@
       />
     </el-radio-group>
 
-
     <S-Table
       ref="table"
       :table-row-class-name="tableRowClassName"
@@ -225,8 +224,8 @@ export default {
       return getRemoteIp(this.remotePc);
     },
   },
-  watch:{
-    remotePc(){
+  watch: {
+    remotePc() {
       this.getList();
     },
   },
