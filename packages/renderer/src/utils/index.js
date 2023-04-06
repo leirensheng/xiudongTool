@@ -64,10 +64,10 @@ let startCmdWithPidInfo = (cmd, successMsg = '信息获取完成') => {
           if (data.includes(successMsg)) {
             ws.close();
             resolve(pid);
-          } else if (data.includes('需要登陆')) {
+          } else if (data.includes('需要登陆')|| data.includes('at ')) { //报错会出现at
             ws.close();
             axios.get('http://127.0.0.1:4000/close/' + pid);
-            reject(new Error(cmd + '需要登录'));
+            reject(new Error(cmd + '需要登录或报错'));
           }
         };
         ws.onopen = () => {
