@@ -222,7 +222,7 @@ export default {
       isUnique: false,
       tableData: [],
       pcName: '',
-      pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4', '联想'],
+      pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4', '公司'],
       remoteDialogVisible: false,
       sending: false,
       remotePc: '新电脑',
