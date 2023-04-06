@@ -517,7 +517,7 @@ export default {
         'http://127.0.0.1:4000/copyUserFile',
         {username: this.curRow.username, host: getRemoteIp(this.remotePc), config},
         {
-          timeout: 20000,
+          timeout: 30000,
         },
       );
       this.sending = false;
