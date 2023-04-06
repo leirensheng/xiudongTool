@@ -25,12 +25,7 @@
       />
     </el-radio-group>
 
-    <el-button
-      type="success"
-      @click="getList"
-    >
-      读取
-    </el-button>
+
     <S-Table
       ref="table"
       :table-row-class-name="tableRowClassName"
@@ -238,6 +233,11 @@ export default {
       return getRemoteIp(this.remotePc);
     },
   },
+  watch:{
+    remotePc(){
+      this.getList();
+    },
+  },
   created() {
     this.pcName = getComputerName();
     console.log(this.pcName);
@@ -305,7 +305,7 @@ export default {
 
         let send = ip =>
           axios({
-            timeout: 3000,
+            timeout: 7000,
             url: `http://${ip}:4000/getAllUserConfig`,
           });
 
