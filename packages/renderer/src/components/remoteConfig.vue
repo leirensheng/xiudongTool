@@ -271,7 +271,9 @@ export default {
         type: 'success',
       });
     },
-    async clone({username, config}) {
+    async clone(row) {
+      let {username, config} =row;
+      row.loading = true;
       try {
         let fn = doTwice(cloneRemoteConfig, this.remoteIp);
         await fn(username, JSON.parse(JSON.stringify(config)));
@@ -288,6 +290,7 @@ export default {
           type: 'error',
         });
       }
+      row.loading = false;
     },
     async loadConfig({queryItems}) {
       try {
@@ -327,6 +330,7 @@ export default {
         data.forEach(one => {
           let cmd = `npm run start ${one.username}`;
           one.cmd = cmd;
+          one.loading = false;
           one.hasSuccess = Boolean(one.hasSuccess);
           one.status = cmds.some(cmd => cmd.replace(/\s+show/, '') === one.cmd) ? 1 : 0;
           one.pid = cmdToPid[cmd];
