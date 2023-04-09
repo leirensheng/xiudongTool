@@ -208,9 +208,9 @@ export default {
     },
     async getDirNumber() {
       this.loading = true;
-      let res= await getCheckNumbers();
+      let res = await getCheckNumbers();
       this.allNumbers = res.filter(Boolean);
-      
+
       this.min = this.allNumbers[0];
       this.max = this.allNumbers[this.allNumbers.length - 1];
       this.loading = false;

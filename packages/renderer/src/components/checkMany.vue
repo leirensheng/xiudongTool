@@ -3,7 +3,7 @@
     <div class="activity">
       <el-checkbox-group v-model="selected">
         <el-checkbox
-          v-for="(item) in data"
+          v-for="item in data"
           :key="item.activityId"
           style="margin: 5px"
           :label="item.curShowName + '_' + item.showTime + '_' + item.activityId"
@@ -41,10 +41,10 @@
 </template>
 
 <script>
-import { readFile } from '#preload';
+import {readFile} from '#preload';
 import CheckManyDialog from '/@/components/checkManyDialog.vue';
-import { getRunningCheck, getCheckNumbers } from '/@/utils/index.js';
-import { useStore } from '/@/store/global';
+import {getRunningCheck, getCheckNumbers} from '/@/utils/index.js';
+import {useStore} from '/@/store/global';
 
 export default {
   components: {
@@ -52,7 +52,7 @@ export default {
   },
   setup() {
     let store = useStore();
-    let { pidInfo } = store;
+    let {pidInfo} = store;
     return {
       pidInfo,
     };
@@ -67,10 +67,12 @@ export default {
   },
   computed: {
     ports() {
-      return this.selected.map(one => {
-        let [, , activityId] = one.split('_');
-        return this.data.find(one => one.activityId === activityId).port;
-      }).sort((a, b) => a - b);
+      return this.selected
+        .map(one => {
+          let [, , activityId] = one.split('_');
+          return this.data.find(one => one.activityId === activityId).port;
+        })
+        .sort((a, b) => a - b);
     },
   },
   watch: {
@@ -78,16 +80,13 @@ export default {
       if (!val) {
         this.init();
       }
-
     },
   },
 
   created() {
     this.init();
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
     async init() {
       this.isRunning = false;
@@ -106,7 +105,6 @@ export default {
 
       this.usefulNumbers = checkNumbers.filter(one => !usedNumbers.includes(one));
       this.getRunning();
-
     },
     getRunning() {
       let target = Object.keys(this.pidInfo).find(one => one.includes('checkMany'));
@@ -114,7 +112,9 @@ export default {
         let regRes = target.match(/checkMany ([\d-]+) (\d+-\d+)/);
         let ports = regRes[1].split('-');
         console.log(ports);
-        this.selected = this.data.filter(one => ports.includes(one.port)).map(item => item.curShowName + '_' + item.showTime + '_' + item.activityId);
+        this.selected = this.data
+          .filter(one => ports.includes(one.port))
+          .map(item => item.curShowName + '_' + item.showTime + '_' + item.activityId);
         this.isRunning = true;
       }
     },
@@ -124,7 +124,6 @@ export default {
       data = Object.values(data);
       this.data = data;
     },
-
   },
 };
 </script>

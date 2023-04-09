@@ -42,7 +42,7 @@ import {readFile, cmd, writeFile} from '#preload';
 import {ElMessageBox, ElNotification} from 'element-plus';
 import {useStore} from '/@/store/global';
 import CheckDialog from '/@/components/checkDialog.vue';
-import {getRunningCheck,getCheckNumbers} from '/@/utils/index.js';
+import {getRunningCheck, getCheckNumbers} from '/@/utils/index.js';
 
 export default {
   components: {
@@ -214,7 +214,7 @@ export default {
     this.getUsefulDir();
   },
   methods: {
-   async getUsefulDir(){
+    async getUsefulDir() {
       this.checkDataNumbers = await getCheckNumbers();
     },
     start(row) {

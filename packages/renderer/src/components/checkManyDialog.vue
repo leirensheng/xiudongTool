@@ -40,7 +40,7 @@ export default {
   props: {
     ports: {
       type: Array,
-      default:()=>[] ,
+      default: () => [],
     },
     usefulNumbers: {
       type: Array,
@@ -74,8 +74,8 @@ export default {
     },
     runningCmd() {
       let cmds = Object.keys(this.pidInfo);
-      console.log(cmds,`npm run checkMany ${this.ports.join('-')}`)
-      
+      console.log(cmds, `npm run checkMany ${this.ports.join('-')}`);
+
       return cmds.find(cmd => cmd.includes(`npm run checkMany ${this.ports.join('-')}`));
     },
   },

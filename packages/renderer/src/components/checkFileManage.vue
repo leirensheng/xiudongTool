@@ -46,7 +46,7 @@ import {ref} from 'vue';
 import {getRunningCheck, getRunningUser} from '/@/utils/index.js';
 import CheckFileRename from '/@/components/checkFileFileRename.vue';
 export default {
-  components:{
+  components: {
     CheckFileRename,
   },
   setup() {

@@ -174,9 +174,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.check-rename{
+.check-rename {
   margin-top: 15px;
-  .table{
+  .table {
     height: calc(100vh - 170px);
     overflow: auto;
   }

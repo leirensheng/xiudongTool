@@ -272,7 +272,7 @@ export default {
       });
     },
     async clone(row) {
-      let {username, config} =row;
+      let {username, config} = row;
       row.loading = true;
       try {
         let fn = doTwice(cloneRemoteConfig, this.remoteIp);
