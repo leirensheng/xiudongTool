@@ -34,6 +34,8 @@
         @done="reset"
       ></cmd-terminal>
     </div>
+
+    <check-file-rename></check-file-rename>
   </div>
 </template>
 
@@ -42,7 +44,11 @@ import {readDir} from '#preload';
 import {useStore} from '/@/store/global';
 import {ref} from 'vue';
 import {getRunningCheck, getRunningUser} from '/@/utils/index.js';
+import CheckFileRename from '/@/components/checkFileFileRename.vue';
 export default {
+  components:{
+    CheckFileRename,
+  },
   setup() {
     let store = useStore();
     let {pidInfo} = store;

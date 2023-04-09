@@ -1,28 +1,30 @@
 <template>
-  <div>
+  <div class="check-rename">
     <el-button @click="auto">一键处理</el-button>
-    <S-Table
-      ref="table"
-      :highlight-current-row="false"
-      :is-auto-height="true"
-      :items="items"
-      :api="getData"
-      one-page-hide-pagination
-      :on-dialog-open="onDialogOpen"
-      :table-btns-config="tableBtnsConfig"
-    >
-      <template #username="{row}">
-        <span v-if="!row.status">{{ row.username }}</span>
-        <el-tag
-          v-else
-          effect="dark"
-          class="ml-2"
-          type="danger"
-        >
-          {{ row.username }}
-        </el-tag>
-      </template>
-    </S-Table>
+    <div class="table">
+      <S-Table
+        ref="table"
+        :highlight-current-row="false"
+        :is-auto-height="true"
+        :items="items"
+        :api="getData"
+        one-page-hide-pagination
+        :on-dialog-open="onDialogOpen"
+        :table-btns-config="tableBtnsConfig"
+      >
+        <template #username="{row}">
+          <span v-if="!row.status">{{ row.username }}</span>
+          <el-tag
+            v-else
+            effect="dark"
+            class="ml-2"
+            type="danger"
+          >
+            {{ row.username }}
+          </el-tag>
+        </template>
+      </S-Table>
+    </div>
   </div>
 </template>
 
@@ -171,4 +173,12 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.check-rename{
+  margin-top: 15px;
+  .table{
+    height: calc(100vh - 170px);
+    overflow: auto;
+  }
+}
+</style>

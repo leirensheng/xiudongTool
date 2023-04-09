@@ -42,8 +42,7 @@ import {readFile, cmd, writeFile} from '#preload';
 import {ElMessageBox, ElNotification} from 'element-plus';
 import {useStore} from '/@/store/global';
 import CheckDialog from '/@/components/checkDialog.vue';
-import {readDir} from '#preload';
-import {getRunningCheck} from '/@/utils/index.js';
+import {getRunningCheck,getCheckNumbers} from '/@/utils/index.js';
 
 export default {
   components: {
@@ -215,22 +214,8 @@ export default {
     this.getUsefulDir();
   },
   methods: {
-    async getUsefulDir() {
-      let res = await readDir('checkData');
-      let startStr = 'data';
-      res = res
-        .filter(one => one.indexOf(startStr) === 0)
-        .map(one => one.replace(startStr, ''))
-        .map(one => Number(one));
-      res = res.sort((a, b) => a - b);
-      this.checkDataNumbers = res;
-      if (!res.length) {
-        ElNotification({
-          title: 'Error',
-          message: '没有有效的以data开头的目录！',
-          type: 'error',
-        });
-      }
+   async getUsefulDir(){
+      this.checkDataNumbers = await getCheckNumbers();
     },
     start(row) {
       this.curRow = row;
@@ -326,7 +311,7 @@ export default {
         one.status = one.cmd ? 1 : 0;
       });
 
-      this.getUsedDir(data);
+      this.getUsedDir();
 
       return {
         total: data.length,

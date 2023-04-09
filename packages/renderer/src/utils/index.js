@@ -1,4 +1,4 @@
-import {refreshIp} from '#preload';
+import {refreshIp, readDir} from '#preload';
 import {ElNotification} from 'element-plus';
 import axios from 'axios';
 
@@ -16,8 +16,9 @@ let getRunningCheck = pidInfo => {
   let cmds = Object.keys(pidInfo).filter(one => one.includes('npm run check'));
   let res = [];
   cmds.forEach(cmd => {
-    if (cmd.match(/check \d+ (\d+-\d+)/)) {
-      let [start, end] = cmd.match(/check \d+ (\d+-\d+)/)[1].split('-');
+    let regRes = cmd.match(/check(Many)? [\d-]+ (\d+-\d+)/);
+    if (regRes) {
+      let [start, end] = regRes[2].split('-');
       let isNotData = cmd.includes('useNot');
 
       let startWith = isNotData ? 'not_data' : 'data';
@@ -81,4 +82,35 @@ let sleep = time =>
   new Promise(r => {
     setTimeout(r, time);
   });
-export {getRunningCheck, getRunningUser, getIp, startCmdWithPidInfo, sleep};
+
+let getCheckNumbers = async () => {
+  let res = await readDir('checkData');
+  let startStr = 'data';
+  res = res
+    .filter(one => one.indexOf(startStr) === 0)
+    .map(one => one.replace(startStr, ''))
+    .map(one => Number(one));
+  res = res.sort((a, b) => a - b);
+
+  if (!res.length) {
+    ElNotification({
+      title: 'Error',
+      message: '没有有效的以data开头的目录！',
+      type: 'error',
+    });
+    throw new Error('没有有效的以data开头的目录！');
+  }
+  let isNotOk = res.some((one, index) =>
+    index !== res.length - 1 ? one + 1 !== res[index + 1] : false,
+  );
+  if (isNotOk) {
+    ElNotification({
+      title: 'Error',
+      message: '目录名称不连续, 请修改checkData文件夹名称！',
+      type: 'error',
+    });
+    throw new Error('目录名称不连续');
+  }
+  return res;
+};
+export {getRunningCheck, getCheckNumbers, getRunningUser, getIp, startCmdWithPidInfo, sleep};

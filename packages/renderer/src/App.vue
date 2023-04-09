@@ -28,6 +28,8 @@ import CheckFileFileRename from '/@/components/checkFileFileRename.vue';
 import onlyTest from '/@/components/onlyTest.vue';
 import LocalConfig from '/@/components/localConfig.vue';
 import RemoteConfig from '/@/components/remoteConfig.vue';
+import CheckMany from '/@/components/checkMany.vue';
+
 import {getIp} from './utils/index.js';
 import {useStore} from '/@/store/global';
 import {storeToRefs} from 'pinia';
@@ -43,6 +45,7 @@ export default {
     onlyTest,
     RemoteConfig,
     LocalConfig,
+    CheckMany,
   },
   setup() {
     let store = useStore();
@@ -51,7 +54,7 @@ export default {
   },
   data() {
     return {
-      activeName: 'ConfigManage',
+      activeName: 'CheckMany',
       tabs: [
         {
           name: 'SearchActivity',
@@ -77,13 +80,14 @@ export default {
           name: 'CheckFileManage',
           title: '文件清理',
         },
-        {
-          name: 'CheckFileFileRename',
-          title: 'check重命名',
-        },
+
         {
           name: 'remoteConfig',
           title: '远程配置',
+        },
+        {
+          name: 'checkMany',
+          title: '检测多个',
         },
         {
           name: 'onlyTest',

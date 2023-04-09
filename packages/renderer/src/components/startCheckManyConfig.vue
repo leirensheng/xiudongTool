@@ -17,49 +17,6 @@
       class="form"
       label-width="100px"
     >
-      <el-form-item
-        class="item"
-        label="打开浏览器"
-      >
-        <el-switch v-model="isOpen" />
-      </el-form-item>
-      <!-- <el-form-item
-        class="item"
-        label="notData目录"
-      >
-        <el-switch
-          v-model="isUseNotDir"
-          @change="getDirNumber"
-        />
-      </el-form-item> -->
-      <el-form-item
-        v-if="!isOpen"
-        class="item"
-        label="自动点击"
-      >
-        <el-switch v-model="isLoop" />
-      </el-form-item>
-      <el-form-item
-        v-if="!isOpen && isLoop"
-        class="item"
-        label="监测"
-      >
-        <el-switch v-model="isCheck" />
-      </el-form-item>
-      <el-form-item
-        v-if="!isOpen && isLoop"
-        class="item"
-        label="循环点击"
-      >
-        <el-select v-model="loopTicketType">
-          <el-option
-            v-for="item in options"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          />
-        </el-select>
-      </el-form-item>
     </el-form>
     <el-button
       v-if="!running"
@@ -80,7 +37,7 @@
 </template>
 
 <script>
-import {useStore} from '/@/store/global';
+import { useStore } from '/@/store/global';
 import {getCheckNumbers} from '/@/utils/index.js';
 
 export default {
@@ -90,19 +47,16 @@ export default {
       type: Array,
       default: () => [],
     },
-    port: {
-      type: String,
-      default: '',
+    ports: {
+      type: Array,
+      default: () => [],
     },
-    config: {
-      type: Object,
-      default: () => ({}),
-    },
+
   },
-  emits: ['cmdChange', 'updateLoopType'],
+  emits: ['cmdChange'],
   setup() {
     let store = useStore();
-    let {pidInfo} = store;
+    let { pidInfo } = store;
     return {
       pidInfo,
     };
@@ -126,38 +80,18 @@ export default {
     isNumberOk() {
       return this.startNum && this.endNum >= this.startNum;
     },
-    options() {
-      return this.config.ticketTypes.map(name => ({
-        name,
-        id: name,
-      }));
-    },
+
     running() {
       return !!this.pidInfo[this.cmd];
     },
     cmd() {
-      let str = `npm run check ${this.port} ${this.startNum}-${this.endNum} `;
-      let name = '';
-      if (this.isCheck && this.isLoop) {
-        name = 'loopAndCheck';
-      }
-      if (!this.isCheck && this.isLoop) {
-        name = 'loop';
-      }
-      if (this.isCheck && !this.isLoop) {
-        name = 'check';
-      }
-      let dir = this.isUseNotDir ? 'useNotDir' : 'useDataDir';
-      str = this.isOpen ? `${str} show ${dir}` : `${str} ${name} ${dir} `;
-      if (!this.isOpen && this.isLoop) {
-        str += ` ${this.loopTicketType}`;
-      }
+      let str = `npm run checkMany ${this.ports.join('-')} ${this.startNum}-${this.endNum} `;
+
       return str;
     },
   },
   created() {
     this.getDirNumber();
-    this.loopTicketType = this.config.loopTicketType || (this.options.length && this.options[0].id);
   },
   methods: {
     reset() {
@@ -202,9 +136,6 @@ export default {
     },
     confirm() {
       this.$emit('cmdChange', this.cmd);
-      if (this.config.loopTicketType !== this.loopTicketType) {
-        this.$emit('updateLoopType', this.loopTicketType);
-      }
     },
     async getDirNumber() {
       this.loading = true;
@@ -225,6 +156,7 @@ export default {
     margin-left: 40%;
   }
 }
+
 .items {
   margin-bottom: 10px;
 
@@ -232,6 +164,7 @@ export default {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+
   .item {
     cursor: pointer;
     display: flex;
@@ -249,6 +182,7 @@ export default {
       border-color: #86888b;
       cursor: not-allowed;
     }
+
     &.selected {
       background: #409eff;
       color: white;
