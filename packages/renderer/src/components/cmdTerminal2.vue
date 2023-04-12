@@ -58,7 +58,7 @@ export default {
   methods: {
     async close() {
       let computer = getComputerName();
-      if (['新电脑', '联想'].includes(computer)) {
+      if (['新电脑', '联想', '公司'].includes(computer)) {
         await sendStop();
       }
       let pid = this.pidInfo[this.cmd];
