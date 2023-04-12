@@ -5,6 +5,7 @@ let getDynv6Ip = require('../../../../xiudongPupp/getDynv6Ip');
 export {sha256sum} from './nodeCrypto';
 export {versions} from './versions';
 import cmd from './cmd.js';
+// import  './useClient.js';
 export {cmd};
 export function readFile(name) {
   return new Promise((resolve, reject) => {
@@ -213,12 +214,12 @@ export function doTwice(fn, host) {
   };
 }
 
-export async function refreshIp() {
+export async function refreshDns() {
   let ip = await getDynv6Ip();
   let configStr = await readFile('localConfig.json');
   let config = JSON.parse(configStr);
   let oldIp = config.dnsIp;
-  configStr = configStr.replace(oldIp, ip);
+  configStr = configStr.replaceAll(oldIp, ip);
   await writeFile('localConfig.json', configStr);
   return ip;
 }
