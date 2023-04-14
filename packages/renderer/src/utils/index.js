@@ -81,14 +81,14 @@ let startCmdWithPidInfo = (cmd, successMsg = '信息获取完成') => {
   });
 };
 
-let stopCmd = async (cmd)=>{
+let stopCmd = async cmd => {
   let store = useStore();
   let {setPidInfo} = store;
   let {pidInfo} = storeToRefs(store);
   let pid = pidInfo[cmd];
   await axios.get('http://127.0.0.1:4000/close/' + pid);
-   delete pidInfo[cmd];
-   setPidInfo({...pidInfo});
+  delete pidInfo[cmd];
+  setPidInfo({...pidInfo});
 };
 
 let sleep = time =>
@@ -126,4 +126,12 @@ let getCheckNumbers = async () => {
   }
   return res;
 };
-export {getRunningCheck, getCheckNumbers, getRunningUser, getIp, startCmdWithPidInfo, sleep, stopCmd};
+export {
+  getRunningCheck,
+  getCheckNumbers,
+  getRunningUser,
+  getIp,
+  startCmdWithPidInfo,
+  sleep,
+  stopCmd,
+};
