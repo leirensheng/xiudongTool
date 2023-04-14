@@ -1,6 +1,8 @@
-import {refreshIp, readDir} from '#preload';
+import {refreshDns, readDir} from '#preload';
 import {ElNotification} from 'element-plus';
 import axios from 'axios';
+import {useStore} from '/@/store/global';
+import {storeToRefs} from 'pinia';
 
 export function debounce(fn, time = 2500) {
   let timer = null;
@@ -38,7 +40,7 @@ let getRunningUser = pidInfo => {
 
 let getIp = async () => {
   try {
-    let ip = await refreshIp();
+    let ip = await refreshDns();
     ElNotification({
       title: 'DNS更新成功',
       message: ip,
@@ -78,6 +80,17 @@ let startCmdWithPidInfo = (cmd, successMsg = '信息获取完成') => {
       });
   });
 };
+
+let stopCmd = async (cmd)=>{
+  let store = useStore();
+  let {setPidInfo} = store;
+  let {pidInfo} = storeToRefs(store);
+  let pid = pidInfo[cmd];
+  await axios.get('http://127.0.0.1:4000/close/' + pid);
+   delete pidInfo[cmd];
+   setPidInfo({...pidInfo});
+};
+
 let sleep = time =>
   new Promise(r => {
     setTimeout(r, time);
@@ -113,4 +126,4 @@ let getCheckNumbers = async () => {
   }
   return res;
 };
-export {getRunningCheck, getCheckNumbers, getRunningUser, getIp, startCmdWithPidInfo, sleep};
+export {getRunningCheck, getCheckNumbers, getRunningUser, getIp, startCmdWithPidInfo, sleep, stopCmd};
