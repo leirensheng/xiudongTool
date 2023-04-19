@@ -24,8 +24,8 @@
         :label="one"
       />
     </el-radio-group>
-
     <S-Table
+      v-show="remoteTestIp"
       ref="table"
       :table-row-class-name="tableRowClassName"
       :highlight-current-row="false"
