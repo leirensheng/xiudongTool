@@ -6,6 +6,7 @@
     >
       <Top />
     </el-icon>
+    {{ pidInfo }}
     <div class="top">
       <el-form
         class="right"
@@ -188,6 +189,7 @@ import {getIp} from '/@/utils/index.js';
 import {storeToRefs} from 'pinia';
 import CalcUser from '/@/components/calcUser.vue';
 import RecoverState from '/@/components/recoverState.vue';
+import eventBus from '/@/utils/eventBus.js';
 export default {
   components: {
     CmdTerminal2,
@@ -200,7 +202,15 @@ export default {
 
     let useServer = () => {
       let startServer = () => {
-        cmd('cd ../xiudongServer && pm2 start index.js');
+        cmd('cd ../xiudongServer && pm2 start index.js',(res)=>{
+          if(res.includes('done')){
+            ElNotification({
+              title: '成功',
+              message: '启动成功',
+              type: 'success',
+            });
+          }
+        });
       };
 
       let stopServer = () => {
@@ -452,7 +462,12 @@ export default {
   },
   created() {
     this.pcName = getComputerName();
+    eventBus.on('closePid',this.getList);
   },
+  unmounted(){
+    eventBus.off('closePid',this.getList);
+  },
+
   methods: {
     toTop() {
       document.querySelector('.top').scrollIntoView();
