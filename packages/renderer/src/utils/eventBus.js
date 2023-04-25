@@ -13,7 +13,7 @@ export function createEmitter() {
 
   for (const key in emitter) {
     if (Object.hasOwnProperty.call(emitter, key)) {
-      emitter['$'+key] = emitter[key];
+      emitter['$' + key] = emitter[key];
     }
   }
 
