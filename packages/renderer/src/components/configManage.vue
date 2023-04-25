@@ -202,8 +202,8 @@ export default {
 
     let useServer = () => {
       let startServer = () => {
-        cmd('cd ../xiudongServer && pm2 start index.js',(res)=>{
-          if(res.includes('done')){
+        cmd('cd ../xiudongServer && pm2 start index.js', res => {
+          if (res.includes('done')) {
             ElNotification({
               title: '成功',
               message: '启动成功',
@@ -462,10 +462,10 @@ export default {
   },
   created() {
     this.pcName = getComputerName();
-    eventBus.on('closePid',this.getList);
+    eventBus.on('closePid', this.getList);
   },
-  unmounted(){
-    eventBus.off('closePid',this.getList);
+  unmounted() {
+    eventBus.off('closePid', this.getList);
   },
 
   methods: {
