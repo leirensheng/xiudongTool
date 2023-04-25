@@ -235,7 +235,7 @@ export default {
   },
   methods: {
     async stop({pid}) {
-      await axios(`http://${this.remoteTestIp}:4000/close/${pid}?isFromRemote=1`);
+      await axios(`http://${this.remoteIp}:4000/close/${pid}?isFromRemote=1`);
       this.getList();
     },
     beforeAssignToTable({records}) {
