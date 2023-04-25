@@ -462,10 +462,10 @@ export default {
   },
   created() {
     this.pcName = getComputerName();
-    eventBus.on('closePid',this.getList);
+    eventBus.on('getUserList',this.getList);
   },
   unmounted(){
-    eventBus.off('closePid',this.getList);
+    eventBus.off('getUserList',this.getList);
   },
 
   methods: {

@@ -2,6 +2,7 @@
 import io from 'socket.io-client';
 import {useStore} from '/@/store/global';
 import eventBus from '/@/utils/eventBus.js';
+import {startCmdWithPidInfo} from '/@/utils/index.js';
 
 // 连接到本地服务器
 const socket = io('http://localhost:4000', {
@@ -38,7 +39,23 @@ window.socket.on('closePid', closePid => {
     console.log(cmd, pid);
     if (Number(closePid) === Number(pid)) {
       delete pidInfo[cmd];
-      eventBus.emit('closePid');
+      eventBus.emit('getUserList');
     }
   }
+});
+
+window.socket.on('startUser', async cmd => {
+  console.log('客户端收到的', cmd);
+  let store = useStore();
+  let {pidInfo} = store;
+  let isSuccess = false;
+  try {
+    let pid = await startCmdWithPidInfo(cmd, '信息获取完成');
+    pidInfo[cmd] = pid;
+    isSuccess = true;
+    eventBus.emit('getUserList');
+  } catch (e) {
+    console.log(e);
+  }
+  window.socket.emit('startUserDone', isSuccess);
 });
