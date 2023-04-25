@@ -34,7 +34,6 @@ window.socket.on('closePid', closePid => {
   console.log('客户端收到的', closePid);
   let store = useStore();
   let {pidInfo} = store;
-  console.log(11111111111111, pidInfo);
   for (let [cmd, pid] of Object.entries(pidInfo)) {
     console.log(cmd, pid);
     if (Number(closePid) === Number(pid)) {
