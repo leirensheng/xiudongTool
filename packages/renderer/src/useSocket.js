@@ -63,10 +63,12 @@ class MySocket {
           } catch (e) {
             console.log(e);
           }
-          this.socket.send(JSON.stringify({
-            type: 'startUserDone',
-            data: isSuccess,
-          }));
+          this.socket.send(
+            JSON.stringify({
+              type: 'startUserDone',
+              data: isSuccess,
+            }),
+          );
         }
       };
     };
