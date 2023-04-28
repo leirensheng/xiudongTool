@@ -536,7 +536,7 @@ export default {
         },
       );
       this.sending = false;
-      if (res.data === 'ok') {
+      if (res.data.code === 0) {
         ElNotification({
           title: '成功',
           message: '复制成功',

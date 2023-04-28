@@ -73,14 +73,15 @@ export default {
       console.log('命令:', this.cmd);
 
       if (!prePid) {
-        pid = await axios
+        let {data} = await axios
           .get('http://127.0.0.1:4000/terminal')
           .then(res => res.data)
           .catch(err => {
             console.log(111111, err);
             throw new Error(err);
           });
-        console.log('新增进程:' + pid);
+        console.log('新增进程:' + data);
+        pid = data;
         window.noSetLocalStorage = this.noSetLocalStorage;
         setTimeout(() => {
           window.noSetLocalStorage = false;
