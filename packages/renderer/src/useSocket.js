@@ -1,66 +1,150 @@
 // 引入 Socket.IO 客户端库
-import io from 'socket.io-client';
 import {useStore} from '/@/store/global';
 import eventBus from '/@/utils/eventBus.js';
-import {startCmdWithPidInfo} from '/@/utils/index.js';
+import {startCmdWithPidInfo, sleep} from '/@/utils/index.js';
 
 // 连接到本地服务器
-const socket = io('http://localhost:4000', {
-  reconnection: true, // 开启自动重连
-  reconnectionAttempts: 100000, // 最多重连 10 次
-});
-window.socket = socket;
 
-// 监听连接成功事件
-socket.on('connect', () => {
-  console.log('连接成功！');
-});
+// window.socket = socket;
 
-// 监听连接失败事件
-socket.on('connect_error', error => {
-  console.log('连接失败，错误信息：', error.message);
-});
+class MySocket {
+  constructor() {
+    this.heartTimer = null;
+    this.connected = false;
+    this.socket = null;
+    this.toDisconnectedTimer = null;
+    this.connect();
+  }
 
-// 监听重连事件
-socket.on('reconnect', attemptNumber => {
-  console.log(`第 ${attemptNumber} 次重连成功！`);
-});
-
-// 监听重连失败事件
-socket.on('reconnect_error', error => {
-  console.log('重连失败，错误信息：', error.message);
-});
-
-window.socket.on('closePid', closePid => {
-  console.log('客户端收到的', closePid);
-  let store = useStore();
-  let {pidInfo} = store;
-  for (let [cmd, pid] of Object.entries(pidInfo)) {
-    console.log(cmd, pid);
-    if (Number(closePid) === Number(pid)) {
-      delete pidInfo[cmd];
-      eventBus.emit('getUserList');
+  async connect() {
+    console.log('尝试连接');
+    clearInterval(this.heartTimer);
+    clearTimeout(this.toDisconnectedTimer);
+    if (this.socket) {
+      this.socket.close();
     }
+
+    this.connected = false;
+    this.socket = new WebSocket('ws://localhost:4000/electronSocket');
+    this.socket.onopen = () => {
+      console.log('打开连接', this.socket);
+      window.socket = this.socket;
+      this.connected = true;
+      this.changeToDisconnected();
+      this.startHeatBeat();
+      this.socket.onmessage = async ({data: str}) => {
+        let data = JSON.parse(str);
+        if (data.type === 'pong') {
+          this.connected = true;
+          this.changeToDisconnected();
+        } else if (data.type === 'closePid') {
+          let closePid = data.pid;
+          let store = useStore();
+          let {pidInfo} = store;
+          for (let [cmd, pid] of Object.entries(pidInfo)) {
+            console.log(cmd, pid);
+            if (Number(closePid) === Number(pid)) {
+              delete pidInfo[cmd];
+              eventBus.emit('getUserList');
+            }
+          }
+        } else if (data.type === 'getConfigList') {
+          eventBus.emit('getUserList');
+        } else if (data.type === 'startUser') {
+          let {cmd} = data;
+          let store = useStore();
+          let {pidInfo} = store;
+          let isSuccess = false;
+          try {
+            let pid = await startCmdWithPidInfo(cmd, '信息获取完成');
+            pidInfo[cmd] = pid;
+            isSuccess = true;
+            eventBus.emit('getUserList');
+          } catch (e) {
+            console.log(e);
+          }
+          this.socket.send({
+            type: 'startUserDone',
+            isSuccess,
+          });
+        }
+      };
+    };
+    this.socket.onerror = async e => {
+      console.log('WebSocket连接打开失败，请检查！', e);
+      this.connected = false;
+      await sleep(1000);
+      this.connect();
+    };
   }
-});
-
-window.socket.on('startUser', async cmd => {
-  console.log('客户端收到的', cmd);
-  let store = useStore();
-  let {pidInfo} = store;
-  let isSuccess = false;
-  try {
-    let pid = await startCmdWithPidInfo(cmd, '信息获取完成');
-    pidInfo[cmd] = pid;
-    isSuccess = true;
-    eventBus.emit('getUserList');
-  } catch (e) {
-    console.log(e);
+  changeToDisconnected() {
+    clearTimeout(this.toDisconnectedTimer);
+    this.toDisconnectedTimer = setTimeout(() => {
+      this.connected = false;
+      this.connect();
+    }, 30000);
   }
-  window.socket.emit('startUserDone', isSuccess);
-});
 
-window.socket.on('getConfigList', async () => {
-  eventBus.emit('getUserList');
-});
+  startHeatBeat() {
+    clearInterval(this.heartTimer);
+    this.heartTimer = setInterval(() => {
+      this.socket.send(JSON.stringify({type: 'ping'}));
+    }, 1000);
+  }
+}
 
+new MySocket();
+
+// window.socket = socket;
+// // 监听连接成功事件
+// socket.on('connect', () => {
+//   console.log('连接成功！');
+// });
+
+// // 监听连接失败事件
+// socket.on('connect_error', error => {
+//   console.log('连接失败，错误信息：', error.message);
+// });
+
+// // 监听重连事件
+// socket.on('reconnect', attemptNumber => {
+//   console.log(`第 ${attemptNumber} 次重连成功！`);
+// });
+
+// // 监听重连失败事件
+// socket.on('reconnect_error', error => {
+//   console.log('重连失败，错误信息：', error.message);
+// });
+
+// window.socket.on('closePid', closePid => {
+//   console.log('客户端收到的', closePid);
+//   let store = useStore();
+//   let {pidInfo} = store;
+//   for (let [cmd, pid] of Object.entries(pidInfo)) {
+//     console.log(cmd, pid);
+//     if (Number(closePid) === Number(pid)) {
+//       delete pidInfo[cmd];
+//       eventBus.emit('getUserList');
+//     }
+//   }
+// });
+
+// window.socket.on('startUser', async cmd => {
+//   console.log('客户端收到的', cmd);
+//   let store = useStore();
+//   let {pidInfo} = store;
+//   let isSuccess = false;
+//   try {
+//     let pid = await startCmdWithPidInfo(cmd, '信息获取完成');
+//     pidInfo[cmd] = pid;
+//     isSuccess = true;
+//     eventBus.emit('getUserList');
+//   } catch (e) {
+//     console.log(e);
+//   }
+//   window.socket.emit('startUserDone', isSuccess);
+// });
+
+// window.socket.on('getConfigList', async () => {
+//   eventBus.emit('getUserList');
+// });
