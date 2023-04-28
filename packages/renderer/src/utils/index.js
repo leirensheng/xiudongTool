@@ -59,7 +59,7 @@ let startCmdWithPidInfo = (cmd, successMsg = '信息获取完成') => {
     const socketURL = 'ws://127.0.0.1:4000/socket/';
     axios
       .get('http://127.0.0.1:4000/terminal')
-      .then(res => res.data)
+      .then(res => res.data.data)
       .then(pid => {
         console.log('新增进程:' + pid);
         let ws = new WebSocket(socketURL + pid);
