@@ -6,7 +6,6 @@
     >
       <Top />
     </el-icon>
-    {{ pidInfo }}
     <div class="top">
       <el-form
         class="right"
