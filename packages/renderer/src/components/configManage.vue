@@ -464,7 +464,7 @@ export default {
     this.pcName = getComputerName();
     eventBus.on('getUserList', this.getList);
   },
-  unmounted(){
+  unmounted() {
     eventBus.off('getUserList', this.getList);
   },
 
