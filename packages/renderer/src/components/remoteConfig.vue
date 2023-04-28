@@ -306,7 +306,9 @@ export default {
         let fn = doTwice(send, this.remoteIp);
 
         let {
-          data: {data:{config, pidToCmd}},
+          data: {
+            data: {config, pidToCmd},
+          },
         } = await fn();
 
         let cmds = Object.values(pidToCmd);

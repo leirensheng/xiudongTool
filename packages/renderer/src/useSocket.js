@@ -63,4 +63,3 @@ window.socket.on('startUser', async cmd => {
 window.socket.on('getConfigList', async () => {
   eventBus.emit('getUserList');
 });
-
