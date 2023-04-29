@@ -637,6 +637,9 @@ export default {
       let obj = {...val};
       delete obj.ticketTypes;
       delete obj.username;
+      if(obj.uid){
+        obj.uid = obj.uid.replace('尊敬的用户，你的UID是：','');
+      }
       await this.updateFile({
         key: val.username,
         val: obj,
