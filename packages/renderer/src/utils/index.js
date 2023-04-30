@@ -70,9 +70,9 @@ let startCmdWithPidInfo = (cmd, successMsg = '信息获取完成', isFromRemote)
           } else if (data.includes('需要登陆') || data.includes('at ')) {
             //报错会出现at
             ws.close();
-            if(isFromRemote){
-              resolve({pid,msg:'需要登录, 请远程登录'});
-            }else{
+            if (isFromRemote) {
+              resolve({pid, msg: '需要登录, 请远程登录'});
+            } else {
               axios.get('http://127.0.0.1:4000/close/' + pid);
               reject(new Error(cmd + '需要登录或报错'));
             }

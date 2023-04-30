@@ -65,13 +65,15 @@ class MySocket {
           } catch (e) {
             console.log(e);
           }
-          this.socket.send(JSON.stringify({
-            type: 'startUserDone',
-            data: {
-              isSuccess,
-              msg,
-            },
-          }));
+          this.socket.send(
+            JSON.stringify({
+              type: 'startUserDone',
+              data: {
+                isSuccess,
+                msg,
+              },
+            }),
+          );
         }
       };
     };
