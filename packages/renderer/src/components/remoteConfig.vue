@@ -92,7 +92,7 @@ export default {
       types: ['', 'success', 'danger', 'warning'],
 
       remotePc: '',
-      pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4', '公司'],
+      pcs: ['新电脑', '虚拟机4.3', '虚拟机4.4', '惠普'],
       pcName: '',
       data: [],
       remoteTestIp: '',

@@ -55,9 +55,11 @@ class MySocket {
           let store = useStore();
           let {pidInfo} = store;
           let isSuccess = false;
+          let msg;
           try {
-            let pid = await startCmdWithPidInfo(cmd, '信息获取完成');
-            pidInfo[cmd] = pid;
+            let res = await startCmdWithPidInfo(cmd, '信息获取完成', true);
+            pidInfo[cmd] = res.pid;
+            msg = res.msg;
             isSuccess = true;
             eventBus.emit('getUserList');
           } catch (e) {
@@ -65,7 +67,10 @@ class MySocket {
           }
           this.socket.send(JSON.stringify({
             type: 'startUserDone',
-            data: isSuccess,
+            data: {
+              isSuccess,
+              msg,
+            },
           }));
         }
       };

@@ -86,7 +86,7 @@ export function getComputerName() {
   let os = require('os');
   let map = {
     'DESKTOP-AAKRGOM': '宏基',
-    CCRPC028: '公司',
+    CCRPC028: '惠普',
     'DESKTOP-43': '虚拟机4.3',
     'DESKTOP-3ML3QTF': '虚拟机4.4',
     'DESKTOP-U1N2FOL': '联想',
@@ -190,7 +190,7 @@ export function getRemoteIp(name) {
     '虚拟机4.3': ['虚拟机4.4', '新电脑'].includes(pcName) ? '192.168.4.3' : '100.95.67.33',
     '虚拟机4.4': ['虚拟机4.3', '新电脑'].includes(pcName) ? '192.168.4.4' : '100.116.129.127',
     联想: '192.168.5.2',
-    公司: '100.115.170.87',
+    惠普: '100.115.170.87',
     宏基: 'e4097n6449.51vip.biz',
   };
   return map[name];
