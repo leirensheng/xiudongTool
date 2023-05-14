@@ -2,6 +2,7 @@ import {app, BrowserWindow} from 'electron';
 import {join} from 'path';
 import {URL} from 'url';
 import axios from 'axios';
+import {resolve} from 'path'
 
 // const { ipcMain } = require('electron');
 // let pidInfo = {};
@@ -20,6 +21,8 @@ async function createWindow() {
       preload: join(app.getAppPath(), 'packages/preload/dist/index.cjs'),
     },
   });
+  browserWindow.setIcon(resolve(__dirname, '../src/favicon.ico'));
+
 
   /**
    * If the 'show' property of the BrowserWindow's constructor is omitted from the initialization options,
