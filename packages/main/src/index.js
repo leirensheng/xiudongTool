@@ -1,15 +1,15 @@
 import {app} from 'electron';
 import './security-restrictions';
 import {restoreOrCreateWindow} from '/@/mainWindow';
-import {cmd} from './tool.js';
+import {startServer} from './tool.js';
 /**
  * Prevent electron from running multiple instances.
  */
-const isSingleInstance = app.requestSingleInstanceLock();
-if (!isSingleInstance) {
-  app.quit();
-  process.exit(0);
-}
+// const isSingleInstance = app.requestSingleInstanceLock();
+// if (!isSingleInstance) {
+//   app.quit();
+//   process.exit(0);
+// }
 app.on('second-instance', restoreOrCreateWindow);
 
 /**
@@ -37,7 +37,7 @@ app.on('activate', restoreOrCreateWindow);
 app
   .whenReady()
   .then(restoreOrCreateWindow)
-  .then(cmd('cd ../xiudongServer && pm2 stop index && pm2 start index'))
+  .then(startServer)
   .catch(e => console.error('Failed create window:', e));
 
 /**
