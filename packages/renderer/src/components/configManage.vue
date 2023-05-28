@@ -594,7 +594,9 @@ export default {
     },
     cmdCopy(value, username, phone) {
       return new Promise(r => {
-        cmd(`npm run add ${value} ${username} ${phone}`, data => {
+      let val =`npm run add ${value} ${true} ${username}-${phone}-${''}-${''}-${0}`; 
+
+        cmd(val, data => {
           if (data === 'done') {
             r();
           }
