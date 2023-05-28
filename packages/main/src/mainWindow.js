@@ -2,7 +2,7 @@ import {app, BrowserWindow} from 'electron';
 import {join} from 'path';
 import {URL} from 'url';
 import axios from 'axios';
-import {resolve} from 'path'
+import {resolve} from 'path';
 
 // const { ipcMain } = require('electron');
 // let pidInfo = {};
@@ -22,7 +22,6 @@ async function createWindow() {
     },
   });
   browserWindow.setIcon(resolve(__dirname, '../src/favicon.ico'));
-
 
   /**
    * If the 'show' property of the BrowserWindow's constructor is omitted from the initialization options,
