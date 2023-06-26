@@ -22,7 +22,7 @@ import {ElNotification} from 'element-plus';
 import {useStore} from '/@/store/global';
 import {ElMessageBox} from 'element-plus';
 import {storeToRefs} from 'pinia';
-import { getPidInfoFromFile } from '#preload';
+import {getPidInfoFromFile} from '#preload';
 
 export default {
   props: {
@@ -49,9 +49,7 @@ export default {
       recovering: false,
     };
   },
-  computed: {
- 
-  },
+  computed: {},
   watch: {
     tableData: {
       deep: true,

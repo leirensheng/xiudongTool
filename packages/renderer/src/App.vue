@@ -103,7 +103,7 @@ export default {
       handler(val) {
         if (!window.noSavePidInfo) {
           console.log('保存pidInfo');
-          savePidInfo(JSON.stringify(val,null,4));
+          savePidInfo(JSON.stringify(val, null, 4));
         }
       },
     },
