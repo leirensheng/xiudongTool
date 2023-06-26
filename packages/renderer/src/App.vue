@@ -33,6 +33,7 @@ import CheckMany from '/@/components/checkMany.vue';
 import {getIp} from './utils/index.js';
 import {useStore} from '/@/store/global';
 import {storeToRefs} from 'pinia';
+import {savePidInfo} from '#preload';
 
 export default {
   components: {
@@ -100,8 +101,9 @@ export default {
     pidInfo: {
       deep: true,
       handler(val) {
-        if (!window.noSetLocalStorage) {
-          localStorage.setItem('pidInfo', JSON.stringify(val));
+        if (!window.noSavePidInfo) {
+          console.log('保存pidInfo');
+          savePidInfo(JSON.stringify(val,null,4));
         }
       },
     },

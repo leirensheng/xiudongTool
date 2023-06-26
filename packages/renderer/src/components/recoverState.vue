@@ -22,6 +22,7 @@ import {ElNotification} from 'element-plus';
 import {useStore} from '/@/store/global';
 import {ElMessageBox} from 'element-plus';
 import {storeToRefs} from 'pinia';
+import { getPidInfoFromFile } from '#preload';
 
 export default {
   props: {
@@ -44,23 +45,33 @@ export default {
   },
   data() {
     return {
+      isShowRecover: false,
       recovering: false,
     };
   },
   computed: {
-    isShowRecover() {
-      let pidInfo = JSON.parse(localStorage.getItem('pidInfo') || '{}');
+ 
+  },
+  watch: {
+    tableData: {
+      deep: true,
+      handler() {
+        this.checkIsShowRecover();
+      },
+    },
+  },
+  created() {},
+  methods: {
+    async checkIsShowRecover() {
+      let pidInfo = await getPidInfoFromFile();
       let usernames = Object.keys(pidInfo)
         .filter(one => one.includes('npm run start'))
         .map(one => one.replace('npm run start ', ''));
       let cmds = this.tableData
         .filter(one => !one.status && usernames.includes(one.username))
         .map(one => one.cmd);
-      return cmds.length !== 0;
+      this.isShowRecover = cmds.length !== 0;
     },
-  },
-  created() {},
-  methods: {
     async openDialog() {
       let msg = this.failCmds.join('__');
       await ElMessageBox.confirm(`恢复失败: ${msg}`, '提示', {
@@ -83,9 +94,9 @@ export default {
     },
 
     async recover() {
-      window.noSetLocalStorage = true;
+      window.noSavePidInfo = true;
       this.recovering = true;
-      let pidInfo = JSON.parse(localStorage.getItem('pidInfo') || '{}');
+      let pidInfo = await getPidInfoFromFile();
       try {
         let cmds = Object.keys(pidInfo);
 
@@ -98,11 +109,11 @@ export default {
           await this.recoverOne(pidInfo, cmd, '开始进行');
         }
 
-        window.noSetLocalStorage = false;
+        window.noSavePidInfo = false;
         this.setPidInfo({...pidInfo});
         this.$emit('getList');
       } catch (e) {
-        window.noSetLocalStorage = false;
+        window.noSavePidInfo = false;
         ElNotification({
           title: '失败',
           message: e.message,
