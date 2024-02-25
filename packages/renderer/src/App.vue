@@ -34,6 +34,7 @@ import {getIp} from './utils/index.js';
 import {useStore} from '/@/store/global';
 import {storeToRefs} from 'pinia';
 import {savePidInfo} from '#preload';
+import eventBus from '/@/utils/eventBus.js';
 
 export default {
   components: {
@@ -109,10 +110,18 @@ export default {
     },
   },
   created() {
+    eventBus.on('switchTab', this.switchTab);
     getIp();
   },
+  unmounted() {
+    eventBus.off('switchTab', this.switchTab);
+  },
   mounted() {},
-  methods: {},
+  methods: {
+    switchTab(val) {
+      this.activeName = val;
+    },
+  },
 };
 </script>
 
