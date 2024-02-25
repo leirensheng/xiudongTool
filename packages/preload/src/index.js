@@ -185,8 +185,8 @@ export function getRemoteIp(name) {
     新电脑: pcName.includes('虚拟机')
       ? '192.168.4.1'
       : pcName === '联想'
-      ? '192.168.5.1'
-      : 'mticket.ddns.net',
+        ? '192.168.5.1'
+        : 'mticket.ddns.net',
     '虚拟机4.3': ['虚拟机4.4', '新电脑'].includes(pcName) ? '192.168.4.3' : '100.95.67.33',
     '虚拟机4.4': ['虚拟机4.3', '新电脑'].includes(pcName) ? '192.168.4.4' : '100.116.129.127',
     联想: '192.168.5.2',

@@ -51,14 +51,14 @@ class MySocket {
         } else if (data.type === 'getConfigList') {
           eventBus.emit('getUserList');
         } else if (data.type === 'recover') {
-          eventBus.emit('switchTab','ConfigManage');
+          eventBus.emit('switchTab', 'ConfigManage');
           eventBus.emit('recover');
-          eventBus.once('recoverDone', (failCmds)=>{
+          eventBus.once('recoverDone', failCmds => {
             console.log('recoverDone');
             this.socket.send(
               JSON.stringify({
                 type: 'recoverDone',
-                data:{
+                data: {
                   failCmds,
                 },
               }),

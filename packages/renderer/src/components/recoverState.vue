@@ -62,7 +62,7 @@ export default {
   unmounted() {
     eventBus.off('recover', this.recover);
   },
-  created() { 
+  created() {
     eventBus.on('recover', this.recover);
   },
   methods: {
@@ -124,7 +124,7 @@ export default {
           type: 'error',
         });
       }
-      eventBus.emit('recoverDone',this.failCmds);
+      eventBus.emit('recoverDone', this.failCmds);
       this.recovering = false;
     },
   },

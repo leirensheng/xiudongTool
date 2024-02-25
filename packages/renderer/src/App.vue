@@ -5,7 +5,7 @@
       class="demo-tabs"
     >
       <el-tab-pane
-        v-for="({ title, name }, index) in tabs"
+        v-for="({title, name}, index) in tabs"
         :key="index"
         :label="title"
         :name="name"
@@ -30,10 +30,10 @@ import LocalConfig from '/@/components/localConfig.vue';
 import RemoteConfig from '/@/components/remoteConfig.vue';
 import CheckMany from '/@/components/checkMany.vue';
 
-import { getIp } from './utils/index.js';
-import { useStore } from '/@/store/global';
-import { storeToRefs } from 'pinia';
-import { savePidInfo } from '#preload';
+import {getIp} from './utils/index.js';
+import {useStore} from '/@/store/global';
+import {storeToRefs} from 'pinia';
+import {savePidInfo} from '#preload';
 import eventBus from '/@/utils/eventBus.js';
 
 export default {
@@ -51,8 +51,8 @@ export default {
   },
   setup() {
     let store = useStore();
-    let { pidInfo } = storeToRefs(store);
-    return { pidInfo };
+    let {pidInfo} = storeToRefs(store);
+    return {pidInfo};
   },
   data() {
     return {
@@ -116,7 +116,7 @@ export default {
   unmounted() {
     eventBus.off('switchTab', this.switchTab);
   },
-  mounted() { },
+  mounted() {},
   methods: {
     switchTab(val) {
       this.activeName = val;
